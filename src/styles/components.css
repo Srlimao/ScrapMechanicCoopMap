@@ -235,3 +235,75 @@
     color: var(--accent-cyan);
     font-weight: 700;
 }
+
+/* Squad Multiplayer Styles */
+.squad-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.squad-badge.online { color: #c084fc; text-shadow: 0 0 10px rgba(192, 132, 252, 0.5); }
+.squad-badge.offline { color: var(--text-dim); }
+
+.squad-color-chip {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.squad-color-chip:hover { transform: scale(1.15); }
+.squad-color-chip.active { border-color: #ffffff; transform: scale(1.2); box-shadow: 0 0 10px currentColor; }
+
+.squad-peer-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+}
+
+.peer-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.peer-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.peer-name {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.peer-status {
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+}
+
+.host-pill {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 122, 0, 0.2);
+    border: 1px solid var(--accent-orange);
+    color: var(--accent-orange);
+    font-size: 9.5px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+}

@@ -52,6 +52,10 @@
 
             <!-- Header Controls & File Upload -->
             <div class="header-actions">
+                <button class="btn btn-tool" id="btnSquadModal" style="border-color: rgba(168, 85, 247, 0.5); color: #c084fc;" title="Multiplayer Squad Room & Co-op Live Coordinates">
+                    <span class="squad-badge offline" id="squadStatusBadge"><i class="fa-solid fa-users"></i> Squad: Offline</span>
+                </button>
+
                 <button class="btn btn-tool" id="followPlayerBtn" title="Lock Camera and Follow In-Game Character">
                     <i class="fa-solid fa-crosshairs"></i> <span>Follow Player</span>
                 </button>
@@ -415,6 +419,82 @@
                     </div>
                 </div>
             </aside>
+        </div>
+    </div>
+
+    <!-- Multiplayer Squad Room Modal -->
+    <div class="modal-backdrop" id="squadModal">
+        <div class="modal" style="max-width: 520px;">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-users" style="color:var(--accent-purple)"></i> Multiplayer Squad Rooms</h2>
+                <button class="modal-close" id="closeSquadModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- Squad Setup / Join Panel -->
+                <div id="squadSetupPanel" style="display:flex; flex-direction:column; gap:14px;">
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Your Nickname & Color</label>
+                        <div style="display:flex; gap:8px; margin-top:6px;">
+                            <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 12px; color:#fff; font-size:13px;">
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <div class="squad-color-chip active" data-color="#00e5ff" style="background:#00e5ff;"></div>
+                                <div class="squad-color-chip" data-color="#ff7a00" style="background:#ff7a00;"></div>
+                                <div class="squad-color-chip" data-color="#10b981" style="background:#10b981;"></div>
+                                <div class="squad-color-chip" data-color="#a855f7" style="background:#a855f7;"></div>
+                                <div class="squad-color-chip" data-color="#ec4899" style="background:#ec4899;"></div>
+                                <div class="squad-color-chip" data-color="#eab308" style="background:#eab308;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Relay Server URL</label>
+                        <input type="text" id="squadServerUrl" value="ws://localhost:8090" placeholder="ws://YOUR-GCP-IP:8090" style="width:100%; margin-top:6px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 12px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:12px;">
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px;">
+                        <button class="btn btn-primary" id="btnCreateRoom" style="justify-content:center; height:42px;">
+                            <i class="fa-solid fa-plus-circle"></i> Create Room (Host)
+                        </button>
+                        <div style="display:flex; gap:6px;">
+                            <input type="text" id="squadRoomInput" placeholder="Room Code" style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:0 10px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase;">
+                            <button class="btn btn-tool" id="btnJoinRoom" style="border-color:var(--accent-purple); color:#c084fc;">
+                                <i class="fa-solid fa-right-to-bracket"></i> Join
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Squad Panel -->
+                <div id="squadActivePanel" style="display:none; flex-direction:column; gap:14px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:8px;">
+                        <div>
+                            <span style="font-size:11px; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Active Room Code</span>
+                            <h3 id="activeRoomCode" style="font-size:18px; color:#c084fc; font-family:'JetBrains Mono', monospace; margin:0;">#SQUAD-1</h3>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-tool" id="btnCopyRoomCode" title="Copy Room Code to Clipboard">
+                                <i class="fa-solid fa-copy"></i> Copy Code
+                            </button>
+                            <button class="btn btn-tool" id="btnLeaveRoom" style="color:#ef4444; border-color:rgba(239,68,68,0.3);" title="Leave Squad Room">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Leave
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Connected Squad Members</span>
+                            <span style="font-size:11px; color:var(--accent-cyan); font-family:'JetBrains Mono', monospace;">World Seed: <strong id="activeSeedDisplay">-</strong></span>
+                        </div>
+                        <div id="squadPeerList" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto;"></div>
+                    </div>
+
+                    <div style="font-size:11px; color:var(--text-dim); line-height:1.4; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px;">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent-purple)"></i> <strong>Tactical Map Ping:</strong> Double-click anywhere on the map to drop a timed squad ping that alerts all room members!
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

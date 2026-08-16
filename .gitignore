@@ -32,3 +32,6 @@ deprecated/
 Thumbs.db
 .vscode/
 .idea/
+
+# Separate Server Repo
+relay_server/

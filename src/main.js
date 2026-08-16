@@ -13,6 +13,7 @@ import { setupRulerTool } from './features/tools/ruler.js';
 import { setupScreenshotExporter } from './features/tools/screenshot.js';
 import { loadSettings, setupLayerControls } from './features/tools/settings.js';
 import { setupSeedGeneratorControls } from './features/tools/seed_generator.js';
+import { setupSquadControls } from './features/squad/squad_ui.js';
 import { initToastContainer, showToast } from './ui/toasts.js';
 import { setupModals } from './ui/modals.js';
 
@@ -83,6 +84,7 @@ async function bootstrap() {
     setupHoverTooltip(elements, elements.canvas);
     setupFileUploadHandlers(elements.uploadBtn, elements.fileInput, elements.dropOverlay);
     setupSeedGeneratorControls(elements);
+    setupSquadControls();
 
     // 3. Setup Reset & Follow camera buttons
     if (elements.resetViewBtn) elements.resetViewBtn.addEventListener('click', resetCameraView);

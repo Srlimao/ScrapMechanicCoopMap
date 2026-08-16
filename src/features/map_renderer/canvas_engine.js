@@ -4,6 +4,7 @@ import { renderTerrainLayer } from './layer_terrain.js';
 import { renderGridLayer } from './layer_grid.js';
 import { renderEntitiesLayer } from './layer_entities.js';
 import { renderPlayerTrail } from '../live_tracker/player_trail.js';
+import { renderSquadLayer } from '../squad/layer_squad.js';
 import { renderMinimap } from './minimap.js';
 import { renderRulerLayer } from '../tools/ruler.js';
 
@@ -62,10 +63,13 @@ export function renderFrame() {
     // 5. Live Player Marker & Trail
     renderPlayerTrail(ctx2d, w, h);
 
-    // 6. Measurement Ruler Tool
+    // 6. Multiplayer Squad Members & Tactical Pings
+    renderSquadLayer(ctx2d, w, h);
+
+    // 7. Measurement Ruler Tool
     renderRulerLayer(ctx2d, w, h);
 
-    // 7. Minimap HUD
+    // 8. Minimap HUD
     if (minimapCtx2d && minimapCanvasEl) {
         renderMinimap(minimapCtx2d, minimapCanvasEl, w, h);
     }

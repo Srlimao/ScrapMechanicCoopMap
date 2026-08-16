@@ -66,6 +66,19 @@ export const state = {
         units: { farmbots: true, haybots: true, tapebots: true, totebots: true, animals: true },
         harvestables: { oil: true, cotton: true, minerals: true, trees: true },
         creationsSize: 'all' // 'all', 'small', 'medium', 'large'
+    },
+
+    // Multiplayer Squad Relay
+    squad: {
+        serverUrl: 'ws://localhost:8090',
+        connected: false,
+        roomCode: null,
+        isHost: false,
+        myPeerId: null,
+        myNickname: 'ScrapMechanic',
+        myColor: '#00e5ff',
+        peers: new Map(), // peerId -> { id, name, color, x, y, z, dirX, dirY, speed, trail, lastSeen }
+        pings: []
     }
 };
 
