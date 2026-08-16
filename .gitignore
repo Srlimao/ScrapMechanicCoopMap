@@ -1,0 +1,34 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+dist_release/
+
+# Python cache & virtualenvs
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Local save databases & runtime dumps
+*.db
+*.db-wal
+*.db-shm
+save_cache/
+live_player.json
+terrain_seed_*.png
+
+# Deprecated scratch files
+deprecated/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

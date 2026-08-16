@@ -1,0 +1,135 @@
+// Scrap Mechanic Tactical Map Viewer - Main Entry Point
+import { state, subscribe } from './core/state.js';
+import { initCanvasEngine } from './features/map_renderer/canvas_engine.js';
+import { setupCameraControls, resetCameraView } from './features/map_renderer/camera.js';
+import { startLivePoller } from './features/live_tracker/live_poller.js';
+import { initSqlEngine } from './features/save_loader/sqlite_decoder.js';
+import { syncActiveSave, setupFileUploadHandlers } from './features/save_loader/save_sync.js';
+import { setupInspectorSidebar } from './features/inspector/sidebar.js';
+import { setupHoverTooltip } from './features/inspector/hover_tooltip.js';
+import { setupBookmarks } from './features/tools/bookmarks.js';
+import { setupSearch } from './features/tools/search.js';
+import { setupRulerTool } from './features/tools/ruler.js';
+import { setupScreenshotExporter } from './features/tools/screenshot.js';
+import { loadSettings, setupLayerControls } from './features/tools/settings.js';
+import { setupSeedGeneratorControls } from './features/tools/seed_generator.js';
+import { initToastContainer, showToast } from './ui/toasts.js';
+import { setupModals } from './ui/modals.js';
+
+async function bootstrap() {
+    console.log("[App] Bootstrapping Scrap Mechanic Tactical Map Viewer...");
+
+    // 1. Initialize DOM references
+    const elements = {
+        canvas: document.getElementById('mapCanvas'),
+        minimapCanvas: document.getElementById('minimapCanvas'),
+        viewport: document.getElementById('mapViewport'),
+        uploadBtn: document.getElementById('uploadBtn'),
+        fileInput: document.getElementById('fileInput'),
+        dropOverlay: document.getElementById('dropOverlay'),
+        searchInput: document.getElementById('searchInput'),
+        searchResults: document.getElementById('searchResults'),
+        clearSearch: document.getElementById('clearSearch'),
+        detailSidebar: document.getElementById('detailSidebar'),
+        detailTitle: document.getElementById('detailTitle'),
+        detailSubtitle: document.getElementById('detailSubtitle'),
+        detailBody: document.getElementById('detailBody'),
+        inspectorHeroIcon: document.getElementById('inspectorHeroIcon'),
+        closeSidebarBtn: document.getElementById('closeSidebarBtn'),
+        helpModal: document.getElementById('helpModal'),
+        infoBtn: document.getElementById('infoBtn'),
+        closeHelpModal: document.getElementById('closeHelpModal'),
+        toggleCoordsBtn: document.getElementById('toggleCoordsBtn'),
+        followPlayerBtn: document.getElementById('followPlayerBtn'),
+        livePlayerBadge: document.getElementById('livePlayerBadge'),
+        liveStatusText: document.getElementById('liveStatusText'),
+        playerSpeedBadge: document.getElementById('playerSpeedBadge'),
+        rulerToolBtn: document.getElementById('rulerToolBtn'),
+        rulerHud: document.getElementById('rulerHud'),
+        rulerStats: document.getElementById('rulerStats'),
+        closeRulerBtn: document.getElementById('closeRulerBtn'),
+        exportBtn: document.getElementById('exportBtn'),
+        mapOpacitySlider: document.getElementById('mapOpacitySlider'),
+        mapOpacityVal: document.getElementById('mapOpacityVal'),
+        hoverTooltip: document.getElementById('hoverTooltip'),
+        tooltipTitle: document.getElementById('tooltipTitle'),
+        tooltipCoords: document.getElementById('tooltipCoords'),
+        resetViewBtn: document.getElementById('resetViewBtn'),
+        btnSyncSave: document.getElementById('btnSyncSave'),
+        bmPlayer: document.getElementById('bmPlayer'),
+        bmMechanic: document.getElementById('bmMechanic'),
+        bmTrader: document.getElementById('bmTrader'),
+        bmPacking: document.getElementById('bmPacking'),
+        bmCreations: document.getElementById('bmCreations'),
+        bmBosses: document.getElementById('bmBosses'),
+        toggleAllLayers: document.getElementById('toggleAllLayers'),
+        seedInput: document.getElementById('seedInput'),
+        btnGenSeed: document.getElementById('btnGenSeed'),
+        btnLoadReferenceSeed: document.getElementById('btnLoadReferenceSeed'),
+        btnClearCache: document.getElementById('btnClearCache'),
+        seedGenStatus: document.getElementById('seedGenStatus')
+    };
+
+    // 2. Initialize UI, Settings & Controls
+    initToastContainer();
+    loadSettings();
+    setupLayerControls(elements);
+    setupModals(elements);
+    setupBookmarks(elements);
+    setupSearch(elements);
+    setupRulerTool(elements, elements.canvas);
+    setupScreenshotExporter(elements.exportBtn, elements.canvas);
+    setupInspectorSidebar(elements);
+    setupHoverTooltip(elements, elements.canvas);
+    setupFileUploadHandlers(elements.uploadBtn, elements.fileInput, elements.dropOverlay);
+    setupSeedGeneratorControls(elements);
+
+    // 3. Setup Reset & Follow camera buttons
+    if (elements.resetViewBtn) elements.resetViewBtn.addEventListener('click', resetCameraView);
+    if (elements.followPlayerBtn) {
+        elements.followPlayerBtn.addEventListener('click', () => {
+            state.followPlayer = !state.followPlayer;
+            elements.followPlayerBtn.classList.toggle('active', state.followPlayer);
+        });
+    }
+    if (elements.btnSyncSave) {
+        elements.btnSyncSave.addEventListener('click', () => syncActiveSave(false));
+    }
+
+    // 4. Initialize Canvas Engine & Camera
+    initCanvasEngine(elements.canvas, elements.minimapCanvas);
+    setupCameraControls(elements.canvas, elements.viewport, () => {});
+
+    // 5. Initialize SQL Engine & Auto-sync save
+    await initSqlEngine();
+    await syncActiveSave(true);
+
+    // 6. Start Live Player Polling
+    startLivePoller();
+
+    // 7. Subscribe to live player state to update badges
+    subscribe((type, payload) => {
+        if (type === 'live_player_update') {
+            if (elements.livePlayerBadge) {
+                elements.livePlayerBadge.className = 'live-player-badge online';
+            }
+            if (elements.liveStatusText) {
+                elements.liveStatusText.textContent = `LIVE: (${payload.x.toFixed(0)}, ${payload.y.toFixed(0)})`;
+            }
+            if (elements.playerSpeedBadge) {
+                elements.playerSpeedBadge.textContent = `${(payload.speed || 0).toFixed(1)} m/s`;
+            }
+        } else if (type === 'live_player_offline') {
+            if (elements.livePlayerBadge) {
+                elements.livePlayerBadge.className = 'live-player-badge offline';
+            }
+            if (elements.liveStatusText) {
+                elements.liveStatusText.textContent = 'LIVE: OFFLINE';
+            }
+        }
+    });
+
+    console.log("[App] Initialization complete.");
+}
+
+window.addEventListener('DOMContentLoaded', bootstrap);

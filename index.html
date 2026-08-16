@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrap Mechanic - Tactical Save Map Viewer & Live Tracker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local & Offline SQL.js WebAssembly Engine -->
+    <script src="assets/vendor/sql-wasm.js"></script>
+    <script>
+        if (typeof initSqlJs === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"><\\/script>');
+        }
+    </script>
+    <link rel="stylesheet" href="src/styles/index.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Top Navigation Header -->
+        <header class="header-bar">
+            <div class="brand">
+                <div class="brand-badge-icon">
+                    <i class="fa-solid fa-wrench"></i>
+                </div>
+                <div class="brand-text">
+                    <div class="brand-title">SCRAP MECHANIC</div>
+                    <div class="brand-subtitle"><i class="fa-solid fa-satellite-dish"></i> TACTICAL MAP & REAL-TIME TRACKER</div>
+                </div>
+            </div>
+
+            <!-- Live In-Game Status Indicator -->
+            <div class="live-player-badge offline" id="livePlayerBadge" title="Real-Time In-Game Player Tracking Status">
+                <span class="live-pulse-dot"></span>
+                <span id="liveStatusText">LIVE: OFFLINE</span>
+            </div>
+
+            <!-- Quick Jump Bookmarks Bar -->
+            <div class="quick-bookmarks" id="quickBookmarks">
+                <span class="bookmark-label"><i class="fa-solid fa-bookmark"></i> JUMP:</span>
+                <button class="bookmark-chip" id="bmPlayer" title="Jump to In-Game Player Character"><i class="fa-solid fa-person-walking" style="color:#00e5ff"></i> Player</button>
+                <button class="bookmark-chip" id="bmMechanic" title="Jump to Mechanic Station"><i class="fa-solid fa-wrench" style="color:#ff7a00"></i> Mechanic Station</button>
+                <button class="bookmark-chip" id="bmTrader" title="Jump to Trader Hideout"><i class="fa-solid fa-handshake" style="color:#10b981"></i> Trader</button>
+                <button class="bookmark-chip" id="bmPacking" title="Jump to Packing Station"><i class="fa-solid fa-boxes-packing" style="color:#06b6d4"></i> Packing Station</button>
+                <button class="bookmark-chip" id="bmCreations" title="Jump to Largest Creation"><i class="fa-solid fa-truck-pickup" style="color:#38bdf8"></i> Largest Vehicle</button>
+                <button class="bookmark-chip" id="bmBosses" title="Jump to Farmbot Bosses"><i class="fa-solid fa-skull" style="color:#ef4444"></i> Bot Threat</button>
+            </div>
+
+            <!-- Header Controls & File Upload -->
+            <div class="header-actions">
+                <button class="btn btn-tool" id="followPlayerBtn" title="Lock Camera and Follow In-Game Character">
+                    <i class="fa-solid fa-crosshairs"></i> <span>Follow Player</span>
+                </button>
+
+                <button class="btn btn-tool" id="toggleCoordsBtn" title="Show or Hide Coordinates HUD">
+                    <i class="fa-solid fa-location-crosshairs"></i> <span>Coordinates</span>
+                </button>
+
+                <button class="btn btn-tool" id="rulerToolBtn" title="Toggle Distance Ruler Tool">
+                    <i class="fa-solid fa-ruler-combined"></i> <span>Measure</span>
+                </button>
+
+                <button class="btn btn-tool" id="exportBtn" title="Export High-Res Map Screenshot">
+                    <i class="fa-solid fa-camera"></i> <span>Snapshot</span>
+                </button>
+
+                <button class="btn btn-tool" id="btnSyncSave" style="border-color: rgba(0, 229, 255, 0.4); color: #00e5ff;" title="Sync active game world & entities from Scrap Mechanic">
+                    <i class="fa-solid fa-arrows-rotate"></i> <span>Sync Save</span>
+                </button>
+
+                <div class="file-upload-wrapper">
+                    <button class="btn btn-primary" id="uploadBtn">
+                        <i class="fa-solid fa-file-arrow-up"></i> <span>Upload (.db)</span>
+                    </button>
+                    <input type="file" id="fileInput" accept=".db,.sqlite,.sqlite3" style="display: none;">
+                </div>
+
+                <button class="btn btn-icon" id="resetViewBtn" title="Recenter View">
+                    <i class="fa-solid fa-arrows-to-dot"></i>
+                </button>
+
+                <button class="btn btn-icon" id="infoBtn" title="Help & Information">
+                    <i class="fa-solid fa-circle-question"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Body: Canvas Map + Sidebars -->
+        <div class="main-content">
+            <!-- Left Control Panel / Layer Toggles -->
+            <aside class="control-panel" id="controlPanel">
+                <!-- Search & Entity Filter -->
+                <div class="panel-section search-section">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search Haybot, Oil, Creation #1, Warehouse...">
+                        <button id="clearSearch" class="clear-btn" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+
+                <!-- Layer Filters Accordion -->
+                <div class="panel-section">
+                    <div class="section-header">
+                        <h3><i class="fa-solid fa-layer-group"></i> Tactical Layers</h3>
+                        <button class="btn-text-action" id="toggleAllLayers">Toggle All</button>
+                    </div>
+
+                    <div class="layer-accordion-list">
+                        <!-- Live Character Tracking Layer -->
+                        <div class="layer-card" style="border-color: rgba(0, 229, 255, 0.3); background: rgba(0, 229, 255, 0.04);">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerLivePlayer" checked>
+                                    <span class="custom-checkbox player-theme"></span>
+                                    <i class="fa-solid fa-person-walking layer-icon" style="color:#00e5ff;"></i>
+                                    <span class="layer-title" style="color:#00e5ff;">Live Character & Trail</span>
+                                </label>
+                                <span class="count-badge" id="playerSpeedBadge" style="color:#00e5ff;">0.0 m/s</span>
+                            </div>
+                        </div>
+
+                        <!-- Terrain Map Background Image Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerMapImage" checked>
+                                    <span class="custom-checkbox harvest-theme"></span>
+                                    <i class="fa-solid fa-map layer-icon" style="color:#22c55e;"></i>
+                                    <span class="layer-title">In-Game Terrain Map</span>
+                                </label>
+                            </div>
+                            <div class="layer-sub-options">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:10.5px; color:#94a3b8;">Opacity:</span>
+                                    <input type="range" id="mapOpacitySlider" min="10" max="100" value="90" style="flex:1; accent-color:#ff7a00; height:4px; cursor:pointer;">
+                                    <span id="mapOpacityVal" style="font-size:10.5px; font-family:'JetBrains Mono', monospace; color:#ff7a00;">90%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- POI Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerPOIs" checked>
+                                    <span class="custom-checkbox poi-theme"></span>
+                                    <i class="fa-solid fa-map-pin layer-icon" style="color:#f59e0b;"></i>
+                                    <span class="layer-title">Points of Interest</span>
+                                </label>
+                                <span class="count-badge" id="countPOIs">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Schematics & Guides Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerSchematics" checked>
+                                    <span class="custom-checkbox schematic-theme"></span>
+                                    <i class="fa-solid fa-microchip layer-icon" style="color:#38bdf8;"></i>
+                                    <span class="layer-title">Schematic Stations & Guides</span>
+                                </label>
+                                <span class="count-badge" id="countSchematics">0</span>
+                            </div>
+                        </div>
+
+                        <!-- Creations & Vehicles Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerCreations">
+                                    <span class="custom-checkbox creation-theme"></span>
+                                    <i class="fa-solid fa-truck-pickup layer-icon" style="color:#00e5ff;"></i>
+                                    <span class="layer-title">Creations & Vehicles</span>
+                                </label>
+                                <span class="count-badge" id="countCreations">0</span>
+                            </div>
+                            <div class="layer-sub-options">
+                                <div class="size-filter-buttons">
+                                    <button class="size-btn active" data-size="all">All</button>
+                                    <button class="size-btn" data-size="small">&lt;50b</button>
+                                    <button class="size-btn" data-size="medium">50-500b</button>
+                                    <button class="size-btn" data-size="large">500b+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Units & Bots Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerUnits">
+                                    <span class="custom-checkbox unit-theme"></span>
+                                    <i class="fa-solid fa-robot layer-icon" style="color:#ef4444;"></i>
+                                    <span class="layer-title">Bots, Enemies & Animals</span>
+                                </label>
+                                <span class="count-badge" id="countUnits">0</span>
+                            </div>
+                            <div class="layer-sub-options sub-filter-tags">
+                                <label class="sub-tag"><input type="checkbox" id="subFarmbots" checked><span class="tag-pill tag-danger"><i class="fa-solid fa-skull"></i> Bosses</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subHaybots" checked><span class="tag-pill tag-warning"><i class="fa-solid fa-robot"></i> Haybots</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subTapebots" checked><span class="tag-pill tag-info"><i class="fa-solid fa-crosshairs"></i> Tapebots</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subTotebots" checked><span class="tag-pill tag-lime"><i class="fa-solid fa-bolt"></i> Totebots</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subAnimals" checked><span class="tag-pill tag-woc"><i class="fa-solid fa-cow"></i> Wocs/Animals</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Harvestables & Resources Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerHarvestables">
+                                    <span class="custom-checkbox harvest-theme"></span>
+                                    <i class="fa-solid fa-gem layer-icon" style="color:#10b981;"></i>
+                                    <span class="layer-title">Resources & Harvestables</span>
+                                </label>
+                                <span class="count-badge" id="countHarvestables">0</span>
+                            </div>
+                            <div class="layer-sub-options sub-filter-tags">
+                                <label class="sub-tag"><input type="checkbox" id="subOil" checked><span class="tag-pill tag-oil"><i class="fa-solid fa-oil-well"></i> Oil</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subCotton" checked><span class="tag-pill tag-cotton"><i class="fa-solid fa-feather"></i> Cotton</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subMinerals" checked><span class="tag-pill tag-stone"><i class="fa-solid fa-mountain"></i> Stones/Crystals</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subTrees" checked><span class="tag-pill tag-tree"><i class="fa-solid fa-tree"></i> Trees</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Grid Layer -->
+                        <div class="layer-card">
+                            <div class="layer-card-header">
+                                <label class="layer-checkbox-wrap">
+                                    <input type="checkbox" id="layerGrid" checked>
+                                    <span class="custom-checkbox grid-theme"></span>
+                                    <i class="fa-solid fa-border-all layer-icon" style="color:#64748b;"></i>
+                                    <span class="layer-title">Cell Grid Overlay</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Save Meta Info -->
+                <div class="panel-section meta-section">
+                    <h3><i class="fa-solid fa-database"></i> Save Metadata</h3>
+                    <div class="meta-grid">
+                        <div class="meta-item">
+                            <span class="meta-label">World Seed</span>
+                            <span class="meta-value" id="metaSeed">151054709</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Game Tick</span>
+                            <span class="meta-value" id="metaTick">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Day / Time</span>
+                            <span class="meta-value" id="metaDays">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Save Version</span>
+                            <span class="meta-value" id="metaVersion">v28 (1.0)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- World Map Generation & Seed Control -->
+                <div class="panel-section meta-section" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+                    <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-orange)"></i> Procedural Map Gen</h3>
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                        <div style="display:flex; gap:6px;">
+                            <input type="number" id="seedInput" placeholder="Enter Seed (e.g. 631793443)..." style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:6px 10px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:12px;">
+                            <button class="btn btn-secondary" id="btnGenSeed" style="padding:6px 12px; font-size:12px;" title="Generate procedural terrain for this seed">
+                                <i class="fa-solid fa-play"></i> Gen
+                            </button>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-tool" id="btnLoadReferenceSeed" style="flex:1; justify-content:center; font-size:11px;" title="Load Official Reference Atlas (Seed 151054709)">
+                                <i class="fa-solid fa-globe"></i> Reference Atlas
+                            </button>
+                            <button class="btn btn-tool" id="btnClearCache" style="flex:1; justify-content:center; font-size:11px; color:#f87171; border-color: rgba(248, 113, 113, 0.3);" title="Clear local terrain/save cache and force full re-sync">
+                                <i class="fa-solid fa-trash-can"></i> Clear Cache
+                            </button>
+                        </div>
+                        <div id="seedGenStatus" style="font-size:11px; color:#94a3b8; font-style:italic;"></div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Viewport -->
+            <main class="map-viewport" id="mapViewport">
+                <canvas id="mapCanvas"></canvas>
+
+                <!-- Tactical Map Processing & Generation Loading Indicator -->
+                <div class="map-loading-overlay" id="mapLoadingOverlay" style="display:none;">
+                    <div class="loading-spinner-box">
+                        <div class="spinner-ring"></div>
+                        <div class="loading-text-wrap">
+                            <div class="loading-title" id="loadingTitle">PROCESSING WORLD SAVE...</div>
+                            <div class="loading-subtitle" id="loadingSubtitle">Decompressing LZ4 bitstream & stitching atlas cells</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Hover Tooltip HUD Card -->
+                <div class="hover-tooltip" id="hoverTooltip">
+                    <div class="tooltip-header">
+                        <i class="fa-solid fa-location-dot tooltip-icon" id="tooltipIcon"></i>
+                        <span class="tooltip-title" id="tooltipTitle">Entity</span>
+                    </div>
+                    <div class="tooltip-body">
+                        <div class="tooltip-row">
+                            <span class="tooltip-key">Category:</span>
+                            <span class="tooltip-val" id="tooltipCategory">-</span>
+                        </div>
+                        <div class="tooltip-row" id="tooltipCoordsRow">
+                            <span class="tooltip-key">World Pos:</span>
+                            <span class="tooltip-val" id="tooltipCoords">-</span>
+                        </div>
+                        <div class="tooltip-row" id="tooltipExtraRow">
+                            <span class="tooltip-key" id="tooltipExtraKey">Details:</span>
+                            <span class="tooltip-val" id="tooltipExtraVal">-</span>
+                        </div>
+                    </div>
+                    <div class="tooltip-footer">Click to inspect in sidebar</div>
+                </div>
+
+                <!-- Ruler Measurement HUD Overlay -->
+                <div class="ruler-hud" id="rulerHud" style="display:none;">
+                    <div class="ruler-banner">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                        <span class="ruler-title">MEASUREMENT TOOL ACTIVE</span>
+                        <button class="btn-close-ruler" id="closeRulerBtn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="ruler-stats" id="rulerStats">
+                        <span>Click two points on the map to measure direct distance.</span>
+                    </div>
+                </div>
+
+                <!-- Compass Rose & Scale HUD -->
+                <div class="compass-scale-hud">
+                    <div class="compass-rose">
+                        <div class="compass-needle"></div>
+                        <span class="compass-label-n">N</span>
+                    </div>
+                    <div class="scale-bar-wrap">
+                        <div class="scale-bar" id="scaleBar"></div>
+                        <span class="scale-text" id="scaleText">256m (1 Cell)</span>
+                    </div>
+                </div>
+
+                <!-- Coordinates HUD (Toggleable via Coordinates button) -->
+                <div class="coords-hud hidden" id="coordsHud">
+                    <div class="coord-tag">
+                        <i class="fa-solid fa-location-crosshairs"></i> <span class="coord-label">WORLD:</span> <span id="hudWorldCoords">X: 0.0, Y: 0.0</span>
+                    </div>
+                    <div class="coord-tag">
+                        <i class="fa-solid fa-border-all"></i> <span class="coord-label">CELL:</span> <span id="hudCellCoords">CX: 0, CY: 0</span>
+                    </div>
+                    <div class="coord-tag">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="coord-label">ZOOM:</span> <span id="hudZoom">100%</span>
+                    </div>
+                </div>
+
+                <!-- Map Zoom & Control Buttons -->
+                <div class="map-controls">
+                    <button class="map-btn" id="zoomInBtn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+                    <button class="map-btn" id="zoomOutBtn" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+                    <button class="map-btn" id="recenterBtn" title="Recenter Map"><i class="fa-solid fa-arrows-to-dot"></i></button>
+                </div>
+
+                <!-- Minimap Radar View -->
+                <div class="minimap-container" id="minimapContainer">
+                    <div class="minimap-header">
+                        <span><i class="fa-solid fa-radar"></i> RADAR</span>
+                    </div>
+                    <canvas id="minimapCanvas" width="160" height="160"></canvas>
+                </div>
+
+                <!-- Drag and Drop Overlay -->
+                <div class="drop-overlay" id="dropOverlay">
+                    <div class="drop-modal">
+                        <div class="drop-icon-wrap">
+                            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                        </div>
+                        <h2>Drop your Scrap Mechanic save file (.db) here</h2>
+                        <p>Decodes instantly and privately inside your browser using WebAssembly</p>
+                        <div class="drop-hint">Location: %AppData%\Roaming\Axolot Games\Scrap Mechanic\User\User_&lt;ID&gt;\Save\Survival\</div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Detail Sidebar (Inspector) -->
+            <aside class="detail-sidebar" id="detailSidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-title-wrap">
+                        <div class="sidebar-icon-badge" id="inspectorHeroIcon">
+                            <i class="fa-solid fa-info"></i>
+                        </div>
+                        <div>
+                            <h3 id="detailTitle">Inspector</h3>
+                            <span class="detail-subtitle" id="detailSubtitle">Entity Details</span>
+                        </div>
+                    </div>
+                    <button class="close-sidebar" id="closeSidebarBtn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div class="sidebar-body" id="detailBody">
+                    <div class="empty-state">
+                        <i class="fa-solid fa-hand-pointer"></i>
+                        <h4>No Entity Selected</h4>
+                        <p>Click any marker, enemy bot, vehicle, or resource node on the map to inspect its data.</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal-backdrop" id="helpModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-compass-drafting" style="color:var(--accent-orange)"></i> Scrap Mechanic Map Viewer & Live Tracker Guide</h2>
+                <button class="modal-close" id="closeHelpModal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <h3><i class="fa-solid fa-satellite-dish"></i> Real-Time Player Tracking</h3>
+                <p>When running Scrap Mechanic, your character's position and orientation stream live directly to this map viewer. Click <strong>Follow Player</strong> to lock the map camera to your character as you travel!</p>
+
+                <h3><i class="fa-solid fa-file-lines"></i> Loading Your Own Save File</h3>
+                <p>Click <strong>Upload Save (.db)</strong> or drag and drop your survival save database directly onto the map. Default save path:</p>
+                <code class="code-block">%AppData%\Roaming\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
+
+                <h3><i class="fa-solid fa-gamepad"></i> Navigation & Controls</h3>
+                <ul>
+                    <li><strong>Pan</strong>: Click and drag anywhere on the canvas.</li>
+                    <li><strong>Zoom</strong>: Mouse wheel scroll or use the +/- buttons.</li>
+                    <li><strong>Follow Player</strong>: Camera stays locked and centered on your moving character.</li>
+                    <li><strong>Coordinates Toggle</strong>: Click the <strong>Coordinates</strong> button in the top bar to show/hide world and cell coordinate overlays.</li>
+                    <li><strong>Inspect</strong>: Click any entity to view in-depth details, dimensions, and teleport commands.</li>
+                    <li><strong>Measure</strong>: Click the <strong>Measure</strong> button and click 2 points to calculate distances in meters, blocks, and travel time.</li>
+                </ul>
+
+                <h3><i class="fa-solid fa-shield-halved"></i> 100% Client-Side & Private</h3>
+                <p>This viewer operates locally on your machine. No save data or personal files are ever transmitted to any external server.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification Stack -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="terrain_loader.js"></script>
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
