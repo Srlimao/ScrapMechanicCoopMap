@@ -1,0 +1,218 @@
+/* Physical Mechanical Switches, Range Sliders, Count Badges & Filter Pills */
+
+/* Mechanical Sliding Toggle Switch */
+.mech-switch-wrap {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.mech-switch-wrap input[type="checkbox"] {
+    display: none;
+}
+
+.mech-switch {
+    width: 38px;
+    height: 20px;
+    background: #141720;
+    border: 1.5px solid #333b49;
+    border-radius: var(--radius-full);
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mech-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 13px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #94a3b8 0%, #475569 100%);
+    border: 1px solid #1e293b;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Checked States */
+.mech-switch-wrap input[type="checkbox"]:checked + .mech-switch {
+    background: #1e3a47;
+    border-color: var(--color-creation);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 229, 255, 0.3);
+}
+
+.mech-switch-wrap input[type="checkbox"]:checked + .mech-switch::after {
+    left: 19px;
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+    border-color: #0369a1;
+    box-shadow: 0 0 6px #38bdf8, inset 0 1px 2px #fff;
+}
+
+/* Color Variant Themes */
+.mech-switch.poi-theme-switch {
+    border-color: #78350f;
+}
+.mech-switch-wrap input[type="checkbox"]:checked + .poi-theme-switch {
+    background: #451a03;
+    border-color: var(--color-poi);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 0 8px rgba(245, 158, 11, 0.4);
+}
+.mech-switch-wrap input[type="checkbox"]:checked + .poi-theme-switch::after {
+    background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+    border-color: #b45309;
+    box-shadow: 0 0 6px #fbbf24, inset 0 1px 2px #fff;
+}
+
+.mech-switch.green-theme-switch {
+    border-color: #064e3b;
+}
+.mech-switch-wrap input[type="checkbox"]:checked + .green-theme-switch {
+    background: #064e3b;
+    border-color: var(--color-harvestable);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 0 8px rgba(16, 185, 129, 0.4);
+}
+.mech-switch-wrap input[type="checkbox"]:checked + .green-theme-switch::after {
+    background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+    border-color: #15803d;
+    box-shadow: 0 0 6px #4ade80, inset 0 1px 2px #fff;
+}
+
+/* Count Pills / Badges */
+.count-badge {
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background: #181c24;
+    color: var(--text-dim);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: inline-flex;
+    align-items: center;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.count-badge.badge-gold {
+    background: #451a03;
+    color: #fbbf24;
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.count-badge.badge-cyan {
+    background: #082f49;
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.4);
+}
+
+.count-badge.badge-green {
+    background: #052e16;
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.4);
+}
+
+/* Custom In-Game Map Opacity Range Slider */
+.layer-sub-options {
+    padding-left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    background: #141720;
+    border: 1px solid #333b49;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--sm-orange-bright), var(--sm-orange-dark));
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 6px var(--sm-orange);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* Size Filter Buttons */
+.size-filter-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.size-btn {
+    flex: 1;
+    height: 22px;
+    background: #1c202a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-xs);
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.size-btn:hover {
+    background: #2a3140;
+    color: #fff;
+}
+
+.size-btn.active {
+    background: #0284c7;
+    border-color: #38bdf8;
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Sub Filter Tags */
+.sub-filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.sub-tag {
+    cursor: pointer;
+}
+
+.sub-tag input[type="checkbox"] {
+    display: none;
+}
+
+.tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: var(--radius-full);
+    background: #181c24;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-dim);
+    transition: all 0.15s;
+}
+
+.sub-tag input[type="checkbox"]:checked + .tag-danger { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fca5a5; }
+.sub-tag input[type="checkbox"]:checked + .tag-warning { background: rgba(249, 115, 22, 0.25); border-color: #f97316; color: #fdba74; }
+.sub-tag input[type="checkbox"]:checked + .tag-info { background: rgba(56, 189, 248, 0.25); border-color: #38bdf8; color: #7dd3fc; }
+.sub-tag input[type="checkbox"]:checked + .tag-lime { background: rgba(132, 204, 22, 0.25); border-color: #84cc16; color: #bef264; }
+.sub-tag input[type="checkbox"]:checked + .tag-woc { background: rgba(254, 240, 138, 0.25); border-color: #eab308; color: #fef08a; }
+.sub-tag input[type="checkbox"]:checked + .tag-oil { background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fcd34d; }
+.sub-tag input[type="checkbox"]:checked + .tag-cotton { background: rgba(248, 250, 252, 0.25); border-color: #cbd5e1; color: #f8fafc; }
+.sub-tag input[type="checkbox"]:checked + .tag-stone { background: rgba(168, 85, 247, 0.25); border-color: #a855f7; color: #d8b4fe; }
+.sub-tag input[type="checkbox"]:checked + .tag-tree { background: rgba(34, 197, 94, 0.25); border-color: #22c55e; color: #86efac; }

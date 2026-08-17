@@ -1,1 +1,11 @@
-@import './styles.css';
+/* Aggregated Scrap Mechanic Tactical Tablet Stylesheet */
+
+@import './base.css';
+@import './frame.css';
+@import './layout.css';
+@import './sidebar.css';
+@import './switches.css';
+@import './gadgets.css';
+@import './hud.css';
+@import './inspector.css';
+@import './modals.css';

@@ -1,0 +1,283 @@
+/* Tactical Sidebar Panel, Search, Layer Cards, and Sub-Categories */
+
+.control-panel {
+    width: 320px;
+    background: linear-gradient(180deg, #242934 0%, #1a1d26 100%);
+    border: 2px solid #3b4252;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 20;
+    padding: 14px;
+    gap: 12px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Corner Screws on Sidebar */
+.panel-corner-screw {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #cbd5e1 30%, #64748b 100%);
+    border: 1px solid #1e293b;
+    box-shadow: inset 0 1px 1px #fff, 0 1px 2px #000;
+}
+.pcs-tl { top: 6px; left: 6px; }
+.pcs-tr { top: 6px; right: 6px; }
+.pcs-bl { bottom: 6px; left: 6px; }
+.pcs-br { bottom: 6px; right: 6px; }
+
+/* Panel Sections */
+.panel-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2px;
+}
+
+.section-header h3, .panel-section h3 {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.btn-text-action {
+    background: none;
+    border: none;
+    color: var(--sm-orange);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+.btn-text-action:hover {
+    color: var(--sm-orange-bright);
+    text-decoration: underline;
+}
+
+/* Search Box */
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-dim);
+    font-size: 12px;
+}
+
+.search-box input {
+    width: 100%;
+    height: 36px;
+    padding: 0 32px;
+    background: #181b22;
+    border: 1.5px solid #333b49;
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-size: 12px;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.search-box input:focus {
+    border-color: var(--sm-orange);
+    background: #1c202a;
+    box-shadow: 0 0 10px rgba(255, 122, 0, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.search-box input::placeholder {
+    color: #64748b;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 12px;
+}
+.clear-btn:hover {
+    color: #ffffff;
+}
+
+.search-results {
+    max-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.result-item {
+    padding: 6px 10px;
+    background: #1c212c;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-xs);
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.15s ease;
+}
+.result-item:hover {
+    background: rgba(255, 122, 0, 0.2);
+    border-color: var(--sm-orange);
+    transform: translateX(2px);
+}
+
+/* Layer Cards List */
+.layer-accordion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.layer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.layer-card:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Active Highlighted Layer Card (Like POI in reference) */
+.layer-card.active-poi {
+    background: linear-gradient(135deg, #3d3424 0%, #2f2719 100%);
+    border: 1.5px solid #f59e0b;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+}
+
+.layer-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.layer-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    cursor: pointer;
+}
+
+.layer-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.2px;
+}
+
+.layer-icon {
+    font-size: 13px;
+    width: 16px;
+    text-align: center;
+}
+
+/* Sub-Missions / POI Group Accordion */
+.sub-missions-card {
+    background: #252a35;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.sub-missions-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: rgba(245, 158, 11, 0.12);
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #fbbf24;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+}
+
+.sub-mission-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.sub-mission-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+.sub-mission-diamond {
+    font-size: 8px;
+    color: #f59e0b;
+}
+
+/* Save Metadata Grid */
+.meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    background: #1a1d26;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-xs);
+}
+
+.meta-label {
+    font-size: 9.5px;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+}
+
+.meta-value {
+    font-size: 11.5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--sm-orange);
+}

@@ -14,7 +14,7 @@ import { setupScreenshotExporter } from './features/tools/screenshot.js';
 import { loadSettings, setupLayerControls } from './features/tools/settings.js';
 import { setupSeedGeneratorControls } from './features/tools/seed_generator.js';
 import { setupSquadControls } from './features/squad/squad_ui.js';
-import { initToastContainer, showToast } from './ui/toasts.js';
+import { initToastContainer } from './ui/toasts.js';
 import { setupModals } from './ui/modals.js';
 
 async function bootstrap() {
@@ -57,18 +57,15 @@ async function bootstrap() {
         tooltipCoords: document.getElementById('tooltipCoords'),
         resetViewBtn: document.getElementById('resetViewBtn'),
         btnSyncSave: document.getElementById('btnSyncSave'),
-        bmPlayer: document.getElementById('bmPlayer'),
-        bmMechanic: document.getElementById('bmMechanic'),
-        bmTrader: document.getElementById('bmTrader'),
-        bmPacking: document.getElementById('bmPacking'),
-        bmCreations: document.getElementById('bmCreations'),
-        bmBosses: document.getElementById('bmBosses'),
         toggleAllLayers: document.getElementById('toggleAllLayers'),
         seedInput: document.getElementById('seedInput'),
         btnGenSeed: document.getElementById('btnGenSeed'),
         btnLoadReferenceSeed: document.getElementById('btnLoadReferenceSeed'),
         btnClearCache: document.getElementById('btnClearCache'),
-        seedGenStatus: document.getElementById('seedGenStatus')
+        seedGenStatus: document.getElementById('seedGenStatus'),
+        compassNeedle: document.getElementById('compassNeedle'),
+        hudGameTime: document.getElementById('hudGameTime'),
+        hudGameDays: document.getElementById('hudGameDays')
     };
 
     // 2. Initialize UI, Settings & Controls
@@ -119,7 +116,7 @@ async function bootstrap() {
     // 6. Start Live Player Polling
     startLivePoller();
 
-    // 7. Subscribe to live player state to update badges
+    // 7. Subscribe to live player state to update badges & gadgets
     subscribe((type, payload) => {
         if (type === 'live_player_update') {
             if (elements.livePlayerBadge) {
@@ -130,6 +127,18 @@ async function bootstrap() {
             }
             if (elements.playerSpeedBadge) {
                 elements.playerSpeedBadge.textContent = `${(payload.speed || 0).toFixed(1)} m/s`;
+            }
+            if (elements.compassNeedle && payload.angle !== undefined) {
+                const deg = -(payload.angle * 180 / Math.PI) + 90;
+                elements.compassNeedle.style.transform = `rotate(${deg}deg)`;
+            }
+            if (payload.age && elements.hudGameTime && elements.hudGameDays) {
+                const totalMinutes = Math.floor(payload.age * 24 * 60);
+                const day = Math.floor(payload.age);
+                const hours = Math.floor((totalMinutes % 1440) / 60);
+                const mins = totalMinutes % 60;
+                elements.hudGameTime.textContent = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
+                elements.hudGameDays.textContent = `${day}`;
             }
         } else if (type === 'live_player_offline') {
             if (elements.livePlayerBadge) {

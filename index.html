@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Local & Offline SQL.js WebAssembly Engine -->
     <script src="assets/vendor/sql-wasm.js"></script>
     <script>
@@ -22,7 +21,7 @@
 </head>
 <body>
     <div id="app" class="app-container">
-        <!-- Top Navigation Header -->
+        <!-- Top Tactical Header Bar -->
         <header class="header-bar">
             <div class="brand">
                 <div class="brand-badge-icon">
@@ -45,7 +44,7 @@
 
             <!-- Header Controls & File Upload -->
             <div class="header-actions">
-                <button class="btn btn-tool" id="btnSquadModal" style="border-color: rgba(168, 85, 247, 0.5); color: #c084fc;" title="Multiplayer Squad Room & Co-op Live Coordinates">
+                <button class="btn btn-tool" id="btnSquadModal" title="Multiplayer Squad Room & Co-op Live Coordinates">
                     <span class="squad-badge offline" id="squadStatusBadge"><i class="fa-solid fa-users"></i> Squad: Offline</span>
                 </button>
 
@@ -65,7 +64,7 @@
                     <i class="fa-solid fa-camera"></i> <span>Snapshot</span>
                 </button>
 
-                <button class="btn btn-tool" id="btnSyncSave" style="border-color: rgba(0, 229, 255, 0.4); color: #00e5ff;" title="Sync active game world & entities from Scrap Mechanic">
+                <button class="btn btn-tool" id="btnSyncSave" title="Sync active game world & entities from Scrap Mechanic">
                     <i class="fa-solid fa-arrows-rotate"></i> <span>Sync Save</span>
                 </button>
 
@@ -86,15 +85,20 @@
             </div>
         </header>
 
-        <!-- Main Body: Canvas Map + Sidebars -->
-        <div class="main-content">
-            <!-- Left Control Panel / Layer Toggles -->
+        <!-- Main Workbench Body: Sidebar + Chunky Industrial Tablet -->
+        <div class="tablet-wrapper">
+            <!-- Left Tactical Control Panel -->
             <aside class="control-panel" id="controlPanel">
+                <div class="panel-corner-screw pcs-tl"></div>
+                <div class="panel-corner-screw pcs-tr"></div>
+                <div class="panel-corner-screw pcs-bl"></div>
+                <div class="panel-corner-screw pcs-br"></div>
+
                 <!-- Search & Entity Filter -->
                 <div class="panel-section search-section">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        <input type="text" id="searchInput" placeholder="Search Haybot, Oil, Creation #1, Warehouse...">
+                        <input type="text" id="searchInput" placeholder="Search Haybot, Oil, Creation #1, Wareho...">
                         <button id="clearSearch" class="clear-btn" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
                     </div>
                     <div id="searchResults" class="search-results"></div>
@@ -109,73 +113,107 @@
 
                     <div class="layer-accordion-list">
                         <!-- Live Character Tracking Layer -->
-                        <div class="layer-card" style="border-color: rgba(0, 229, 255, 0.3); background: rgba(0, 229, 255, 0.04);">
+                        <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-person-walking layer-icon" style="color:var(--color-player);"></i>
+                                    <span class="layer-title" style="color:var(--color-player);">Live Character & Trail</span>
+                                </div>
+                                <span class="count-badge badge-green" id="playerSpeedBadge">0.0 m/s</span>
+                                <label class="mech-switch-wrap">
                                     <input type="checkbox" id="layerLivePlayer" checked>
-                                    <span class="custom-checkbox player-theme"></span>
-                                    <i class="fa-solid fa-person-walking layer-icon" style="color:#00e5ff;"></i>
-                                    <span class="layer-title" style="color:#00e5ff;">Live Character & Trail</span>
+                                    <span class="mech-switch"></span>
                                 </label>
-                                <span class="count-badge" id="playerSpeedBadge" style="color:#00e5ff;">0.0 m/s</span>
                             </div>
                         </div>
 
                         <!-- Terrain Map Background Image Layer -->
                         <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
-                                    <input type="checkbox" id="layerMapImage" checked>
-                                    <span class="custom-checkbox harvest-theme"></span>
-                                    <i class="fa-solid fa-map layer-icon" style="color:#22c55e;"></i>
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-map layer-icon" style="color:var(--color-harvestable);"></i>
                                     <span class="layer-title">In-Game Terrain Map</span>
+                                </div>
+                                <label class="mech-switch-wrap">
+                                    <input type="checkbox" id="layerMapImage" checked>
+                                    <span class="mech-switch green-theme-switch"></span>
                                 </label>
                             </div>
                             <div class="layer-sub-options">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:10.5px; color:#94a3b8;">Opacity:</span>
-                                    <input type="range" id="mapOpacitySlider" min="10" max="100" value="90" style="flex:1; accent-color:#ff7a00; height:4px; cursor:pointer;">
-                                    <span id="mapOpacityVal" style="font-size:10.5px; font-family:'JetBrains Mono', monospace; color:#ff7a00;">90%</span>
+                                    <span style="font-size:10px; color:var(--text-dim);">Opacity:</span>
+                                    <input type="range" id="mapOpacitySlider" min="10" max="100" value="90" style="flex:1;">
+                                    <span id="mapOpacityVal" style="font-size:10px; font-family:'JetBrains Mono', monospace; color:var(--sm-orange);">90%</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- POI Layer -->
-                        <div class="layer-card">
+                        <!-- POI Layer (Highlighted Gold Active Theme) -->
+                        <div class="layer-card active-poi">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-key layer-icon" style="color:var(--color-poi);"></i>
+                                    <span class="layer-title" style="color:#fbbf24;">Points of Interest</span>
+                                </div>
+                                <span class="count-badge badge-gold" id="countPOIs">20</span>
+                                <label class="mech-switch-wrap">
                                     <input type="checkbox" id="layerPOIs" checked>
-                                    <span class="custom-checkbox poi-theme"></span>
-                                    <i class="fa-solid fa-map-pin layer-icon" style="color:#f59e0b;"></i>
-                                    <span class="layer-title">Points of Interest</span>
+                                    <span class="mech-switch poi-theme-switch"></span>
                                 </label>
-                                <span class="count-badge" id="countPOIs">0</span>
+                            </div>
+
+                            <!-- Sub-Group Field Missions List -->
+                            <div class="sub-missions-card">
+                                <div class="sub-missions-header">
+                                    <span><i class="fa-solid fa-caret-down"></i> Field Missions / POI</span>
+                                    <span class="count-badge badge-gold" style="font-size:9px;">20</span>
+                                </div>
+                                <div class="sub-mission-item">
+                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#f59e0b;"></i>
+                                    <span>Warehouses & Loot</span>
+                                </div>
+                                <div class="sub-mission-item">
+                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#38bdf8;"></i>
+                                    <span>Mechanic Stations</span>
+                                </div>
+                                <div class="sub-mission-item">
+                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#4ade80;"></i>
+                                    <span>Packing Stations & Fruit</span>
+                                </div>
+                                <div class="sub-mission-item">
+                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#a855f7;"></i>
+                                    <span>Trader Hideout & Cages</span>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Schematics & Guides Layer -->
                         <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
-                                    <input type="checkbox" id="layerSchematics" checked>
-                                    <span class="custom-checkbox schematic-theme"></span>
-                                    <i class="fa-solid fa-microchip layer-icon" style="color:#38bdf8;"></i>
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-microchip layer-icon" style="color:var(--color-schematic);"></i>
                                     <span class="layer-title">Schematic Stations & Guides</span>
-                                </label>
+                                </div>
                                 <span class="count-badge" id="countSchematics">0</span>
+                                <label class="mech-switch-wrap">
+                                    <input type="checkbox" id="layerSchematics" checked>
+                                    <span class="mech-switch"></span>
+                                </label>
                             </div>
                         </div>
 
                         <!-- Creations & Vehicles Layer -->
                         <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
-                                    <input type="checkbox" id="layerCreations">
-                                    <span class="custom-checkbox creation-theme"></span>
-                                    <i class="fa-solid fa-truck-pickup layer-icon" style="color:#00e5ff;"></i>
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-truck-pickup layer-icon" style="color:var(--color-creation);"></i>
                                     <span class="layer-title">Creations & Vehicles</span>
-                                </label>
+                                </div>
                                 <span class="count-badge" id="countCreations">0</span>
+                                <label class="mech-switch-wrap">
+                                    <input type="checkbox" id="layerCreations">
+                                    <span class="mech-switch"></span>
+                                </label>
                             </div>
                             <div class="layer-sub-options">
                                 <div class="size-filter-buttons">
@@ -190,13 +228,15 @@
                         <!-- Units & Bots Layer -->
                         <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
-                                    <input type="checkbox" id="layerUnits">
-                                    <span class="custom-checkbox unit-theme"></span>
-                                    <i class="fa-solid fa-robot layer-icon" style="color:#ef4444;"></i>
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-robot layer-icon" style="color:var(--color-unit);"></i>
                                     <span class="layer-title">Bots, Enemies & Animals</span>
-                                </label>
+                                </div>
                                 <span class="count-badge" id="countUnits">0</span>
+                                <label class="mech-switch-wrap">
+                                    <input type="checkbox" id="layerUnits">
+                                    <span class="mech-switch"></span>
+                                </label>
                             </div>
                             <div class="layer-sub-options sub-filter-tags">
                                 <label class="sub-tag"><input type="checkbox" id="subFarmbots" checked><span class="tag-pill tag-danger"><i class="fa-solid fa-skull"></i> Bosses</span></label>
@@ -210,13 +250,15 @@
                         <!-- Harvestables & Resources Layer -->
                         <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
-                                    <input type="checkbox" id="layerHarvestables">
-                                    <span class="custom-checkbox harvest-theme"></span>
-                                    <i class="fa-solid fa-gem layer-icon" style="color:#10b981;"></i>
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-gem layer-icon" style="color:var(--color-harvestable);"></i>
                                     <span class="layer-title">Resources & Harvestables</span>
-                                </label>
+                                </div>
                                 <span class="count-badge" id="countHarvestables">0</span>
+                                <label class="mech-switch-wrap">
+                                    <input type="checkbox" id="layerHarvestables">
+                                    <span class="mech-switch green-theme-switch"></span>
+                                </label>
                             </div>
                             <div class="layer-sub-options sub-filter-tags">
                                 <label class="sub-tag"><input type="checkbox" id="subOil" checked><span class="tag-pill tag-oil"><i class="fa-solid fa-oil-well"></i> Oil</span></label>
@@ -229,11 +271,13 @@
                         <!-- Grid Layer -->
                         <div class="layer-card">
                             <div class="layer-card-header">
-                                <label class="layer-checkbox-wrap">
-                                    <input type="checkbox" id="layerGrid" checked>
-                                    <span class="custom-checkbox grid-theme"></span>
-                                    <i class="fa-solid fa-border-all layer-icon" style="color:#64748b;"></i>
+                                <div class="layer-title-wrap">
+                                    <i class="fa-solid fa-border-all layer-icon" style="color:var(--text-dim);"></i>
                                     <span class="layer-title">Cell Grid Overlay</span>
+                                </div>
+                                <label class="mech-switch-wrap">
+                                    <input type="checkbox" id="layerGrid" checked>
+                                    <span class="mech-switch"></span>
                                 </label>
                             </div>
                         </div>
@@ -264,130 +308,186 @@
                 </div>
 
                 <!-- World Map Generation & Seed Control -->
-                <div class="panel-section meta-section" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
-                    <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-orange)"></i> Procedural Map Gen</h3>
-                    <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
+                <div class="panel-section meta-section">
+                    <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--sm-orange)"></i> Procedural Map Gen</h3>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
                         <div style="display:flex; gap:6px;">
-                            <input type="number" id="seedInput" placeholder="Enter Seed (e.g. 631793443)..." style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:6px 10px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:12px;">
-                            <button class="btn btn-secondary" id="btnGenSeed" style="padding:6px 12px; font-size:12px;" title="Generate procedural terrain for this seed">
+                            <input type="number" id="seedInput" placeholder="Seed (e.g. 631793443)..." style="flex:1; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:4px 8px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px;">
+                            <button class="btn btn-primary" id="btnGenSeed" style="padding:4px 10px; font-size:11px; height:28px;" title="Generate procedural terrain for this seed">
                                 <i class="fa-solid fa-play"></i> Gen
                             </button>
                         </div>
                         <div style="display:flex; gap:6px;">
-                            <button class="btn btn-tool" id="btnLoadReferenceSeed" style="flex:1; justify-content:center; font-size:11px;" title="Load Official Reference Atlas (Seed 151054709)">
+                            <button class="btn btn-tool" id="btnLoadReferenceSeed" style="flex:1; justify-content:center; font-size:10.5px; height:26px;" title="Load Official Reference Atlas (Seed 151054709)">
                                 <i class="fa-solid fa-globe"></i> Reference Atlas
                             </button>
-                            <button class="btn btn-tool" id="btnClearCache" style="flex:1; justify-content:center; font-size:11px; color:#f87171; border-color: rgba(248, 113, 113, 0.3);" title="Clear local terrain/save cache and force full re-sync">
+                            <button class="btn btn-tool" id="btnClearCache" style="flex:1; justify-content:center; font-size:10.5px; height:26px; color:#f87171; border-color: rgba(248, 113, 113, 0.3);" title="Clear local terrain cache">
                                 <i class="fa-solid fa-trash-can"></i> Clear Cache
                             </button>
                         </div>
-                        <div id="seedGenStatus" style="font-size:11px; color:#94a3b8; font-style:italic;"></div>
+                        <div id="seedGenStatus" style="font-size:10.5px; color:var(--text-dim); font-style:italic;"></div>
                     </div>
                 </div>
             </aside>
 
-            <!-- Map Viewport -->
-            <main class="map-viewport" id="mapViewport">
-                <canvas id="mapCanvas"></canvas>
+            <!-- Chunky Safety-Orange Tactical Tablet Frame -->
+            <div class="tablet-outer-frame">
+                <!-- Top Optical Turret Sensor Dome -->
+                <div class="tablet-optic-turret">
+                    <div class="turret-housing">
+                        <div class="turret-sensor-slit"></div>
+                        <div class="turret-lens-dome"></div>
+                        <div class="turret-sensor-slit"></div>
+                    </div>
+                </div>
 
-                <!-- Tactical Map Processing & Generation Loading Indicator -->
-                <div class="map-loading-overlay" id="mapLoadingOverlay" style="display:none;">
-                    <div class="loading-spinner-box">
-                        <div class="spinner-ring"></div>
-                        <div class="loading-text-wrap">
-                            <div class="loading-title" id="loadingTitle">PROCESSING WORLD SAVE...</div>
-                            <div class="loading-subtitle" id="loadingSubtitle">Decompressing LZ4 bitstream & stitching atlas cells</div>
+                <!-- Machined Aluminum Inner Screen Bezel with Corner Socket Bolts -->
+                <div class="tablet-inner-bezel">
+                    <div class="bezel-screw screw-tl"></div>
+                    <div class="bezel-screw screw-tr"></div>
+                    <div class="bezel-screw screw-bl"></div>
+                    <div class="bezel-screw screw-br"></div>
+
+                    <!-- Inset Screen Display -->
+                    <div class="tablet-screen">
+                        <!-- Top In-Screen HUD Overlay -->
+                        <div class="screen-top-hud">
+                            <!-- Digital Time & Day Clock Widget -->
+                            <div class="digital-clock-widget">
+                                <div class="clock-icon-badge">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div class="clock-stat-item">
+                                    <span class="clock-stat-label">TEMPO</span>
+                                    <span class="clock-stat-val" id="hudGameTime">06:07</span>
+                                </div>
+                                <div class="clock-stat-item">
+                                    <span class="clock-stat-label">DIAS</span>
+                                    <span class="clock-stat-val" id="hudGameDays">131</span>
+                                </div>
+                            </div>
+
+                            <!-- Live Tracking Status Banner -->
+                            <div class="live-status-banner">
+                                <div class="live-status-bar-pill"></div>
+                                <div class="live-status-text-wrap">
+                                    <span class="live-status-header-text">LIVE TRACKING STATUS</span>
+                                    <span class="live-status-sub-text">SINAL ESTÁVEL / REAL-TIME TRACKER</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Map Viewport -->
+                        <main class="map-viewport" id="mapViewport">
+                            <canvas id="mapCanvas"></canvas>
+
+                            <!-- Map Processing Spinner Overlay -->
+                            <div class="map-loading-overlay" id="mapLoadingOverlay" style="display:none;">
+                                <div class="loading-spinner-box">
+                                    <div class="spinner-ring"></div>
+                                    <div class="loading-text-wrap">
+                                        <div class="loading-title" id="loadingTitle">PROCESSING WORLD SAVE...</div>
+                                        <div class="loading-subtitle" id="loadingSubtitle">Decompressing LZ4 bitstream & stitching atlas cells</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating Hover Tooltip HUD -->
+                            <div class="hover-tooltip" id="hoverTooltip">
+                                <div class="tooltip-header">
+                                    <i class="fa-solid fa-location-dot tooltip-icon" id="tooltipIcon"></i>
+                                    <span class="tooltip-title" id="tooltipTitle">Entity</span>
+                                </div>
+                                <div class="tooltip-body">
+                                    <div class="tooltip-row">
+                                        <span class="tooltip-key">Category:</span>
+                                        <span class="tooltip-val" id="tooltipCategory">-</span>
+                                    </div>
+                                    <div class="tooltip-row" id="tooltipCoordsRow">
+                                        <span class="tooltip-key">World Pos:</span>
+                                        <span class="tooltip-val" id="tooltipCoords">-</span>
+                                    </div>
+                                    <div class="tooltip-row" id="tooltipExtraRow">
+                                        <span class="tooltip-key" id="tooltipExtraKey">Details:</span>
+                                        <span class="tooltip-val" id="tooltipExtraVal">-</span>
+                                    </div>
+                                </div>
+                                <div class="tooltip-footer">Click to inspect in sidebar</div>
+                            </div>
+
+                            <!-- Ruler Measurement HUD Overlay -->
+                            <div class="ruler-hud" id="rulerHud" style="display:none;">
+                                <div class="ruler-banner">
+                                    <i class="fa-solid fa-ruler-combined"></i>
+                                    <span class="ruler-title">MEASUREMENT TOOL ACTIVE</span>
+                                    <button class="btn-close-ruler" id="closeRulerBtn"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+                                <div class="ruler-stats" id="rulerStats">
+                                    <span>Click two points on the map to measure direct distance.</span>
+                                </div>
+                            </div>
+
+                            <!-- Scale Bar HUD -->
+                            <div class="compass-scale-hud">
+                                <div class="scale-bar" id="scaleBar"></div>
+                                <span class="scale-text" id="scaleText">256m (1 Cell)</span>
+                            </div>
+
+                            <!-- Coordinates HUD -->
+                            <div class="coords-hud hidden" id="coordsHud">
+                                <div class="coord-tag">
+                                    <i class="fa-solid fa-location-crosshairs"></i> <span class="coord-label">WORLD:</span> <span id="hudWorldCoords">X: 0.0, Y: 0.0</span>
+                                </div>
+                                <div class="coord-tag">
+                                    <i class="fa-solid fa-border-all"></i> <span class="coord-label">CELL:</span> <span id="hudCellCoords">CX: 0, CY: 0</span>
+                                </div>
+                                <div class="coord-tag">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="coord-label">ZOOM:</span> <span id="hudZoom">100%</span>
+                                </div>
+                            </div>
+
+                            <!-- Drag and Drop Save File Overlay -->
+                            <div class="drop-overlay" id="dropOverlay">
+                                <div class="drop-modal">
+                                    <div class="drop-icon-wrap">
+                                        <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+                                    </div>
+                                    <h2>Drop your Scrap Mechanic save file (.db) here</h2>
+                                    <p>Decodes instantly and privately inside your browser using WebAssembly</p>
+                                    <div class="drop-hint">Location: %AppData%\Roaming\Axolot Games\Scrap Mechanic\User\User_&lt;ID&gt;\Save\Survival\</div>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+
+                    <!-- Physical Analog Compass Gauge attached to Right Frame -->
+                    <div class="hardware-compass-widget" title="Physical Workshop Compass">
+                        <div class="compass-dial-face">
+                            <span class="compass-cardinal-n">N</span>
+                            <span class="compass-cardinal-s">S</span>
+                            <span class="compass-cardinal-e">E</span>
+                            <span class="compass-cardinal-w">W</span>
+                            <div class="compass-needle-3d" id="compassNeedle">
+                                <div class="needle-north"></div>
+                                <div class="needle-south"></div>
+                                <div class="needle-center-cap"></div>
+                            </div>
+                            <div class="compass-glass-glare"></div>
+                        </div>
+                    </div>
+
+                    <!-- Attached CRT Radar Display Module at Bottom-Right -->
+                    <div class="hardware-radar-module" id="minimapContainer">
+                        <div class="radar-module-header">
+                            <span class="radar-title"><i class="fa-solid fa-radar"></i> RADAR</span>
+                        </div>
+                        <div class="radar-screen-bezel">
+                            <canvas id="minimapCanvas" width="146" height="120"></canvas>
+                            <div class="radar-grid-overlay"></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Floating Hover Tooltip HUD Card -->
-                <div class="hover-tooltip" id="hoverTooltip">
-                    <div class="tooltip-header">
-                        <i class="fa-solid fa-location-dot tooltip-icon" id="tooltipIcon"></i>
-                        <span class="tooltip-title" id="tooltipTitle">Entity</span>
-                    </div>
-                    <div class="tooltip-body">
-                        <div class="tooltip-row">
-                            <span class="tooltip-key">Category:</span>
-                            <span class="tooltip-val" id="tooltipCategory">-</span>
-                        </div>
-                        <div class="tooltip-row" id="tooltipCoordsRow">
-                            <span class="tooltip-key">World Pos:</span>
-                            <span class="tooltip-val" id="tooltipCoords">-</span>
-                        </div>
-                        <div class="tooltip-row" id="tooltipExtraRow">
-                            <span class="tooltip-key" id="tooltipExtraKey">Details:</span>
-                            <span class="tooltip-val" id="tooltipExtraVal">-</span>
-                        </div>
-                    </div>
-                    <div class="tooltip-footer">Click to inspect in sidebar</div>
-                </div>
-
-                <!-- Ruler Measurement HUD Overlay -->
-                <div class="ruler-hud" id="rulerHud" style="display:none;">
-                    <div class="ruler-banner">
-                        <i class="fa-solid fa-ruler-combined"></i>
-                        <span class="ruler-title">MEASUREMENT TOOL ACTIVE</span>
-                        <button class="btn-close-ruler" id="closeRulerBtn"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                    <div class="ruler-stats" id="rulerStats">
-                        <span>Click two points on the map to measure direct distance.</span>
-                    </div>
-                </div>
-
-                <!-- Compass Rose & Scale HUD -->
-                <div class="compass-scale-hud">
-                    <div class="compass-rose">
-                        <div class="compass-needle"></div>
-                        <span class="compass-label-n">N</span>
-                    </div>
-                    <div class="scale-bar-wrap">
-                        <div class="scale-bar" id="scaleBar"></div>
-                        <span class="scale-text" id="scaleText">256m (1 Cell)</span>
-                    </div>
-                </div>
-
-                <!-- Coordinates HUD (Toggleable via Coordinates button) -->
-                <div class="coords-hud hidden" id="coordsHud">
-                    <div class="coord-tag">
-                        <i class="fa-solid fa-location-crosshairs"></i> <span class="coord-label">WORLD:</span> <span id="hudWorldCoords">X: 0.0, Y: 0.0</span>
-                    </div>
-                    <div class="coord-tag">
-                        <i class="fa-solid fa-border-all"></i> <span class="coord-label">CELL:</span> <span id="hudCellCoords">CX: 0, CY: 0</span>
-                    </div>
-                    <div class="coord-tag">
-                        <i class="fa-solid fa-magnifying-glass-plus"></i> <span class="coord-label">ZOOM:</span> <span id="hudZoom">100%</span>
-                    </div>
-                </div>
-
-                <!-- Map Zoom & Control Buttons -->
-                <div class="map-controls">
-                    <button class="map-btn" id="zoomInBtn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
-                    <button class="map-btn" id="zoomOutBtn" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
-                    <button class="map-btn" id="recenterBtn" title="Recenter Map"><i class="fa-solid fa-arrows-to-dot"></i></button>
-                </div>
-
-                <!-- Minimap Radar View -->
-                <div class="minimap-container" id="minimapContainer">
-                    <div class="minimap-header">
-                        <span><i class="fa-solid fa-radar"></i> RADAR</span>
-                    </div>
-                    <canvas id="minimapCanvas" width="160" height="160"></canvas>
-                </div>
-
-                <!-- Drag and Drop Overlay -->
-                <div class="drop-overlay" id="dropOverlay">
-                    <div class="drop-modal">
-                        <div class="drop-icon-wrap">
-                            <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
-                        </div>
-                        <h2>Drop your Scrap Mechanic save file (.db) here</h2>
-                        <p>Decodes instantly and privately inside your browser using WebAssembly</p>
-                        <div class="drop-hint">Location: %AppData%\Roaming\Axolot Games\Scrap Mechanic\User\User_&lt;ID&gt;\Save\Survival\</div>
-                    </div>
-                </div>
-            </main>
+            </div>
 
             <!-- Right Detail Sidebar (Inspector) -->
             <aside class="detail-sidebar" id="detailSidebar">
@@ -417,76 +517,61 @@
 
     <!-- Multiplayer Squad Room Modal -->
     <div class="modal-backdrop" id="squadModal">
-        <div class="modal" style="max-width: 520px;">
+        <div class="modal">
             <div class="modal-header">
-                <h2><i class="fa-solid fa-users" style="color:var(--accent-purple)"></i> Multiplayer Squad Rooms</h2>
+                <h2><i class="fa-solid fa-users" style="color:var(--color-portal)"></i> Multiplayer Squad Rooms</h2>
                 <button class="modal-close" id="closeSquadModal"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <!-- Squad Setup / Join Panel -->
-                <div id="squadSetupPanel" style="display:flex; flex-direction:column; gap:14px;">
+                <div id="squadSetupPanel" style="display:flex; flex-direction:column; gap:12px;">
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Your Nickname</label>
-                        <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="width:100%; margin-top:6px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 12px; color:#fff; font-size:13px;">
+                        <label style="font-size:10.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Your Nickname</label>
+                        <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="width:100%; margin-top:4px; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px 10px; color:#fff; font-size:12px;">
                     </div>
 
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Choose Beacon Color</label>
-                        <div class="squad-color-picker-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; padding:10px 14px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px;">
-                            <button type="button" class="squad-color-chip active" data-color="#00e5ff" style="width:32px; height:32px; min-width:32px; min-height:32px; border-radius:50%; background-color:#00e5ff; border:2px solid #ffffff; cursor:pointer; box-shadow:0 0 10px #00e5ff;" title="Cyan"></button>
-                            <button type="button" class="squad-color-chip" data-color="#ff7a00" style="width:32px; height:32px; min-width:32px; min-height:32px; border-radius:50%; background-color:#ff7a00; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Orange"></button>
-                            <button type="button" class="squad-color-chip" data-color="#10b981" style="width:32px; height:32px; min-width:32px; min-height:32px; border-radius:50%; background-color:#10b981; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Lime"></button>
-                            <button type="button" class="squad-color-chip" data-color="#a855f7" style="width:32px; height:32px; min-width:32px; min-height:32px; border-radius:50%; background-color:#a855f7; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Purple"></button>
-                            <button type="button" class="squad-color-chip" data-color="#ec4899" style="width:32px; height:32px; min-width:32px; min-height:32px; border-radius:50%; background-color:#ec4899; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Pink"></button>
-                            <button type="button" class="squad-color-chip" data-color="#eab308" style="width:32px; height:32px; min-width:32px; min-height:32px; border-radius:50%; background-color:#eab308; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Yellow"></button>
+                        <label style="font-size:10.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Choose Beacon Color</label>
+                        <div class="squad-color-picker-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:6px; padding:8px 12px; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px;">
+                            <button type="button" class="squad-color-chip active" data-color="#00e5ff" style="width:28px; height:28px; border-radius:50%; background-color:#00e5ff; border:2px solid #ffffff; cursor:pointer;" title="Cyan"></button>
+                            <button type="button" class="squad-color-chip" data-color="#ff7a00" style="width:28px; height:28px; border-radius:50%; background-color:#ff7a00; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Orange"></button>
+                            <button type="button" class="squad-color-chip" data-color="#10b981" style="width:28px; height:28px; border-radius:50%; background-color:#10b981; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Lime"></button>
+                            <button type="button" class="squad-color-chip" data-color="#a855f7" style="width:28px; height:28px; border-radius:50%; background-color:#a855f7; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Purple"></button>
+                            <button type="button" class="squad-color-chip" data-color="#ec4899" style="width:28px; height:28px; border-radius:50%; background-color:#ec4899; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Pink"></button>
+                            <button type="button" class="squad-color-chip" data-color="#eab308" style="width:28px; height:28px; border-radius:50%; background-color:#eab308; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Yellow"></button>
                         </div>
                     </div>
 
-                    <details style="font-size:11px; color:var(--text-dim);">
+                    <details style="font-size:10.5px; color:var(--text-dim);">
                         <summary style="cursor:pointer; font-family:'JetBrains Mono', monospace; margin-bottom:4px;">Advanced Server Settings (Default: Cloud Relay)</summary>
-                        <input type="text" id="squadServerUrl" value="wss://sm.dunhas.com" placeholder="wss://sm.dunhas.com" style="width:100%; margin-top:4px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:6px 10px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11.5px;">
+                        <input type="text" id="squadServerUrl" value="wss://sm.dunhas.com" placeholder="wss://sm.dunhas.com" style="width:100%; margin-top:4px; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:4px 8px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px;">
                     </details>
 
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px;">
-                        <button class="btn btn-primary" id="btnCreateRoom" style="justify-content:center; height:42px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:4px;">
+                        <button class="btn btn-primary" id="btnCreateRoom" style="justify-content:center; height:38px;">
                             <i class="fa-solid fa-plus-circle"></i> Create Room (Host)
                         </button>
-                        <div style="display:flex; gap:6px;">
-                            <input type="text" id="squadRoomInput" placeholder="Room Code" style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:0 10px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase;">
-                            <button class="btn btn-tool" id="btnJoinRoom" style="border-color:var(--accent-purple); color:#c084fc;">
+                        <div style="display:flex; gap:4px;">
+                            <input type="text" id="squadRoomInput" placeholder="Room Code" style="flex:1; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:0 8px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase;">
+                            <button class="btn btn-tool" id="btnJoinRoom" style="border-color:var(--color-portal); color:#c084fc;">
                                 <i class="fa-solid fa-right-to-bracket"></i> Join
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Active Squad Panel -->
-                <div id="squadActivePanel" style="display:none; flex-direction:column; gap:14px;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:8px;">
+                <div id="squadActivePanel" style="display:none; flex-direction:column; gap:12px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:6px;">
                         <div>
-                            <span style="font-size:11px; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Active Room Code</span>
-                            <h3 id="activeRoomCode" style="font-size:18px; color:#c084fc; font-family:'JetBrains Mono', monospace; margin:0;">#SQUAD-1</h3>
+                            <span style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Active Room Code</span>
+                            <h3 id="activeRoomCode" style="font-size:16px; color:#c084fc; font-family:'JetBrains Mono', monospace; margin:0;">#SQUAD-1</h3>
                         </div>
-                        <div style="display:flex; gap:8px;">
-                            <button class="btn btn-tool" id="btnCopyRoomCode" title="Copy Room Code to Clipboard">
-                                <i class="fa-solid fa-copy"></i> Copy Code
-                            </button>
-                            <button class="btn btn-tool" id="btnLeaveRoom" style="color:#ef4444; border-color:rgba(239,68,68,0.3);" title="Leave Squad Room">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Leave
-                            </button>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-tool" id="btnCopyRoomCode" title="Copy Code"><i class="fa-solid fa-copy"></i></button>
+                            <button class="btn btn-tool" id="btnLeaveRoom" style="color:#ef4444;" title="Leave"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                         </div>
                     </div>
-
                     <div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Connected Squad Members</span>
-                            <span style="font-size:11px; color:var(--accent-cyan); font-family:'JetBrains Mono', monospace;">World Seed: <strong id="activeSeedDisplay">-</strong></span>
-                        </div>
-                        <div id="squadPeerList" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto;"></div>
-                    </div>
-
-                    <div style="font-size:11px; color:var(--text-dim); line-height:1.4; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px;">
-                        <i class="fa-solid fa-circle-info" style="color:var(--accent-purple)"></i> <strong>Tactical Map Ping:</strong> Double-click anywhere on the map to drop a timed squad ping that alerts all room members!
+                        <div id="squadPeerList" style="display:flex; flex-direction:column; gap:4px; max-height:180px; overflow-y:auto;"></div>
                     </div>
                 </div>
             </div>
@@ -497,29 +582,24 @@
     <div class="modal-backdrop" id="helpModal">
         <div class="modal">
             <div class="modal-header">
-                <h2><i class="fa-solid fa-compass-drafting" style="color:var(--accent-orange)"></i> Scrap Mechanic Map Viewer & Live Tracker Guide</h2>
+                <h2><i class="fa-solid fa-compass-drafting" style="color:var(--sm-orange)"></i> Scrap Mechanic Tactical Tablet Guide</h2>
                 <button class="modal-close" id="closeHelpModal"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <h3><i class="fa-solid fa-satellite-dish"></i> Real-Time Player Tracking</h3>
-                <p>When running Scrap Mechanic, your character's position and orientation stream live directly to this map viewer. Click <strong>Follow Player</strong> to lock the map camera to your character as you travel!</p>
+                <p>When running Scrap Mechanic, your character position and heading stream live to this tablet. Click <strong>Follow Player</strong> to track camera movements!</p>
 
-                <h3><i class="fa-solid fa-file-lines"></i> Loading Your Own Save File</h3>
-                <p>Click <strong>Upload Save (.db)</strong> or drag and drop your survival save database directly onto the map. Default save path:</p>
+                <h3><i class="fa-solid fa-file-lines"></i> Loading Your Save Database</h3>
+                <p>Click <strong>Upload (.db)</strong> or drop your survival save database directly onto the screen. Default save location:</p>
                 <code class="code-block">%AppData%\Roaming\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
 
                 <h3><i class="fa-solid fa-gamepad"></i> Navigation & Controls</h3>
                 <ul>
-                    <li><strong>Pan</strong>: Click and drag anywhere on the canvas.</li>
-                    <li><strong>Zoom</strong>: Mouse wheel scroll or use the +/- buttons.</li>
-                    <li><strong>Follow Player</strong>: Camera stays locked and centered on your moving character.</li>
-                    <li><strong>Coordinates Toggle</strong>: Click the <strong>Coordinates</strong> button in the top bar to show/hide world and cell coordinate overlays.</li>
-                    <li><strong>Inspect</strong>: Click any entity to view in-depth details, dimensions, and teleport commands.</li>
-                    <li><strong>Measure</strong>: Click the <strong>Measure</strong> button and click 2 points to calculate distances in meters, blocks, and travel time.</li>
+                    <li><strong>Pan</strong>: Click and drag anywhere on the tablet screen.</li>
+                    <li><strong>Zoom</strong>: Mouse wheel scroll or +/- controls.</li>
+                    <li><strong>Inspect</strong>: Click any entity or marker on the map to view metadata and jump.</li>
+                    <li><strong>Measure</strong>: Click Measure tool and select two points.</li>
                 </ul>
-
-                <h3><i class="fa-solid fa-shield-halved"></i> 100% Client-Side & Private</h3>
-                <p>This viewer operates locally on your machine. No save data or personal files are ever transmitted to any external server.</p>
             </div>
         </div>
     </div>
