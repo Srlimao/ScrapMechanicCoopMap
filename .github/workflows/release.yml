@@ -38,14 +38,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Scrap-Mechanic-Tactical-Map-Windows
-          path: dist_release/*.exe
+          path: dist_release/Scrap Mechanic Tactical Map *.exe
           retention-days: 14
 
       - name: Create GitHub Release (On Tag)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist_release/*.exe
+          files: dist_release/Scrap Mechanic Tactical Map *.exe
           generate_release_notes: true
           draft: false
           prerelease: false

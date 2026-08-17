@@ -25,7 +25,8 @@
     "appId": "com.scrapmechanic.tacticalmap",
     "productName": "Scrap Mechanic Tactical Map",
     "directories": {
-      "output": "dist_release"
+      "output": "dist_release",
+      "buildResources": "build"
     },
     "asarUnpack": [
       "server.py",
@@ -47,13 +48,14 @@
       "terrain-cell-atlas.json",
       "package.json"
     ],
+    "icon": "build/icon.ico",
     "win": {
-      "icon": "public/icon.ico",
-      "target": [
-        "portable",
-        "nsis"
-      ],
+      "icon": "build/icon.ico",
+      "target": "portable",
       "requestedExecutionLevel": "asInvoker"
+    },
+    "portable": {
+      "artifactName": "Scrap Mechanic Tactical Map ${version}.exe"
     }
   },
   "devDependencies": {
