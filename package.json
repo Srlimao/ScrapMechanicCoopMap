@@ -55,7 +55,7 @@
       "requestedExecutionLevel": "asInvoker"
     },
     "portable": {
-      "artifactName": "Scrap Mechanic Tactical Map ${version}.exe"
+      "artifactName": "Scrap-Mechanic-Tactical-Map.exe"
     }
   },
   "devDependencies": {

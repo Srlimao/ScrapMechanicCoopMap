@@ -30,14 +30,21 @@ A high-performance, release-ready desktop application and interactive map viewer
 
 ---
 
+## 📥 Download Latest Release
+
+[![Download Latest Windows Executable](https://img.shields.io/badge/Download-Latest%20Windows%20Release%20(.exe)-00e5ff?style=for-the-badge&logo=windows)](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)
+
+> **Permanent Direct Download Link**:  
+> [https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)  
+> *(This direct link always downloads the latest `.exe` without having to manually browse release pages).*
+
+---
+
 ## 🚀 Getting Started
 
 ### 1. Standalone Portable Release (Recommended)
-Download or run the pre-built portable executable:
-```
-dist_release/Scrap Mechanic Tactical Map 1.0.0.exe
-```
-- **Zero Configuration**: Double-click to launch.
+Download and run the portable executable:
+- **Zero Configuration**: Double-click to launch. No installer or Python required.
 - Automatically connects to `ScrapMechanic.exe` when the game is running.
 - Automatically detects active Steam survival save files.
 
