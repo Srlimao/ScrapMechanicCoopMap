@@ -34,7 +34,7 @@ export const state = {
     followPlayer: false,
 
     // Viewport & Camera
-    zoom: 0.04,
+    zoom: 0.12,
     cameraX: 0,
     cameraY: 0,
     mouseWorldPos: { x: 0, y: 0 },
@@ -64,7 +64,7 @@ export const state = {
 
     // Sub-layer Filters
     subFilters: {
-        units: { farmbots: true, haybots: true, tapebots: true, totebots: true, animals: true },
+        units: { farmbots: true, haybots: true, tapebots: true, totebots: true, seedbots: true, animals: true },
         harvestables: { oil: true, cotton: true, minerals: true, trees: true },
         creationsSize: 'all' // 'all', 'small', 'medium', 'large'
     },

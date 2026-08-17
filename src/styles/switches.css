@@ -211,6 +211,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .sub-tag input[type="checkbox"]:checked + .tag-warning { background: rgba(249, 115, 22, 0.25); border-color: #f97316; color: #fdba74; }
 .sub-tag input[type="checkbox"]:checked + .tag-info { background: rgba(56, 189, 248, 0.25); border-color: #38bdf8; color: #7dd3fc; }
 .sub-tag input[type="checkbox"]:checked + .tag-lime { background: rgba(132, 204, 22, 0.25); border-color: #84cc16; color: #bef264; }
+.sub-tag input[type="checkbox"]:checked + .tag-seedbot { background: rgba(52, 211, 153, 0.25); border-color: #34d399; color: #6ee7b7; }
 .sub-tag input[type="checkbox"]:checked + .tag-woc { background: rgba(254, 240, 138, 0.25); border-color: #eab308; color: #fef08a; }
 .sub-tag input[type="checkbox"]:checked + .tag-oil { background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; color: #fcd34d; }
 .sub-tag input[type="checkbox"]:checked + .tag-cotton { background: rgba(248, 250, 252, 0.25); border-color: #cbd5e1; color: #f8fafc; }

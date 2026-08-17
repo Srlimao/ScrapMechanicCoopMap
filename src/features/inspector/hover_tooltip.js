@@ -51,7 +51,7 @@ function findHoveredEntity(worldX, worldY) {
 
     const hitDist = Math.max(12, 30 / state.zoom);
 
-    // 1. Check POIs
+    // 1. Check POIs (Tier 1: Always checkable)
     if (state.layers.pois && state.mapData.pois) {
         for (const poi of state.mapData.pois) {
             if (calculateDistance(worldX, worldY, poi.x, poi.y) < hitDist) {
@@ -61,8 +61,8 @@ function findHoveredEntity(worldX, worldY) {
         }
     }
 
-    // 2. Check Schematics
-    if (state.layers.schematics && state.mapData.schematics) {
+    // 2. Check Schematics (Tier 2: zoom >= 0.18)
+    if (state.layers.schematics && state.mapData.schematics && (state.zoom >= 0.18 || state.selectedEntity)) {
         for (const s of state.mapData.schematics) {
             if (calculateDistance(worldX, worldY, s.x, s.y) < hitDist) {
                 state.hoveredEntity = s;
@@ -71,10 +71,12 @@ function findHoveredEntity(worldX, worldY) {
         }
     }
 
-    // 3. Check Creations
+    // 3. Check Creations (Tier 2/3: zoom >= 0.18)
     if (state.layers.creations && state.mapData.creations) {
         const filter = state.subFilters.creationsSize;
         for (const c of state.mapData.creations) {
+            if (state.zoom < 0.18 && state.selectedEntity !== c) continue;
+
             // Size filter: Small (<50b), Medium (50-500b), Large (500b+)
             if (filter === 'small' && c.blocks >= 50) continue;
             if (filter === 'medium' && (c.blocks < 50 || c.blocks > 500)) continue;
@@ -87,13 +89,20 @@ function findHoveredEntity(worldX, worldY) {
         }
     }
 
-    // 4. Check Units / Bots
+    // 4. Check Units / Bots (Bosses Tier 1: always checkable. Other units zoom >= 0.55)
     if (state.layers.units && state.mapData.units) {
         for (const u of state.mapData.units) {
-            const cat = u.category;
-            if (cat === 'boss' && !state.subFilters.units.farmbots) continue;
-            if (cat === 'bot' && !state.subFilters.units.haybots) continue;
-            if (cat === 'animal' && !state.subFilters.units.animals) continue;
+            const sub = u.subType || u.category;
+            const isBoss = sub === 'boss';
+
+            if (!isBoss && state.zoom < 0.55 && state.selectedEntity !== u) continue;
+
+            if (isBoss && !state.subFilters.units.farmbots) continue;
+            if (sub === 'haybot' && !state.subFilters.units.haybots) continue;
+            if (sub === 'tapebot' && !state.subFilters.units.tapebots) continue;
+            if (sub === 'totebot' && !state.subFilters.units.totebots) continue;
+            if (sub === 'seedbot' && !state.subFilters.units.seedbots) continue;
+            if (sub === 'animal' && !state.subFilters.units.animals) continue;
 
             if (calculateDistance(worldX, worldY, u.x, u.y) < hitDist) {
                 state.hoveredEntity = u;
@@ -102,8 +111,8 @@ function findHoveredEntity(worldX, worldY) {
         }
     }
 
-    // 5. Check Harvestables
-    if (state.layers.harvestables && state.mapData.harvestables) {
+    // 5. Check Harvestables (Tier 5: zoom >= 0.80)
+    if (state.layers.harvestables && state.mapData.harvestables && (state.zoom >= 0.80 || state.selectedEntity)) {
         for (const h of state.mapData.harvestables) {
             const cat = (h.category || '').toLowerCase();
             const name = (h.name || '').toLowerCase();

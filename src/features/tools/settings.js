@@ -59,6 +59,7 @@ export function setupLayerControls(elements) {
         { id: 'subHaybots', key: 'haybots' },
         { id: 'subTapebots', key: 'tapebots' },
         { id: 'subTotebots', key: 'totebots' },
+        { id: 'subSeedbots', key: 'seedbots' },
         { id: 'subAnimals', key: 'animals' }
     ];
     unitMap.forEach(({ id, key }) => {

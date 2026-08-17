@@ -118,7 +118,7 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
         }
     } catch (e) {}
 
-    // 3. Units
+    // 3. Units & Entities (Classified into Aggressive Enemies, Passive Seedbots, and Wildlife)
     const units = [];
     try {
         const resUnits = db.exec("SELECT id, worldId, x, y, data FROM Unit");
@@ -126,12 +126,62 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
             resUnits[0].values.forEach(r => {
                 const uid = r[0], wid = r[1], cx = r[2], cy = r[3], blob = r[4];
                 let unitUuid = blob && blob.length >= 34 ? parseReversedUUID(blob.slice(18, 34)) : "unknown";
-                const info = uuidMap[unitUuid] || { name: 'Unit', category: 'bot', icon: 'fa-robot', color: '#ef4444' };
+                const info = uuidMap[unitUuid] || { name: 'Unit', category: 'enemy', icon: 'fa-robot', color: '#f97316' };
+                const uName = (info.name || '').toLowerCase();
+                const rawName = (info.rawName || '').toLowerCase();
+                const catLower = (info.category || '').toLowerCase();
+
+                let subType = 'haybot';
+                let finalCategory = 'enemy';
+                let finalIcon = info.icon || 'fa-robot';
+                let finalColor = info.color || '#f97316';
+                let finalName = info.name || 'Bot';
+
+                if (uName.includes('farmbot') || uName.includes('trashbot') || catLower === 'boss') {
+                    subType = 'boss';
+                    finalCategory = 'boss';
+                    finalColor = '#ef4444';
+                    finalIcon = 'fa-skull';
+                    if (!info.name || info.name === 'Unit') finalName = 'Farmbot';
+                } else if (uName.includes('haybot')) {
+                    subType = 'haybot';
+                    finalCategory = 'enemy';
+                    finalColor = '#f97316';
+                    finalIcon = 'fa-robot';
+                } else if (uName.includes('tapebot')) {
+                    subType = 'tapebot';
+                    finalCategory = 'enemy';
+                    finalColor = '#06b6d4';
+                    finalIcon = 'fa-crosshairs';
+                } else if (uName.includes('totebot')) {
+                    subType = 'totebot';
+                    finalCategory = 'enemy';
+                    finalColor = '#84cc16';
+                    finalIcon = 'fa-bolt';
+                } else if (uName.includes('seedbot') || rawName.includes('seedbot') || uName.includes('lootbot') || uName.includes('farmer') || uName.includes('quest') || uName.includes('mechanic') || uName.includes('craftbot')) {
+                    subType = 'seedbot';
+                    finalCategory = 'passive';
+                    finalColor = '#34d399';
+                    finalIcon = 'fa-seedling';
+                    if (uName.includes('seedbot') || rawName.includes('seedbot')) finalName = 'Seedbot';
+                } else if (uName.includes('woc') || uName.includes('glowbug') || catLower === 'animal') {
+                    subType = 'animal';
+                    finalCategory = 'animal';
+                    finalColor = '#eab308';
+                    finalIcon = uName.includes('glow') ? 'fa-wand-magic-sparkles' : 'fa-cow';
+                } else {
+                    subType = 'haybot';
+                    finalCategory = 'enemy';
+                    finalColor = '#f97316';
+                    finalIcon = 'fa-robot';
+                }
+
                 units.push({
                     id: uid, worldId: wid, cellX: cx, cellY: cy,
                     x: cx * CELL_SIZE + 32, y: cy * CELL_SIZE + 32,
-                    uuid: unitUuid, name: info.name || 'Unit', category: info.category || 'bot',
-                    icon: info.icon || 'fa-robot', color: info.color || '#ef4444'
+                    uuid: unitUuid, name: finalName, category: finalCategory,
+                    subType: subType,
+                    icon: finalIcon, color: finalColor
                 });
             });
         }

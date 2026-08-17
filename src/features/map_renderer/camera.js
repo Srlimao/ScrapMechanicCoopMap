@@ -1,14 +1,17 @@
 // Camera controls, viewport panning, smooth zoom, and dragging
 import { state, notifyStateChange } from '../../core/state.js';
 import { screenToWorld } from '../../core/coords.js';
+import { MAP_MIN_X, MAP_MAX_X, MAP_MIN_Y, MAP_MAX_Y } from '../../core/constants.js';
 
 let isDragging = false;
 let dragStartX = 0;
 let dragStartY = 0;
 let cameraStartX = 0;
 let cameraStartY = 0;
+let mainCanvas = null;
 
 export function setupCameraControls(canvas, viewport, requestRender) {
+    mainCanvas = canvas;
     viewport.addEventListener('wheel', (e) => {
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
@@ -18,7 +21,8 @@ export function setupCameraControls(canvas, viewport, requestRender) {
         const worldBefore = screenToWorld(mouseX, mouseY, canvas.width, canvas.height);
 
         const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-        const newZoom = Math.min(2.5, Math.max(0.008, state.zoom * zoomFactor));
+        // Keep minimum zoom at 0.040 to prevent shrinking into empty void
+        const newZoom = Math.min(3.5, Math.max(0.040, state.zoom * zoomFactor));
 
         if (newZoom !== state.zoom) {
             state.zoom = newZoom;
@@ -76,10 +80,21 @@ export function jumpToLocation(worldX, worldY, targetZoom = null) {
     notifyStateChange('camera_jump', { x: worldX, y: worldY });
 }
 
-export function resetCameraView() {
+export function resetCameraView(canvas = null) {
+    const c = canvas || mainCanvas || document.getElementById('mapCanvas');
     state.cameraX = 0;
     state.cameraY = 0;
-    state.zoom = 0.04;
+
+    if (c && c.width && c.height) {
+        // Fit terrain neatly inside canvas viewport with 40px margin
+        const pad = 40;
+        const fitX = (c.width - pad) / (MAP_MAX_X - MAP_MIN_X);
+        const fitY = (c.height - pad) / (MAP_MAX_Y - MAP_MIN_Y);
+        state.zoom = Math.max(0.08, Math.min(fitX, fitY, 0.25));
+    } else {
+        state.zoom = 0.12;
+    }
+
     state.followPlayer = false;
     notifyStateChange('camera_reset', null);
 }
