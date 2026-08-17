@@ -27,8 +27,14 @@ export function setupSquadControls() {
     // Color Pickers
     document.querySelectorAll('.squad-color-chip').forEach(chip => {
         chip.addEventListener('click', () => {
-            document.querySelectorAll('.squad-color-chip').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.squad-color-chip').forEach(c => {
+                c.classList.remove('active');
+                c.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                c.style.boxShadow = 'none';
+            });
             chip.classList.add('active');
+            chip.style.borderColor = '#ffffff';
+            chip.style.boxShadow = `0 0 14px ${chip.dataset.color || '#00e5ff'}`;
             state.squad.myColor = chip.dataset.color || '#00e5ff';
         });
     });

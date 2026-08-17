@@ -99,6 +99,28 @@ ipcMain.handle('fetch-live-player', async () => {
     return memoryReader.state;
 });
 
+ipcMain.handle('retry-live-player', async () => {
+    if (memoryReader) {
+        memoryReader.lastScanTime = 0;
+        memoryReader.hProcess = null;
+        memoryReader.tick();
+        if (memoryReader.state.online) return memoryReader.state;
+    }
+
+    const ports = [8000, 8080, 8081, 8888, 3000];
+    for (const p of ports) {
+        try {
+            const res = await fetch(`http://localhost:${p}/api/player`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.online) return data;
+            }
+        } catch (e) {}
+    }
+
+    return memoryReader ? memoryReader.state : { online: false };
+});
+
 ipcMain.handle('generate-terrain', async (event, seed) => {
     const backendDir = getBackendDir();
 
