@@ -64,6 +64,7 @@ export const state = {
 
     // Sub-layer Filters
     subFilters: {
+        pois: { mechanicStations: true, traders: true, packingStations: true, growlabs: true, other: true },
         units: { farmbots: true, haybots: true, tapebots: true, totebots: true, seedbots: true, animals: true },
         harvestables: { oil: true, cotton: true, minerals: true, trees: true },
         creationsSize: 'all' // 'all', 'small', 'medium', 'large'

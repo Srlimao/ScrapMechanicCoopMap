@@ -291,7 +291,7 @@
     border: 1px solid rgba(245, 158, 11, 0.3);
     border-radius: var(--radius-sm);
     overflow: hidden;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .sub-missions-header {
@@ -306,23 +306,50 @@
     text-transform: uppercase;
     font-family: 'JetBrains Mono', monospace;
     cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+}
+
+.sub-missions-header:hover {
+    background: rgba(245, 158, 11, 0.22);
+}
+
+.sub-missions-header .caret-icon {
+    transition: transform 0.2s ease;
+    margin-right: 4px;
+}
+
+.sub-missions-card.collapsed .sub-missions-list {
+    display: none;
+}
+
+.sub-missions-card.collapsed .caret-icon {
+    transform: rotate(-90deg);
 }
 
 .sub-mission-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 5px 12px;
+    padding: 6px 12px;
     font-size: 11px;
     color: var(--text-muted);
     border-top: 1px solid rgba(255, 255, 255, 0.04);
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, color 0.15s;
+    user-select: none;
 }
+
 .sub-mission-item:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.06);
     color: #fff;
 }
+
+.sub-mission-item input[type="checkbox"] {
+    accent-color: #f59e0b;
+    cursor: pointer;
+}
+
 .sub-mission-diamond {
     font-size: 8px;
     color: #f59e0b;

@@ -51,11 +51,21 @@ export function renderEntitiesLayer(ctx, width, height) {
 function renderPOIs(ctx, pois, width, height) {
     ctx.save();
     for (const poi of pois) {
+        const isHovered = state.hoveredEntity === poi;
+        const isSelected = state.selectedEntity === poi;
+
+        const name = (poi.name || '').toLowerCase();
+        if (state.subFilters && state.subFilters.pois && !isSelected && !isHovered) {
+            if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
+            if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
+            if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
+            if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
+            if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !state.subFilters.pois.other) continue;
+        }
+
         const p = worldToScreen(poi.x, poi.y, width, height);
         if (p.x < -50 || p.x > width + 50 || p.y < -50 || p.y > height + 50) continue;
 
-        const isHovered = state.hoveredEntity === poi;
-        const isSelected = state.selectedEntity === poi;
         const radius = isSelected ? 12 : (isHovered ? 10 : 8);
 
         // Halo / glow

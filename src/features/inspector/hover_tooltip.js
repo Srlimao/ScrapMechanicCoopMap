@@ -54,6 +54,15 @@ function findHoveredEntity(worldX, worldY) {
     // 1. Check POIs (Tier 1: Always checkable)
     if (state.layers.pois && state.mapData.pois) {
         for (const poi of state.mapData.pois) {
+            const name = (poi.name || '').toLowerCase();
+            if (state.subFilters && state.subFilters.pois && state.selectedEntity !== poi) {
+                if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
+                if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
+                if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
+                if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
+                if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !state.subFilters.pois.other) continue;
+            }
+
             if (calculateDistance(worldX, worldY, poi.x, poi.y) < hitDist) {
                 state.hoveredEntity = poi;
                 return;

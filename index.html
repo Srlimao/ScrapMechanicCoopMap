@@ -158,27 +158,38 @@
                                 </label>
                             </div>
 
-                            <!-- Sub-Group Field Missions List -->
-                            <div class="sub-missions-card">
-                                <div class="sub-missions-header">
-                                    <span><i class="fa-solid fa-caret-down"></i> Field Missions / POI</span>
-                                    <span class="count-badge badge-gold" style="font-size:9px;">20</span>
+                            <!-- Sub-Group Field Missions List (Collapsible Accordion) -->
+                            <div class="sub-missions-card" id="poiAccordion">
+                                <div class="sub-missions-header" id="poiAccordionHeader">
+                                    <span><i class="fa-solid fa-caret-down caret-icon"></i> Field Missions / POI</span>
+                                    <span class="count-badge badge-gold" id="countPOIsSub" style="font-size:9px;">20</span>
                                 </div>
-                                <div class="sub-mission-item">
-                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#f59e0b;"></i>
-                                    <span>Warehouses & Loot</span>
-                                </div>
-                                <div class="sub-mission-item">
-                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#38bdf8;"></i>
-                                    <span>Mechanic Stations</span>
-                                </div>
-                                <div class="sub-mission-item">
-                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#4ade80;"></i>
-                                    <span>Packing Stations & Fruit</span>
-                                </div>
-                                <div class="sub-mission-item">
-                                    <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#a855f7;"></i>
-                                    <span>Trader Hideout & Cages</span>
+                                <div class="sub-missions-list" id="poiSubList">
+                                    <label class="sub-mission-item">
+                                        <input type="checkbox" id="subPoiMechanic" checked>
+                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#38bdf8;"></i>
+                                        <span>Mechanic Stations</span>
+                                    </label>
+                                    <label class="sub-mission-item">
+                                        <input type="checkbox" id="subPoiTrader" checked>
+                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#a855f7;"></i>
+                                        <span>Trader Hideout & Cages</span>
+                                    </label>
+                                    <label class="sub-mission-item">
+                                        <input type="checkbox" id="subPoiPacking" checked>
+                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#4ade80;"></i>
+                                        <span>Packing Stations</span>
+                                    </label>
+                                    <label class="sub-mission-item">
+                                        <input type="checkbox" id="subPoiGrowlabs" checked>
+                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#f59e0b;"></i>
+                                        <span>Growlabs & Hostile Farms</span>
+                                    </label>
+                                    <label class="sub-mission-item">
+                                        <input type="checkbox" id="subPoiOther" checked>
+                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#cbd5e1;"></i>
+                                        <span>Story & Landmarks</span>
+                                    </label>
                                 </div>
                             </div>
                         </div>

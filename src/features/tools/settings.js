@@ -53,6 +53,35 @@ export function setupLayerControls(elements) {
         }
     });
 
+    // POI Accordion Collapse Handler
+    const poiAccordion = document.getElementById('poiAccordion');
+    const poiAccordionHeader = document.getElementById('poiAccordionHeader');
+    if (poiAccordionHeader && poiAccordion) {
+        poiAccordionHeader.addEventListener('click', () => {
+            poiAccordion.classList.toggle('collapsed');
+        });
+    }
+
+    // Sub-filters: POIs
+    const poiMap = [
+        { id: 'subPoiMechanic', key: 'mechanicStations' },
+        { id: 'subPoiTrader', key: 'traders' },
+        { id: 'subPoiPacking', key: 'packingStations' },
+        { id: 'subPoiGrowlabs', key: 'growlabs' },
+        { id: 'subPoiOther', key: 'other' }
+    ];
+    poiMap.forEach(({ id, key }) => {
+        const el = document.getElementById(id);
+        if (el && state.subFilters.pois) {
+            el.checked = Boolean(state.subFilters.pois[key]);
+            el.addEventListener('change', (e) => {
+                state.subFilters.pois[key] = e.target.checked;
+                saveSettings();
+                notifyStateChange('subfilter_pois', state.subFilters.pois);
+            });
+        }
+    });
+
     // Sub-filters: Units
     const unitMap = [
         { id: 'subFarmbots', key: 'farmbots' },
