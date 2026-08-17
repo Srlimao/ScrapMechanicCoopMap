@@ -12,7 +12,7 @@ export function connectToRelayServer(serverUrl) {
         ws.close();
     }
 
-    state.squad.serverUrl = serverUrl || state.squad.serverUrl || 'ws://localhost:8090';
+    state.squad.serverUrl = serverUrl || state.squad.serverUrl || 'wss://sm.dunhas.com';
     console.log(`[SquadRelay] Connecting to ${state.squad.serverUrl}...`);
 
     try {

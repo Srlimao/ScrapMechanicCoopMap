@@ -70,7 +70,7 @@ export const state = {
 
     // Multiplayer Squad Relay
     squad: {
-        serverUrl: 'ws://localhost:8090',
+        serverUrl: 'wss://sm.dunhas.com',
         connected: false,
         roomCode: null,
         isHost: false,

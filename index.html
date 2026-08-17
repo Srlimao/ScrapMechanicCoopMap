@@ -447,10 +447,10 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Relay Server URL</label>
-                        <input type="text" id="squadServerUrl" value="ws://localhost:8090" placeholder="ws://YOUR-GCP-IP:8090" style="width:100%; margin-top:6px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 12px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:12px;">
-                    </div>
+                    <details style="font-size:11px; color:var(--text-dim);">
+                        <summary style="cursor:pointer; font-family:'JetBrains Mono', monospace; margin-bottom:4px;">Advanced Server Settings (Default: Cloud Relay)</summary>
+                        <input type="text" id="squadServerUrl" value="wss://sm.dunhas.com" placeholder="wss://sm.dunhas.com" style="width:100%; margin-top:4px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:6px 10px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11.5px;">
+                    </details>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px;">
                         <button class="btn btn-primary" id="btnCreateRoom" style="justify-content:center; height:42px;">
