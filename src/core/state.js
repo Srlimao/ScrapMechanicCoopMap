@@ -17,9 +17,10 @@ export const state = {
     // Real-Time Live Player Tracking
     livePlayer: {
         online: false,
-        x: 0,
-        y: 0,
-        z: 0,
+        initialized: false,
+        x: null,
+        y: null,
+        z: null,
         dirX: 0,
         dirY: 1,
         dirZ: 0,

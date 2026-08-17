@@ -3,16 +3,26 @@ import { state } from '../../core/state.js';
 import { worldToScreen } from '../../core/coords.js';
 
 export function renderPlayerTrail(ctx, width, height) {
-    if (!state.layers.livePlayer || !state.livePlayer.online) return;
+    if (!state.layers.livePlayer || !state.livePlayer.online || state.livePlayer.x === null || state.livePlayer.y === null) return;
 
     const trail = state.livePlayer.trail;
-    if (trail.length > 1) {
+    if (trail && trail.length > 1) {
         ctx.save();
         ctx.beginPath();
+        let started = false;
         for (let i = 0; i < trail.length; i++) {
             const pt = worldToScreen(trail[i].x, trail[i].y, width, height);
-            if (i === 0) ctx.moveTo(pt.x, pt.y);
-            else ctx.lineTo(pt.x, pt.y);
+            if (!started) {
+                ctx.moveTo(pt.x, pt.y);
+                started = true;
+            } else {
+                const prev = trail[i - 1];
+                if (Math.hypot(trail[i].x - prev.x, trail[i].y - prev.y) > 80) {
+                    ctx.moveTo(pt.x, pt.y);
+                } else {
+                    ctx.lineTo(pt.x, pt.y);
+                }
+            }
         }
         ctx.strokeStyle = 'rgba(0, 229, 255, 0.45)';
         ctx.lineWidth = Math.max(1.5, 2.5 * Math.min(1, state.zoom / 0.05));

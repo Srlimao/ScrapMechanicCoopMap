@@ -31,10 +31,20 @@ function renderSquadPeers(ctx, width, height) {
         if (peer.trail && peer.trail.length > 1) {
             ctx.save();
             ctx.beginPath();
+            let started = false;
             for (let i = 0; i < peer.trail.length; i++) {
                 const pt = worldToScreen(peer.trail[i].x, peer.trail[i].y, width, height);
-                if (i === 0) ctx.moveTo(pt.x, pt.y);
-                else ctx.lineTo(pt.x, pt.y);
+                if (!started) {
+                    ctx.moveTo(pt.x, pt.y);
+                    started = true;
+                } else {
+                    const prev = peer.trail[i - 1];
+                    if (Math.hypot(peer.trail[i].x - prev.x, peer.trail[i].y - prev.y) > 80) {
+                        ctx.moveTo(pt.x, pt.y);
+                    } else {
+                        ctx.lineTo(pt.x, pt.y);
+                    }
+                }
             }
             ctx.strokeStyle = color;
             ctx.globalAlpha = 0.35;
