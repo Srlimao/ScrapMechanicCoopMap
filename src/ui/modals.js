@@ -6,23 +6,35 @@ export function setupModals(elements) {
 
     if (infoBtn && helpModal) {
         infoBtn.addEventListener('click', () => {
-            helpModal.style.display = 'flex';
+            helpModal.classList.add('open');
         });
     }
 
     if (closeHelpModal && helpModal) {
         closeHelpModal.addEventListener('click', () => {
-            helpModal.style.display = 'none';
+            helpModal.classList.remove('open');
         });
     }
 
     if (helpModal) {
         helpModal.addEventListener('click', (e) => {
             if (e.target === helpModal) {
-                helpModal.style.display = 'none';
+                helpModal.classList.remove('open');
             }
         });
     }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (helpModal && helpModal.classList.contains('open')) {
+                helpModal.classList.remove('open');
+            }
+            const squadModal = document.getElementById('squadModal');
+            if (squadModal && squadModal.classList.contains('open')) {
+                squadModal.classList.remove('open');
+            }
+        }
+    });
 }
 
 export function showLoadingOverlay(title = 'PROCESSING MAP...', subtitle = 'Please wait...') {

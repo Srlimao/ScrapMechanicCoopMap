@@ -2,6 +2,31 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+function scanDirectoryForSaves(dirPath, category, saves) {
+    if (!fs.existsSync(dirPath)) return;
+    try {
+        const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+        for (const entry of entries) {
+            const fullPath = path.join(dirPath, entry.name);
+            if (entry.isDirectory()) {
+                scanDirectoryForSaves(fullPath, entry.name, saves);
+            } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.db')) {
+                const stat = fs.statSync(fullPath);
+                saves.push({
+                    name: path.basename(entry.name, path.extname(entry.name)),
+                    filename: entry.name,
+                    category: category,
+                    path: fullPath.replace(/\\/g, '/'),
+                    size: stat.size,
+                    mtime: stat.mtimeMs / 1000
+                });
+            }
+        }
+    } catch (e) {
+        console.warn("[GameScanner] Error scanning directory:", dirPath, e.message);
+    }
+}
+
 function getSurvivalSaves() {
     const appData = process.env.APPDATA || '';
     if (!appData) return [];
@@ -13,22 +38,9 @@ function getSurvivalSaves() {
     try {
         const userFolders = fs.readdirSync(userDir);
         for (const uf of userFolders) {
-            const survivalPath = path.join(userDir, uf, 'Save', 'Survival');
-            if (fs.existsSync(survivalPath)) {
-                const files = fs.readdirSync(survivalPath);
-                for (const f of files) {
-                    if (f.toLowerCase().endsWith('.db')) {
-                        const fullPath = path.join(survivalPath, f);
-                        const stat = fs.statSync(fullPath);
-                        saves.push({
-                            name: path.basename(f, path.extname(f)),
-                            filename: f,
-                            path: fullPath.replace(/\\/g, '/'),
-                            size: stat.size,
-                            mtime: stat.mtimeMs / 1000
-                        });
-                    }
-                }
+            const saveBase = path.join(userDir, uf, 'Save');
+            if (fs.existsSync(saveBase)) {
+                scanDirectoryForSaves(saveBase, 'Creative', saves);
             }
         }
     } catch (e) {
@@ -41,7 +53,7 @@ function getSurvivalSaves() {
 
 function snapshotActiveSave(cacheDir, saveName = null) {
     const saves = getSurvivalSaves();
-    if (!saves.length) return { error: "No Scrap Mechanic survival save files found." };
+    if (!saves.length) return { error: "No Scrap Mechanic save files found." };
 
     let target = saves[0];
     if (saveName) {

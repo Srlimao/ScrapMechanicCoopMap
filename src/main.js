@@ -56,7 +56,6 @@ async function bootstrap() {
         tooltipTitle: document.getElementById('tooltipTitle'),
         tooltipCoords: document.getElementById('tooltipCoords'),
         resetViewBtn: document.getElementById('resetViewBtn'),
-        btnSyncSave: document.getElementById('btnSyncSave'),
         toggleAllLayers: document.getElementById('toggleAllLayers'),
         seedInput: document.getElementById('seedInput'),
         btnGenSeed: document.getElementById('btnGenSeed'),
@@ -90,9 +89,6 @@ async function bootstrap() {
             state.followPlayer = !state.followPlayer;
             elements.followPlayerBtn.classList.toggle('active', state.followPlayer);
         });
-    }
-    if (elements.btnSyncSave) {
-        elements.btnSyncSave.addEventListener('click', () => syncActiveSave(false));
     }
 
     const btnRetryLive = document.getElementById('btnRetryLive');

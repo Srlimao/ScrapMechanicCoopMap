@@ -205,30 +205,30 @@
             }
         }
 
-        if (!root) throw Error("Survival terrain celldata not found in save");
+        if (!root) throw Error("Terrain celldata not found in save");
 
-        let b = root.bounds;
+        let b = root.bounds || { xMin: -64, xMax: 63, yMin: -48, yMax: 47 };
         let bounds = { xMin: b.xMin, xMax: b.xMax, yMin: b.yMin, yMax: b.yMax };
         let cells = [];
 
         for (let cy = bounds.yMin; cy <= bounds.yMax; cy++) {
-            let uidRow = root.uid.values[cy - root.uid.offset];
-            let rotRow = root.rotation.values[cy - root.rotation.offset];
-            let xOffRow = root.xOffset.values[cy - root.xOffset.offset];
-            let yOffRow = root.yOffset.values[cy - root.yOffset.offset];
-            let flagRow = root.flags.values[cy - root.flags.offset];
+            let uidRow = (root.uid && root.uid.values) ? root.uid.values[cy - root.uid.offset] : null;
+            let rotRow = (root.rotation && root.rotation.values) ? root.rotation.values[cy - root.rotation.offset] : null;
+            let xOffRow = (root.xOffset && root.xOffset.values) ? root.xOffset.values[cy - root.xOffset.offset] : null;
+            let yOffRow = (root.yOffset && root.yOffset.values) ? root.yOffset.values[cy - root.yOffset.offset] : null;
+            let flagRow = (root.flags && root.flags.values) ? root.flags.values[cy - root.flags.offset] : null;
 
             for (let cx = bounds.xMin; cx <= bounds.xMax; cx++) {
-                let uVal = uidRow.values[cx - uidRow.offset];
-                let rVal = rotRow.values[cx - rotRow.offset];
-                let xoVal = xOffRow.values[cx - xOffRow.offset];
-                let yoVal = yOffRow.values[cx - yOffRow.offset];
-                let fVal = flagRow.values[cx - flagRow.offset];
+                let uVal = uidRow ? uidRow.values[cx - uidRow.offset] : null;
+                let rVal = rotRow ? (rotRow.values[cx - rotRow.offset] ?? 0) : 0;
+                let xoVal = xOffRow ? (xOffRow.values[cx - xOffRow.offset] ?? 0) : 0;
+                let yoVal = yOffRow ? (yOffRow.values[cx - yOffRow.offset] ?? 0) : 0;
+                let fVal = flagRow ? (flagRow.values[cx - flagRow.offset] ?? 0) : 0;
 
                 cells.push({
                     x: cx,
                     y: cy,
-                    uuid: (uVal && uVal.value) ? uVal.value : String(uVal),
+                    uuid: (uVal && uVal.value) ? uVal.value : String(uVal || ''),
                     rotation: rVal,
                     xOffset: xoVal,
                     yOffset: yoVal,

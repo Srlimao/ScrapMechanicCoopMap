@@ -64,13 +64,9 @@
                     <i class="fa-solid fa-camera"></i> <span>Snapshot</span>
                 </button>
 
-                <button class="btn btn-tool" id="btnSyncSave" title="Sync active game world & entities from Scrap Mechanic">
-                    <i class="fa-solid fa-arrows-rotate"></i> <span>Sync Save</span>
-                </button>
-
                 <div class="file-upload-wrapper">
                     <button class="btn btn-primary" id="uploadBtn">
-                        <i class="fa-solid fa-file-arrow-up"></i> <span>Upload (.db)</span>
+                        <i class="fa-solid fa-folder-open"></i> <span>Select Save</span>
                     </button>
                     <input type="file" id="fileInput" accept=".db,.sqlite,.sqlite3" style="display: none;">
                 </div>
@@ -578,28 +574,64 @@
         </div>
     </div>
 
-    <!-- Help Modal -->
+    <!-- Help / Tactical Guide Modal -->
     <div class="modal-backdrop" id="helpModal">
-        <div class="modal">
+        <div class="modal modal-help">
             <div class="modal-header">
                 <h2><i class="fa-solid fa-compass-drafting" style="color:var(--sm-orange)"></i> Scrap Mechanic Tactical Tablet Guide</h2>
-                <button class="modal-close" id="closeHelpModal"><i class="fa-solid fa-xmark"></i></button>
+                <button class="modal-close" id="closeHelpModal" title="Close Guide"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <h3><i class="fa-solid fa-satellite-dish"></i> Real-Time Player Tracking</h3>
-                <p>When running Scrap Mechanic, your character position and heading stream live to this tablet. Click <strong>Follow Player</strong> to track camera movements!</p>
+                <!-- Live GPS Tracking -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-satellite-dish"></i> 1. Live GPS & Player Tracking</h3>
+                    <p class="help-section-desc">When Scrap Mechanic is running, the app automatically hooks into the game process via a secure, read-only memory scanner at 60 FPS.</p>
+                    <ul class="help-list">
+                        <li><i class="fa-solid fa-crosshairs"></i> <div><strong>Follow Player</strong>: Toggle camera lock to automatically follow your character's live coordinates and heading as you explore.</div></li>
+                        <li><i class="fa-solid fa-signal"></i> <div><strong>Status Badge</strong>: Top-left badge indicates live connection status (<span class="help-badge"><i class="fa-solid fa-circle"></i> ONLINE</span>). Click retry icon if reconnecting after restarting the game.</div></li>
+                    </ul>
+                </div>
 
-                <h3><i class="fa-solid fa-file-lines"></i> Loading Your Save Database</h3>
-                <p>Click <strong>Upload (.db)</strong> or drop your survival save database directly onto the screen. Default save location:</p>
-                <code class="code-block">%AppData%\Roaming\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
+                <!-- Loading Save Files -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-folder-open"></i> 2. Loading Your World Save</h3>
+                    <p class="help-section-desc">Click <strong style="color:#fff;">Select Save</strong> in the top header or drag & drop your <code>.db</code> save file anywhere onto the window.</p>
+                    <code class="code-block">%AppData%\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
+                    <p class="help-section-desc">Loading a save parses all 12,288 world cells, Point-of-Interests, Warehouses, Trader hideouts, Oil nodes, player chests, and built vehicles.</p>
+                </div>
 
-                <h3><i class="fa-solid fa-gamepad"></i> Navigation & Controls</h3>
-                <ul>
-                    <li><strong>Pan</strong>: Click and drag anywhere on the tablet screen.</li>
-                    <li><strong>Zoom</strong>: Mouse wheel scroll or +/- controls.</li>
-                    <li><strong>Inspect</strong>: Click any entity or marker on the map to view metadata and jump.</li>
-                    <li><strong>Measure</strong>: Click Measure tool and select two points.</li>
-                </ul>
+                <!-- Multiplayer Squad Radar -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-users"></i> 3. Multiplayer Co-op Squad Radar</h3>
+                    <ul class="help-list">
+                        <li><i class="fa-solid fa-wifi"></i> <div><strong>Host / Join Room</strong>: Click the <strong>Squad</strong> button in the header. Create a 6-character room or enter an existing code to link up with friends.</div></li>
+                        <li><i class="fa-solid fa-location-dot"></i> <div><strong>Teammate Beacons</strong>: Teammates stream their live coordinates and heading arrows with custom chosen beacon colors in real time.</div></li>
+                        <li><i class="fa-solid fa-cloud-arrow-up"></i> <div><strong>World Sync</strong>: The host automatically uploads the world cell definitions to squad members with zero port forwarding required.</div></li>
+                    </ul>
+                </div>
+
+                <!-- Tactical Workbench Tools -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-toolbox"></i> 4. Tactical Tools & Features</h3>
+                    <ul class="help-list">
+                        <li><i class="fa-solid fa-magnifying-glass"></i> <div><strong>Inspector Panel</strong>: Click any landmark, vehicle, chest, trader, or robot on the map to inspect coordinates, contents, and health in the slide-out inspector.</div></li>
+                        <li><i class="fa-solid fa-ruler-combined"></i> <div><strong>Measure Tool</strong>: Click <strong>Measure</strong> then pick any two points on the map to measure exact distance in blocks and meters.</div></li>
+                        <li><i class="fa-solid fa-layer-group"></i> <div><strong>Layer Filters</strong>: Toggle individual overlays in the left sidebar (Warehouses, Traders, Oil Ponds, Ruin Buildings, Cotton, Beacons, and Vehicles).</div></li>
+                        <li><i class="fa-solid fa-bookmark"></i> <div><strong>Bookmarks & Search</strong>: Save custom waypoints with notes or search POIs and creations instantly.</div></li>
+                        <li><i class="fa-solid fa-camera"></i> <div><strong>Snapshot</strong>: Click <strong>Snapshot</strong> to capture and download a crisp, high-resolution PNG export of your current map view.</div></li>
+                    </ul>
+                </div>
+
+                <!-- Controls & Shortcuts -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-keyboard"></i> 5. Navigation & Shortcuts</h3>
+                    <ul class="help-list">
+                        <li><i class="fa-solid fa-hand-pointer"></i> <div><span class="kbd-key">Left Click + Drag</span> — Pan the tactical map.</div></li>
+                        <li><i class="fa-solid fa-arrows-up-down"></i> <div><span class="kbd-key">Mouse Wheel</span> — Smooth zoom in and out.</div></li>
+                        <li><i class="fa-solid fa-arrow-pointer"></i> <div><span class="kbd-key">Left Click</span> — Inspect entities, POIs, and creations.</div></li>
+                        <li><i class="fa-solid fa-xmark"></i> <div><span class="kbd-key">Esc</span> — Close active modals and deactivate measurement tool.</div></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
