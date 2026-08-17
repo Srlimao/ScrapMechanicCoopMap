@@ -98,6 +98,16 @@ async function bootstrap() {
         elements.btnSyncSave.addEventListener('click', () => syncActiveSave(false));
     }
 
+    const btnRetryLive = document.getElementById('btnRetryLive');
+    if (btnRetryLive) {
+        btnRetryLive.addEventListener('click', (e) => {
+            e.stopPropagation();
+            import('./features/live_tracker/live_poller.js').then(({ retryLiveConnection }) => {
+                retryLiveConnection();
+            });
+        });
+    }
+
     // 4. Initialize Canvas Engine & Camera
     initCanvasEngine(elements.canvas, elements.minimapCanvas);
     setupCameraControls(elements.canvas, elements.viewport, () => {});

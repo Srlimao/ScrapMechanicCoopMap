@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Local & Offline SQL.js WebAssembly Engine -->
     <script src="assets/vendor/sql-wasm.js"></script>
     <script>
@@ -37,6 +38,9 @@
             <div class="live-player-badge offline" id="livePlayerBadge" title="Real-Time In-Game Player Tracking Status">
                 <span class="live-pulse-dot"></span>
                 <span id="liveStatusText">LIVE: OFFLINE</span>
+                <button class="btn-badge-action" id="btnRetryLive" title="Force Reconnect / Re-scan Scrap Mechanic Game Process">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
             </div>
 
             <!-- Quick Jump Bookmarks Bar -->
@@ -433,17 +437,19 @@
                 <!-- Squad Setup / Join Panel -->
                 <div id="squadSetupPanel" style="display:flex; flex-direction:column; gap:14px;">
                     <div>
-                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Your Nickname & Color</label>
-                        <div style="display:flex; gap:8px; margin-top:6px;">
-                            <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 12px; color:#fff; font-size:13px;">
-                            <div style="display:flex; align-items:center; gap:6px;">
-                                <div class="squad-color-chip active" data-color="#00e5ff" style="background:#00e5ff;"></div>
-                                <div class="squad-color-chip" data-color="#ff7a00" style="background:#ff7a00;"></div>
-                                <div class="squad-color-chip" data-color="#10b981" style="background:#10b981;"></div>
-                                <div class="squad-color-chip" data-color="#a855f7" style="background:#a855f7;"></div>
-                                <div class="squad-color-chip" data-color="#ec4899" style="background:#ec4899;"></div>
-                                <div class="squad-color-chip" data-color="#eab308" style="background:#eab308;"></div>
-                            </div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Your Nickname</label>
+                        <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="width:100%; margin-top:6px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.15); border-radius:6px; padding:8px 12px; color:#fff; font-size:13px;">
+                    </div>
+
+                    <div>
+                        <label style="font-size:11px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Choose Beacon Color</label>
+                        <div class="squad-color-picker-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; padding:10px 14px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:6px;">
+                            <div class="squad-color-chip active" data-color="#00e5ff" style="background:#00e5ff;" title="Cyan"></div>
+                            <div class="squad-color-chip" data-color="#ff7a00" style="background:#ff7a00;" title="Orange"></div>
+                            <div class="squad-color-chip" data-color="#10b981" style="background:#10b981;" title="Lime"></div>
+                            <div class="squad-color-chip" data-color="#a855f7" style="background:#a855f7;" title="Purple"></div>
+                            <div class="squad-color-chip" data-color="#ec4899" style="background:#ec4899;" title="Pink"></div>
+                            <div class="squad-color-chip" data-color="#eab308" style="background:#eab308;" title="Yellow"></div>
                         </div>
                     </div>
 

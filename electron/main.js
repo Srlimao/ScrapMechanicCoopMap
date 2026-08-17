@@ -21,6 +21,7 @@ function getBackendDir() {
 }
 
 function createWindow() {
+    const iconPath = path.join(__dirname, 'icon.png');
     mainWindow = new BrowserWindow({
         width: 1440,
         height: 900,
@@ -28,6 +29,7 @@ function createWindow() {
         minHeight: 700,
         backgroundColor: '#080c14',
         title: 'Scrap Mechanic - Tactical Save Map Viewer',
+        icon: fs.existsSync(iconPath) ? iconPath : undefined,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,

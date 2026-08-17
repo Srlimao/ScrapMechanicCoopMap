@@ -83,3 +83,16 @@ export async function fetchLivePlayerState() {
         notifyStateChange('live_player_offline', null);
     }
 }
+
+export async function retryLiveConnection() {
+    console.log("[LiveTracker] Force re-scanning game memory...");
+    startLivePoller();
+    await fetchLivePlayerState();
+    const { showToast } = await import('../../ui/toasts.js');
+    if (state.livePlayer.online) {
+        showToast("Live Player Connected", `Tracking character at (${state.livePlayer.x.toFixed(0)}, ${state.livePlayer.y.toFixed(0)})`, "success", 3000);
+    } else {
+        showToast("Scanning Game Memory", "Scrap Mechanic not detected yet. Launch the game and load into a world.", "info", 4000);
+    }
+}
+
