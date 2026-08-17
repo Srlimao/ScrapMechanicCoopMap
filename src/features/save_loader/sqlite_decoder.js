@@ -205,6 +205,9 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
             if (res && res.dataUrl) {
                 setTerrainImageSource(res.dataUrl, gameInfo.seed);
                 terrainRendered = true;
+                if (res.cells) {
+                    gameInfo.terrainCells = res.cells;
+                }
             }
         } catch (e) {}
     }
@@ -212,7 +215,8 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
     db.close();
 
     state.mapData = {
-        gameInfo, pois, schematics, creations, units, harvestables, portals: []
+        gameInfo, pois, schematics, creations, units, harvestables, portals: [],
+        terrainCells: gameInfo.terrainCells || null
     };
 
     // Update UI Metadata DOM

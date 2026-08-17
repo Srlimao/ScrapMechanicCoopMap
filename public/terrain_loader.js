@@ -305,6 +305,7 @@
             canvas,
             dataUrl: canvas.toDataURL('image/png'),
             seed: terrainData.seed,
+            cells: terrainData.cells,
             saveVersion: terrainData.saveVersion,
             renderedCells: rendered
         };

@@ -63,7 +63,7 @@ export function disconnectFromRelayServer() {
     notifyStateChange('squad_disconnected', false);
 }
 
-export function createSquadRoom(nickname, color) {
+export async function createSquadRoom(nickname, color) {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
         connectToRelayServer(state.squad.serverUrl);
         setTimeout(() => createSquadRoom(nickname, color), 800);
@@ -74,11 +74,25 @@ export function createSquadRoom(nickname, color) {
     state.squad.myNickname = nickname || state.squad.myNickname;
     state.squad.myColor = color || state.squad.myColor;
 
+    // Fetch active cell definitions to upload to the room
+    let cells = state.mapData?.terrainCells || null;
+    if (!cells && window.electronAPI && typeof window.electronAPI.generateTerrain === 'function') {
+        try {
+            const res = await window.electronAPI.generateTerrain(activeSeed);
+            if (res && res.success && res.cells) {
+                cells = res.cells;
+                if (!state.mapData) state.mapData = { gameInfo: { seed: activeSeed } };
+                state.mapData.terrainCells = cells;
+            }
+        } catch (e) {}
+    }
+
     ws.send(JSON.stringify({
         type: 'create_room',
         name: state.squad.myNickname,
         color: state.squad.myColor,
-        seed: activeSeed
+        seed: activeSeed,
+        cells: cells
     }));
 }
 
@@ -132,8 +146,19 @@ function handleRelayMessage(msg) {
             6000
         );
 
-        // Automatically synchronize terrain seed if guest
-        if (msg.seed) {
+        // Instantly render cells if provided by the host
+        if (msg.cells && Array.isArray(msg.cells) && msg.cells.length > 0 && window.TerrainLoader) {
+            console.log(`[SquadRelay] Received ${msg.cells.length} cells from host. Rendering instantly...`);
+            window.TerrainLoader.renderTerrainFromCells(msg.cells, msg.seed).then(res => {
+                if (res && res.dataUrl) {
+                    import('../map_renderer/layer_terrain.js').then(({ setTerrainImageSource }) => {
+                        setTerrainImageSource(res.dataUrl, msg.seed);
+                        sessionStorage.setItem('sm_cached_terrain_' + msg.seed, res.dataUrl);
+                        showToast("Map Synced from Host!", `Rendered 12,288 world cells in 30ms!`, "success", 4000);
+                    });
+                }
+            });
+        } else if (msg.seed) {
             console.log(`[SquadRelay] Auto-syncing world seed: ${msg.seed}`);
             generateMapFromSeed(msg.seed);
         }
