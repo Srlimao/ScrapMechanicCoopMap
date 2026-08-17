@@ -103,13 +103,15 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
 
                     if (x >= MAP_MIN_X && x <= MAP_MAX_X && y >= MAP_MIN_Y && y <= MAP_MAX_Y) {
                         const blocks = shapeMap[rbid] || 1;
-                        const span = Math.max(3, Math.min(50, Math.sqrt(blocks) * 0.4));
-                        creations.push({
-                            id: rbid, worldId: wid,
-                            x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100, z: Math.round(z * 100) / 100,
-                            minX: x - span, maxX: x + span, minY: y - span, maxY: y + span,
-                            width: span * 2, height: span * 2, blocks: blocks
-                        });
+                        if (blocks >= 10) {
+                            const span = Math.max(3, Math.min(50, Math.sqrt(blocks) * 0.4));
+                            creations.push({
+                                id: rbid, worldId: wid,
+                                x: Math.round(x * 100) / 100, y: Math.round(y * 100) / 100, z: Math.round(z * 100) / 100,
+                                minX: x - span, maxX: x + span, minY: y - span, maxY: y + span,
+                                width: span * 2, height: span * 2, blocks: blocks
+                            });
+                        }
                     }
                 }
             });
@@ -154,34 +156,127 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
         }
     } catch (e) {}
 
-    // 5. POIs & Schematics from ScriptData
+    // 5. POIs & Schematics / Builder Guide Platforms from ScriptData
     let pois = [];
     const schematics = [];
     try {
         const resScript = db.exec("SELECT key, worldId, data FROM ScriptData");
         if (resScript.length) {
             const seenPOI = new Set();
+            const seenSchem = new Set();
+
             resScript[0].values.forEach(r => {
                 const keyStr = safeDecode(r[0]);
                 const m = keyStr.match(/ts_(\d+):\((-?\d+),(-?\d+)\)/);
                 if (m) {
                     const wid = parseInt(m[1]), cx = parseInt(m[2]), cy = parseInt(m[3]);
-                    const dataStr = safeDecode(r[2]).toLowerCase();
+                    const dataStr = safeDecode(r[2]);
+                    const dataLower = dataStr.toLowerCase();
                     const wx = cx * CELL_SIZE + 32, wy = cy * CELL_SIZE + 32;
 
+                    // POIs Extraction
                     const types = [];
                     let pIcon = 'fa-location-dot', pColor = '#f59e0b';
-                    if (dataStr.includes('mechanicstation')) { types.push('Mechanic Station'); pIcon = 'fa-wrench'; pColor = '#ff7a00'; }
-                    if (dataStr.includes('hideout')) { types.push('Hideout'); pIcon = 'fa-store'; pColor = '#10b981'; }
-                    if (dataStr.includes('warehouse')) { types.push('Warehouse'); pIcon = 'fa-building-shield'; pColor = '#ef4444'; }
-                    if (dataStr.includes('farmer') || dataStr.includes('trader')) { types.push('Trader / Farmer'); pIcon = 'fa-handshake'; pColor = '#10b981'; }
-                    if (dataStr.includes('silo') || dataStr.includes('packing')) { types.push('Packing Station'); pIcon = 'fa-boxes-packing'; pColor = '#06b6d4'; }
+                    if (dataLower.includes('mechanicstation')) { types.push('Mechanic Station'); pIcon = 'fa-wrench'; pColor = '#ff7a00'; }
+                    if (dataLower.includes('hideout')) { types.push('Hideout'); pIcon = 'fa-store'; pColor = '#10b981'; }
+                    if (dataLower.includes('warehouse')) { types.push('Warehouse'); pIcon = 'fa-building-shield'; pColor = '#ef4444'; }
+                    if (dataLower.includes('farmer') || dataLower.includes('trader')) { types.push('Trader / Farmer'); pIcon = 'fa-handshake'; pColor = '#10b981'; }
+                    if (dataLower.includes('silo') || dataLower.includes('packing')) { types.push('Packing Station'); pIcon = 'fa-boxes-packing'; pColor = '#06b6d4'; }
 
                     if (types.length > 0) {
                         const k = `${cx},${cy}`;
                         if (!seenPOI.has(k)) {
                             seenPOI.add(k);
                             pois.push({ worldId: wid, cellX: cx, cellY: cy, x: wx, y: wy, name: types.join(' & '), icon: pIcon, color: pColor });
+                        }
+                    }
+
+                    // Schematics & Builder Guide Platforms Extraction
+                    let schName = null;
+                    let schKind = 'guide';
+                    let schIcon = 'fa-microchip';
+                    let schColor = '#38bdf8';
+                    let schDesc = 'Builder Guide / Schematic unlock station.';
+
+                    if (dataLower.includes('mechanicstation') || dataLower.includes('nonplayercrafter') || dataLower.includes('partunlockstation') || dataLower.includes('schematicstation')) {
+                        schName = "Schematic Recipe Unlocker Station";
+                        schKind = "machine";
+                        schIcon = "fa-microchip";
+                        schColor = "#38bdf8";
+                        schDesc = "Schematicbot unlocker station with hologram terminal to craft new items.";
+                    } else if (dataLower.includes('_startercar') || dataLower.includes('_first_car')) {
+                        schName = "Starter Car Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-car-side";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for assembling the initial survival vehicle.";
+                    } else if (dataLower.includes('_harvest_car')) {
+                        schName = "Harvest Car Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-truck-pickup";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for tree/rock harvesting vehicle.";
+                    } else if (dataLower.includes('_advanced_car')) {
+                        schName = "Advanced Car Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-truck-monster";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for high-tier heavy vehicle.";
+                    } else if (dataLower.includes('bq_watchtower')) {
+                        schName = "Watchtower Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-tower-observation";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for defensive outpost watchtower.";
+                    } else if (dataLower.includes('bq_wochouse') || dataLower.includes('_wochous')) {
+                        schName = "Woc House Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-house-chimney";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for cattle shelter structure.";
+                    } else if (dataLower.includes('bq_cornheart')) {
+                        schName = "Cornheart Farm Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-wheat-awn";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for agricultural farming structure.";
+                    } else if (dataLower.includes('bq_garden')) {
+                        schName = "Garden Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-seedling";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for farming plot.";
+                    } else if (dataLower.includes('bq_beesuit')) {
+                        schName = "Beesuit Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-shield";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform for beekeeper protection equipment.";
+                    } else if (dataLower.includes('builderguideplatform')) {
+                        schName = "Builder Guide Platform";
+                        schKind = "guide";
+                        schIcon = "fa-cubes";
+                        schColor = "#38bdf8";
+                        schDesc = "Blueprint guide platform on the ground for assembling creations.";
+                    }
+
+                    if (schName) {
+                        const sk = `${cx},${cy}:${schName}`;
+                        if (!seenSchem.has(sk)) {
+                            seenSchem.add(sk);
+                            schematics.push({
+                                worldId: wid,
+                                cellX: cx,
+                                cellY: cy,
+                                x: wx,
+                                y: wy,
+                                name: schName,
+                                category: 'schematic',
+                                kind: schKind,
+                                icon: schIcon,
+                                color: schColor,
+                                desc: schDesc
+                            });
                         }
                     }
                 }
@@ -226,7 +321,7 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
 
     showToast(
         'Save Loaded Successfully!',
-        `${filename} • Seed: ${gameInfo.seed || 'N/A'} • ${creations.length} Creations • ${units.length} Bots • ${harvestables.length} Resources`,
+        `${filename} • Seed: ${gameInfo.seed || 'N/A'} • ${schematics.length} Schematics • ${creations.length} Creations • ${units.length} Bots`,
         'success',
         6000
     );

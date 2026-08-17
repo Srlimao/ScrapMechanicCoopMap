@@ -26,10 +26,18 @@ export function renderEntitiesLayer(ctx, width, height) {
         renderPortals(ctx, data.portals, width, height);
     }
 
-    // 5. Render Points of Interest (POIs)
+    // 5. Render Schematics & Builder Guide Platforms
+    if (state.layers.schematics && data.schematics) {
+        renderSchematics(ctx, data.schematics, width, height);
+    }
+
+    // 6. Render Points of Interest (POIs)
     if (state.layers.pois && data.pois) {
         renderPOIs(ctx, data.pois, width, height);
     }
+
+    // 7. Render Selected Point Pulsating Ring
+    renderSelectedEntityRing(ctx, width, height);
 }
 
 function renderPOIs(ctx, pois, width, height) {
@@ -76,10 +84,10 @@ function renderCreations(ctx, creations, width, height) {
     ctx.lineWidth = 1.5;
 
     for (const cr of creations) {
-        // Size filter
-        if (state.subFilters.creationsSize === 'small' && cr.blocks > 250) continue;
-        if (state.subFilters.creationsSize === 'medium' && (cr.blocks <= 250 || cr.blocks > 1500)) continue;
-        if (state.subFilters.creationsSize === 'large' && cr.blocks <= 1500) continue;
+        // Size filter: Small (<50b), Medium (50-500b), Large (500b+)
+        if (state.subFilters.creationsSize === 'small' && cr.blocks >= 50) continue;
+        if (state.subFilters.creationsSize === 'medium' && (cr.blocks < 50 || cr.blocks > 500)) continue;
+        if (state.subFilters.creationsSize === 'large' && cr.blocks <= 500) continue;
 
         const pTopLeft = worldToScreen(cr.minX, cr.maxY, width, height);
         const w = (cr.maxX - cr.minX) * state.zoom;
@@ -144,5 +152,88 @@ function renderPortals(ctx, portals, width, height) {
         ctx.lineWidth = 1.5;
         ctx.stroke();
     }
+    ctx.restore();
+}
+
+function renderSchematics(ctx, schematics, width, height) {
+    ctx.save();
+    for (const sch of schematics) {
+        const p = worldToScreen(sch.x, sch.y, width, height);
+        if (p.x < -50 || p.x > width + 50 || p.y < -50 || p.y > height + 50) continue;
+
+        const isHovered = state.hoveredEntity === sch;
+        const isSelected = state.selectedEntity === sch;
+        const radius = isSelected ? 11 : (isHovered ? 9 : 7);
+
+        // Glow halo
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius + 4, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? 'rgba(56, 189, 248, 0.45)' : 'rgba(0, 0, 0, 0.5)';
+        ctx.fill();
+
+        // Core chip badge
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = sch.color || '#38bdf8';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Inner microchip dot
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+
+        // Label if zoomed in or selected/hovered
+        if (state.zoom > 0.03 || isSelected || isHovered) {
+            ctx.font = '600 11px "Outfit", sans-serif';
+            ctx.fillStyle = '#38bdf8';
+            ctx.shadowColor = '#000000';
+            ctx.shadowBlur = 4;
+            ctx.fillText(sch.name, p.x + radius + 4, p.y + 4);
+        }
+    }
+    ctx.restore();
+}
+
+function renderSelectedEntityRing(ctx, width, height) {
+    const ent = state.selectedEntity;
+    if (!ent || ent.x === undefined || ent.y === undefined || ent.x === null || ent.y === null) return;
+
+    const p = worldToScreen(ent.x, ent.y, width, height);
+    if (p.x < -100 || p.x > width + 100 || p.y < -100 || p.y > height + 100) return;
+
+    const now = Date.now();
+    const color = ent.color || '#38bdf8';
+
+    ctx.save();
+
+    // 1. Pulsating thin dotted circle
+    const pulse = 0.5 + 0.5 * Math.sin(now / 200); // 0.0 to 1.0
+    const radius = 18 + pulse * 6; // oscillates smoothly between 18px and 24px
+    const alpha = 0.7 + pulse * 0.3; // 0.7 to 1.0
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.lineDashOffset = (now / 40) % 6; // smooth rotation
+    ctx.stroke();
+
+    // 2. Faint expanding ripple echo
+    const ripplePhase = (now % 1400) / 1400;
+    const rippleRadius = 14 + ripplePhase * 20;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, rippleRadius, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = (1 - ripplePhase) * 0.45;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
+    ctx.stroke();
+
     ctx.restore();
 }

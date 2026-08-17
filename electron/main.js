@@ -58,6 +58,47 @@ function createWindow() {
     });
 }
 
+// Background Auto-Sync Watcher
+let trackedSave = {
+    name: null,
+    path: null,
+    lastMTime: 0
+};
+let autoSyncTimer = null;
+
+function startAutoSyncWatcher() {
+    if (autoSyncTimer) return;
+    autoSyncTimer = setInterval(async () => {
+        if (!mainWindow || !trackedSave.path) return;
+
+        // Only sync if the game process is running / active
+        const isGameRunning = Boolean(memoryReader && memoryReader.isProcessOpen());
+        if (!isGameRunning) return;
+
+        if (!fs.existsSync(trackedSave.path)) return;
+
+        try {
+            const stat = fs.statSync(trackedSave.path);
+            const mtime = stat.mtimeMs;
+            if (mtime > trackedSave.lastMTime) {
+                const cacheDir = getBackendDir();
+                const res = snapshotActiveSave(cacheDir, trackedSave.name);
+                if (res.success && res.filePath) {
+                    trackedSave.lastMTime = mtime;
+                    const buffer = fs.readFileSync(res.filePath);
+                    mainWindow.webContents.send('active-save-updated', {
+                        filename: res.filename,
+                        data: buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)
+                    });
+                    console.log(`[AutoSync] Save updated in background: ${res.filename}`);
+                } else if (res.error === "LOCKED") {
+                    console.log(`[AutoSync] Save currently locked by game write, will retry on next tick.`);
+                }
+            }
+        } catch (e) {}
+    }, 5000); // 5-second interval
+}
+
 // IPC Handlers
 ipcMain.handle('get-survival-saves', async () => getSurvivalSaves());
 
@@ -68,6 +109,18 @@ ipcMain.handle('read-active-save', async (event, saveName) => {
 
     try {
         const buffer = fs.readFileSync(res.filePath);
+        if (res.originalPath) {
+            trackedSave.name = res.filename;
+            trackedSave.path = res.originalPath;
+            try {
+                const stat = fs.statSync(res.originalPath);
+                trackedSave.lastMTime = stat.mtimeMs;
+            } catch (e) {
+                trackedSave.lastMTime = Date.now();
+            }
+            startAutoSyncWatcher();
+        }
+
         return {
             success: true,
             filename: res.filename,

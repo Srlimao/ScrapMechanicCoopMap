@@ -49,6 +49,15 @@ function performSearch(query) {
         }
     }
 
+    // Search Schematics & Builder Guide Platforms
+    if (state.mapData.schematics) {
+        for (const sch of state.mapData.schematics) {
+            if (sch.name.toLowerCase().includes(query) || (sch.desc && sch.desc.toLowerCase().includes(query))) {
+                matches.push(sch);
+            }
+        }
+    }
+
     // Search Creations
     if (state.mapData.creations) {
         for (const cr of state.mapData.creations) {
@@ -66,17 +75,20 @@ function renderSearchResults(results) {
     if (!searchResultsDiv) return;
 
     if (results.length === 0) {
-        searchResultsDiv.innerHTML = `<div style="padding: 12px; font-size: 12px; color: #94a3b8; text-align: center;">No matches found</div>`;
+        searchResultsDiv.innerHTML = `<div class="search-no-results"><i class="fa-solid fa-circle-exclamation" style="margin-right: 6px;"></i>No matching locations found</div>`;
         return;
     }
 
     searchResultsDiv.innerHTML = results.map(item => `
         <div class="search-result-item" data-x="${item.x}" data-y="${item.y}">
-            <i class="fa-solid ${item.icon || 'fa-location-dot'}" style="color: ${item.color || '#ff7a00'}; margin-right: 8px;"></i>
-            <div style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                <div style="font-weight: 600; color: #f8fafc;">${item.name}</div>
-                <div style="font-size: 11px; color: #94a3b8;">${formatCoords(item.x, item.y)}</div>
+            <div class="search-item-icon-wrap" style="color: ${item.color || '#ff7a00'};">
+                <i class="fa-solid ${item.icon || 'fa-location-dot'}"></i>
             </div>
+            <div class="search-item-info">
+                <div class="search-item-title">${item.name}</div>
+                <div class="search-item-coords">${formatCoords(item.x, item.y)}</div>
+            </div>
+            <i class="fa-solid fa-chevron-right search-item-arrow"></i>
         </div>
     `).join('');
 

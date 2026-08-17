@@ -126,6 +126,21 @@ export function sendSquadPing(x, y, text = 'Squad Marker', pingType = 'alert') {
     }));
 }
 
+export function broadcastSquadEntities(mapData) {
+    if (!ws || ws.readyState !== WebSocket.OPEN || !state.squad.roomCode || !mapData) return;
+
+    ws.send(JSON.stringify({
+        type: 'squad_entities',
+        entities: {
+            creations: mapData.creations || [],
+            schematics: mapData.schematics || [],
+            units: mapData.units || [],
+            harvestables: mapData.harvestables || [],
+            pois: mapData.pois || []
+        }
+    }));
+}
+
 function handleRelayMessage(msg) {
     const type = msg.type;
 
@@ -209,6 +224,33 @@ function handleRelayMessage(msg) {
         setTimeout(() => {
             state.squad.pings = state.squad.pings.filter(p => p.id !== msg.id);
         }, 15000);
+        return;
+    }
+
+    if (type === 'squad_entities_broadcast') {
+        if (msg.entities && state.mapData) {
+            if (msg.entities.creations) state.mapData.creations = msg.entities.creations;
+            if (msg.entities.schematics) state.mapData.schematics = msg.entities.schematics;
+            if (msg.entities.units) state.mapData.units = msg.entities.units;
+            if (msg.entities.harvestables) state.mapData.harvestables = msg.entities.harvestables;
+            if (msg.entities.pois) state.mapData.pois = msg.entities.pois;
+
+            import('../tools/settings.js').then(({ updateCreationBadge }) => {
+                if (updateCreationBadge) updateCreationBadge();
+            });
+
+            const countPOIs = document.getElementById('countPOIs');
+            const countSchematics = document.getElementById('countSchematics');
+            const countUnits = document.getElementById('countUnits');
+            const countHarvestables = document.getElementById('countHarvestables');
+            if (countPOIs && msg.entities.pois) countPOIs.textContent = msg.entities.pois.length;
+            if (countSchematics && msg.entities.schematics) countSchematics.textContent = msg.entities.schematics.length;
+            if (countUnits && msg.entities.units) countUnits.textContent = msg.entities.units.length;
+            if (countHarvestables && msg.entities.harvestables) countHarvestables.textContent = msg.entities.harvestables.length;
+
+            showToast("Squad Auto-Sync", "Received live save entities update from Host.", "info", 3000);
+            notifyStateChange('squad_entities_updated', msg.entities);
+        }
         return;
     }
 

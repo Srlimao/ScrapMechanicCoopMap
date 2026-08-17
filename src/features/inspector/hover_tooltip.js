@@ -73,7 +73,13 @@ function findHoveredEntity(worldX, worldY) {
 
     // 3. Check Creations
     if (state.layers.creations && state.mapData.creations) {
+        const filter = state.subFilters.creationsSize;
         for (const c of state.mapData.creations) {
+            // Size filter: Small (<50b), Medium (50-500b), Large (500b+)
+            if (filter === 'small' && c.blocks >= 50) continue;
+            if (filter === 'medium' && (c.blocks < 50 || c.blocks > 500)) continue;
+            if (filter === 'large' && c.blocks <= 500) continue;
+
             if (calculateDistance(worldX, worldY, c.x, c.y) < hitDist) {
                 state.hoveredEntity = c;
                 return;
@@ -84,6 +90,11 @@ function findHoveredEntity(worldX, worldY) {
     // 4. Check Units / Bots
     if (state.layers.units && state.mapData.units) {
         for (const u of state.mapData.units) {
+            const cat = u.category;
+            if (cat === 'boss' && !state.subFilters.units.farmbots) continue;
+            if (cat === 'bot' && !state.subFilters.units.haybots) continue;
+            if (cat === 'animal' && !state.subFilters.units.animals) continue;
+
             if (calculateDistance(worldX, worldY, u.x, u.y) < hitDist) {
                 state.hoveredEntity = u;
                 return;
@@ -94,6 +105,13 @@ function findHoveredEntity(worldX, worldY) {
     // 5. Check Harvestables
     if (state.layers.harvestables && state.mapData.harvestables) {
         for (const h of state.mapData.harvestables) {
+            const cat = (h.category || '').toLowerCase();
+            const name = (h.name || '').toLowerCase();
+            if ((cat.includes('oil') || name.includes('oil')) && !state.subFilters.harvestables.oil) continue;
+            if ((cat.includes('cotton') || name.includes('cotton')) && !state.subFilters.harvestables.cotton) continue;
+            if ((cat.includes('mineral') || name.includes('mineral') || name.includes('stone')) && !state.subFilters.harvestables.minerals) continue;
+            if ((cat.includes('tree') || name.includes('wood') || name.includes('tree')) && !state.subFilters.harvestables.trees) continue;
+
             if (calculateDistance(worldX, worldY, h.x, h.y) < hitDist) {
                 state.hoveredEntity = h;
                 return;

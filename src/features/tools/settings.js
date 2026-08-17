@@ -99,8 +99,16 @@ export function setupLayerControls(elements) {
             btn.classList.add('active');
             state.subFilters.creationsSize = btn.dataset.size || 'all';
             saveSettings();
+            updateCreationBadge();
             notifyStateChange('subfilter_size', state.subFilters.creationsSize);
         });
+    });
+
+    // Auto-update creation badge on save loaded
+    subscribe((type) => {
+        if (type === 'save_loaded') {
+            updateCreationBadge();
+        }
     });
 
     // Opacity Slider
@@ -131,4 +139,22 @@ export function setupLayerControls(elements) {
             notifyStateChange('layer_toggle_all', newState);
         });
     }
+}
+
+export function updateCreationBadge() {
+    const countCreations = document.getElementById('countCreations');
+    if (!countCreations || !state.mapData || !state.mapData.creations) return;
+    const filter = state.subFilters.creationsSize;
+    if (filter === 'all') {
+        countCreations.textContent = state.mapData.creations.length;
+        return;
+    }
+    let count = 0;
+    for (const c of state.mapData.creations) {
+        if (filter === 'small' && c.blocks >= 50) continue;
+        if (filter === 'medium' && (c.blocks < 50 || c.blocks > 500)) continue;
+        if (filter === 'large' && c.blocks <= 500) continue;
+        count++;
+    }
+    countCreations.textContent = count;
 }

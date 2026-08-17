@@ -70,14 +70,26 @@ function snapshotActiveSave(cacheDir, saveName = null) {
     const destPath = path.join(snapshotDir, targetName);
 
     try {
+        // Safe lock check before reading
+        let fd = null;
+        try {
+            fd = fs.openSync(target.path, 'r');
+        } catch (lockErr) {
+            return { error: "LOCKED", message: lockErr.message };
+        } finally {
+            if (fd !== null) fs.closeSync(fd);
+        }
+
         fs.copyFileSync(target.path, destPath);
         for (const ext of ['-wal', '-shm']) {
             const extra = target.path + ext;
             if (fs.existsSync(extra)) {
-                fs.copyFileSync(extra, destPath + ext);
+                try {
+                    fs.copyFileSync(extra, destPath + ext);
+                } catch (e) {}
             }
         }
-        return { success: true, filePath: destPath, filename: targetName };
+        return { success: true, filePath: destPath, originalPath: target.path, filename: targetName, mtime: target.mtime };
     } catch (e) {
         return { error: e.message };
     }

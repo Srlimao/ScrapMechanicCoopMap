@@ -1,8 +1,42 @@
 // Save synchronizer & file input handler
 import { decodeSaveBuffer } from './sqlite_decoder.js';
 import { showToast } from '../../ui/toasts.js';
+import { state } from '../../core/state.js';
+import { broadcastSquadEntities } from '../squad/relay_client.js';
+
+let isAutoSyncRegistered = false;
+
+export function initAutoSyncListener() {
+    if (isAutoSyncRegistered) return;
+    if (window.electronAPI && typeof window.electronAPI.onActiveSaveUpdated === 'function') {
+        window.electronAPI.onActiveSaveUpdated(async (saveData) => {
+            if (saveData && saveData.data) {
+                console.log(`[AutoSync] Received save update: ${saveData.filename}`);
+                try {
+                    const mapData = await decodeSaveBuffer(saveData.data, saveData.filename);
+                    showToast(
+                        "Auto-Synced Save",
+                        `Updated from Scrap Mechanic: ${mapData?.creations?.length || 0} creations active.`,
+                        "info",
+                        3500
+                    );
+
+                    // Broadcast updated entities to squad if connected
+                    if (state.squad.connected && state.squad.roomCode && mapData) {
+                        broadcastSquadEntities(mapData);
+                    }
+                } catch (err) {
+                    console.warn("[AutoSync] Error decoding auto-synced save:", err);
+                }
+            }
+        });
+        isAutoSyncRegistered = true;
+    }
+}
 
 export async function syncActiveSave(isInitial = false) {
+    initAutoSyncListener();
+
     if (!isInitial) {
         showToast("Syncing Save", "Reading latest Scrap Mechanic save file...", "loading", 2000);
     }
@@ -11,7 +45,10 @@ export async function syncActiveSave(isInitial = false) {
         if (window.electronAPI && typeof window.electronAPI.readActiveSave === 'function') {
             const res = await window.electronAPI.readActiveSave();
             if (res.success && res.data) {
-                await decodeSaveBuffer(res.data, res.filename || 'active_save.db');
+                const mapData = await decodeSaveBuffer(res.data, res.filename || 'active_save.db');
+                if (state.squad.connected && state.squad.roomCode && mapData) {
+                    broadcastSquadEntities(mapData);
+                }
                 return;
             }
         }
@@ -21,7 +58,10 @@ export async function syncActiveSave(isInitial = false) {
         if (resp.ok) {
             const buffer = await resp.arrayBuffer();
             const filename = resp.headers.get('X-Save-Name') || 'active_save.db';
-            await decodeSaveBuffer(buffer, filename);
+            const mapData = await decodeSaveBuffer(buffer, filename);
+            if (state.squad.connected && state.squad.roomCode && mapData) {
+                broadcastSquadEntities(mapData);
+            }
         }
     } catch (e) {
         if (!isInitial) {
@@ -31,6 +71,8 @@ export async function syncActiveSave(isInitial = false) {
 }
 
 export function setupFileUploadHandlers(uploadBtn, fileInput, dropOverlay) {
+    initAutoSyncListener();
+
     if (uploadBtn && fileInput) {
         uploadBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', async (e) => {

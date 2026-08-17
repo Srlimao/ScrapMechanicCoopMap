@@ -8,5 +8,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     fetchLivePlayer: () => ipcRenderer.invoke('fetch-live-player'),
     retryLivePlayer: () => ipcRenderer.invoke('retry-live-player'),
     generateTerrain: (seed) => ipcRenderer.invoke('generate-terrain', seed),
-    getGameDirectory: () => ipcRenderer.invoke('get-game-directory')
+    getGameDirectory: () => ipcRenderer.invoke('get-game-directory'),
+    onActiveSaveUpdated: (callback) => {
+        const handler = (event, data) => callback(data);
+        ipcRenderer.on('active-save-updated', handler);
+        return () => ipcRenderer.removeListener('active-save-updated', handler);
+    }
 });

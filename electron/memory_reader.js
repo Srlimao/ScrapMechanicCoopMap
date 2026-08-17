@@ -72,6 +72,13 @@ class NodeMemoryReader {
         this.lastScanTime = 0;
     }
 
+    isProcessOpen() {
+        if (this.hProcess !== null && this.pid !== null) return true;
+        if (this.state.online) return true;
+        const proc = this.findScrapProcess();
+        return Boolean(proc);
+    }
+
     findScrapProcess() {
         if (!CreateToolhelp32Snapshot || !Process32FirstW) return null;
 

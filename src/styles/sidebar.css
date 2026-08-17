@@ -123,30 +123,107 @@
     color: #ffffff;
 }
 
+.search-section {
+    position: relative;
+}
+
 .search-results {
-    max-height: 180px;
+    max-height: 220px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    margin-top: 6px;
+    padding-right: 2px;
 }
 
-.result-item {
-    padding: 6px 10px;
-    background: #1c212c;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: var(--radius-xs);
+.search-results::-webkit-scrollbar {
+    width: 4px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+    background: #333b49;
+    border-radius: 4px;
+}
+
+.search-result-item {
+    padding: 8px 10px;
+    background: #181c26;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
     font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 10px;
     transition: all 0.15s ease;
+    user-select: none;
 }
-.result-item:hover {
-    background: rgba(255, 122, 0, 0.2);
+
+.search-result-item:hover {
+    background: #222836;
     border-color: var(--sm-orange);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 122, 0, 0.2);
     transform: translateX(2px);
+}
+
+.search-item-icon-wrap {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-xs);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.search-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.search-item-title {
+    font-weight: 700;
+    font-size: 12px;
+    color: #f8fafc;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.search-item-coords {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: #94a3b8;
+}
+
+.search-item-arrow {
+    font-size: 10px;
+    color: #475569;
+    transition: transform 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.search-result-item:hover .search-item-arrow {
+    color: var(--sm-orange);
+    transform: translateX(2px);
+}
+
+.search-no-results {
+    padding: 12px 10px;
+    font-size: 11.5px;
+    color: #94a3b8;
+    text-align: center;
+    background: #141720;
+    border: 1px dashed rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    margin-top: 4px;
 }
 
 /* Layer Cards List */
