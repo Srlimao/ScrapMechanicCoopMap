@@ -1,5 +1,5 @@
 // LocalStorage settings persistence and layer toggle synchronizer
-import { state, notifyStateChange } from '../../core/state.js';
+import { state, notifyStateChange, subscribe } from '../../core/state.js';
 
 const STORAGE_KEY = 'sm_tactical_map_settings_v6';
 
