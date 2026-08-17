@@ -1,135 +1,169 @@
-# 🗺️ Scrap Mechanic Tactical Map Viewer & Real-Time Player Tracker
+# 🗺️ Scrap Mechanic Tactical Map & Real-Time Multiplayer Co-op Tracker
 
-A high-performance, release-ready desktop application and interactive map viewer for **Scrap Mechanic** survival saves, featuring **zero-mod real-time character tracking**, authentic **procedural terrain generation**, and comprehensive **save file inspection**.
+[![Download Latest Windows Executable](https://img.shields.io/badge/Download-Latest%20Release%20(.exe)-00e5ff?style=for-the-badge&logo=windows)](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)
+[![GitHub Release](https://img.shields.io/github/v/release/Srlimao/ScrapMechanicCoopMap?style=for-the-badge&color=ff7a00)](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Srlimao/ScrapMechanicCoopMap/release.yml?style=for-the-badge&label=Build%20%26%20Release)](https://github.com/Srlimao/ScrapMechanicCoopMap/actions)
+
+A high-performance, release-ready desktop tactical map application and real-time multiplayer co-op companion for **Scrap Mechanic** survival worlds.
+
+Featuring **zero-mod live memory character tracking**, **instant cloud squad room relays**, **authentic 12,288-cell procedural terrain stitching**, and comprehensive **save file entity inspection**.
+
+---
+
+## 📥 Direct Download
+
+> 🔗 **Permanent Direct Download Link (Always Latest Version)**:  
+> **[https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)**  
+> *(Clicking this link always downloads the latest standalone portable `.exe` with zero installation required).*
 
 ---
 
 ## ✨ Features
 
-- 🛰️ **Zero-Mod Real-Time Player Tracking**:
-  - Live character beacon displaying world coordinates $(X, Y, Z)$, heading angle, and travel speed at 20 Hz.
-  - Interactive breadcrumb trail tracing recent player movements.
-  - Optional **Follow Player** camera mode for dynamic navigation.
-  - Native Win32 C-FFI memory reader—no game modifications or Python runtime needed for desktop users.
-
-- 🏔️ **Authentic Procedural Terrain Atlas**:
-  - Directly decodes `g_cellData` and world seed from SQLite `.db` save files.
-  - Stitches official high-resolution terrain tiles across 12,288 world cells in ~30ms using local LZ4 decompression and bitstream parsing.
-
-- 🔍 **Interactive Entity Inspector**:
-  - **Creations & Vehicles**: Overworld rigid bodies categorized by block count with bounding boxes and inspection modals.
-  - **Bots & Wildlife**: Farmbots, Haybots, Tapebots, Totebots, and Wocs rendered with custom icons and category toggles.
-  - **Harvestables**: Oil nodes, Cotton plants, Stone/Metal deposits, and Trees.
-  - **Points of Interest (POIs)**: Mechanic Stations, Hideouts, Warehouses, Packing Stations, Trader, and Schematics.
-
-- 📐 **Tactical Tools**:
-  - **Distance Measurement Ruler**: Click to measure world distance in meters and blocks.
-  - **Quick-Jump Bookmarks**: Instant camera navigation to Crash Site, Mechanic Station, Trader, Packing Stations, and Boss encounters.
-  - **Live Search**: Instant entity search by name, UUID, coordinate, or type.
-  - **High-Resolution Map Export**: One-click screenshot capture of the canvas.
+### 🛰️ 1. Zero-Mod Real-Time Player Tracking
+- **Ultra-Fast Memory Hook**: Native Win32 C-FFI memory reader connecting directly to `ScrapMechanic.exe` in **0.18 ms** at **20 Hz**.
+- **Zero Game Modifications**: Operates completely externally via Windows memory pointers—no mods, Lua injection, or custom game files required.
+- **Dynamic Orientation & Breadcrumbs**: Displays live world coordinates $(X, Y, Z)$, heading cone, movement speed, and historical breadcrumb trails.
+- **Follow Player Camera**: Center and lock the camera view onto your moving character with smooth interpolation.
+- **One-Click Reconnect**: Live badge button to instantly re-scan and hook into the game process if launched or restarted mid-session.
 
 ---
 
-## 📥 Download Latest Release
-
-[![Download Latest Windows Executable](https://img.shields.io/badge/Download-Latest%20Windows%20Release%20(.exe)-00e5ff?style=for-the-badge&logo=windows)](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)
-
-> **Permanent Direct Download Link**:  
-> [https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)  
-> *(This direct link always downloads the latest `.exe` without having to manually browse release pages).*
-
----
-
-## 🚀 Getting Started
-
-### 1. Standalone Portable Release (Recommended)
-Download and run the portable executable:
-- **Zero Configuration**: Double-click to launch. No installer or Python required.
-- Automatically connects to `ScrapMechanic.exe` when the game is running.
-- Automatically detects active Steam survival save files.
+### 👥 2. Multiplayer Squad Rooms & Live Co-op Relay
+- **Cloud Squad Rooms**: Create or join multiplayer rooms with 5-character codes (e.g. `#SQ-9421`).
+- **⚡ Instant 30ms Map Sync (Zero Generation for Friends)**:
+  - When the Host creates a room, the app automatically uploads the active **12,288 world cells** (~78 KB compressed) to the cloud relay.
+  - When friends join, their app receives the cells in **0.02s** and stitches the full terrain map in **~30 milliseconds** using their local texture atlas!
+  - **Guests need zero Python, zero Lua engines, and zero save files!**
+- **Live Squad Member Markers**:
+  - Custom chosen nickname and glowing beacon colors (Cyan, Orange, Lime, Purple, Pink, Yellow).
+  - Real-time distance measurement from local player (e.g. `240m away`).
+  - Heading cones, speed badges, and individual player breadcrumb trails.
+- **🎯 Tactical Map Pings**: Double-click anywhere on the map canvas to drop timed tactical pings that pulse and alert all room members in real time.
+- **Squad Member Roster**: Interactive sidebar panel with player distance and a **"Jump Camera"** button.
 
 ---
 
-### 2. Running from Source (Development)
+### 🏔️ 3. Authentic Procedural Terrain Atlas
+- **High-Speed Save Tile Decoding**: Decodes `g_cellData` and world seed directly from SQLite `.db` save files using local LZ4 decompression and bitstream parsing.
+- **Official Texture Atlas**: Stitches 12,288 world cells from `terrain-cell-atlas.webp` into a crisp, high-resolution canvas map.
+- **Procedural Seed Generator**: Enter any numeric world seed (e.g. `631793443`) to dynamically compute and render the complete terrain surface.
 
-#### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [Python 3.8+](https://www.python.org/) *(optional, for Python HTTP server mode)*
+---
 
-#### Install Dependencies
+### 🔍 4. Interactive Entity & Save Inspector
+- **Creations & Vehicles**: Overworld rigid bodies categorized by block count with bounding boxes, dimensions, and inspection dialogs.
+- **Bots & Wildlife**: Farmbots, Haybots, Tapebots, Totebots, and Wocs with custom icons and sub-layer filters.
+- **Harvestables & Resources**: Oil geysers, Cotton plants, Stone/Metal deposits, and Trees.
+- **Points of Interest (POIs)**: Mechanic Stations, Hideouts, Warehouses, Packing Stations, Trader, and Craftbots.
+- **Save Sync**: 1-click active save detection and automatic reload on world saves.
+
+---
+
+### 📐 5. Tactical HUD & Navigation Tools
+- **Distance Ruler**: Click two points to measure distance in meters, blocks, and estimated walking/driving travel time.
+- **Coordinates HUD & Grid**: Toggleable world and cell coordinate overlay grid.
+- **Search Engine**: Live search for POIs, creations, bots, or coordinates.
+- **High-Res Screenshot Exporter**: One-click high-resolution PNG map export.
+- **Modern Dark UI**: Glowing cyber-tactical dark interface with custom Scrap Mechanic application icon.
+
+---
+
+## 🛰️ Cloud Relay Server (`ScrapMechanicCoopMapServer`)
+
+The multiplayer squad room system is powered by an independent, ultra-lightweight WebSocket room relay server located in the [`relay_server/`](file:///d:/SteamLibrary/steamapps/common/Scrap%20Mechanic/save_map_viewer/relay_server) directory and maintained in its own dedicated repository:
+
+👉 **Relay Server GitHub Repository**: **[https://github.com/Srlimao/ScrapMechanicCoopMapServer](https://github.com/Srlimao/ScrapMechanicCoopMapServer)**
+
+### 💡 Relay Server Architecture:
+- **100% In-Memory RAM**: Zero disk writes, zero databases, and zero file leftovers.
+- **Automatic Room Purging**: When the host leaves or a room becomes empty, the room and its cell data are immediately purged from memory.
+- **Zombie Socket Cleanup**: 10-second heartbeat ping automatically prunes dead connections (crashes, Wi-Fi drops, sleep mode).
+- **Ultra-Low Resource Footprint**: Consumes only **~25–35 MB RAM** and **<0.5% CPU**, running 24/7 on lightweight cloud instances (like Google Cloud `e2-micro`).
+- **Production Endpoint**: Preconfigured to route securely over Cloudflare SSL at `wss://sm.dunhas.com`.
+
+### 🚀 Deploying the Relay Server on Linux / Google Cloud VM:
 ```bash
-npm install
+# 1. Clone standalone server repo
+git clone https://github.com/Srlimao/ScrapMechanicCoopMapServer.git
+cd ScrapMechanicCoopMapServer
+
+# 2. Install dependencies
+npm install --production
+
+# 3. Start with PM2
+pm2 start server.js --name "sm-coop-relay" -- 8090
+pm2 save
 ```
 
-#### Launch Electron App in Dev Mode
+---
+
+## 🏗️ Project Architecture & Vertical Slices
+
+```
+ScrapMechanicCoopMap/
+├── .github/workflows/
+│   └── release.yml             # Automated Windows CI/CD release workflow
+├── build/                      # Multi-resolution application icons (.ico, .png)
+├── electron/
+│   ├── main.js                 # Electron main process & IPC coordinator
+│   ├── memory_reader.js        # Win32 C-FFI memory hook (Toolhelp + ReadProcessMemory)
+│   ├── game_scanner.js         # Steam save detector & path scanner
+│   └── preload.js              # Secure IPC bridge
+├── public/
+│   ├── asset_uuids.json        # Game entity & tile UUID dictionary
+│   ├── terrain-cell-atlas.webp # Official terrain texture atlas
+│   └── terrain-cell-atlas.json # Atlas coordinate manifest
+├── relay_server/               # Standalone WebSocket room relay server (Node.js)
+│   ├── server.js               # In-memory room manager & telemetry broadcaster
+│   ├── Dockerfile              # Container deployment definition
+│   ├── docker-compose.yml      # Multi-container compose configuration
+│   └── deploy_gcp.sh           # Automated 1-command Linux / GCP deployment script
+├── src/
+│   ├── core/                   # Reactive state store, coordinates, constants
+│   ├── features/
+│   │   ├── live_tracker/       # Live memory polling & player trail renderer
+│   │   ├── map_renderer/       # Canvas engine, camera, layers, minimap
+│   │   ├── save_loader/        # SQLite WASM decoder & save synchronizer
+│   │   ├── squad/              # Multiplayer relay client, squad canvas layer & UI
+│   │   └── tools/              # Seed generator, bookmarks, ruler, search, screenshot
+│   ├── styles/                 # Modular dark-mode CSS design system
+│   └── ui/                     # Modals, toasts, and HUD controllers
+└── index.html                  # Main viewport & application shell
+```
+
+---
+
+## 🛠️ Local Development & Building
+
+### Prerequisites:
+- [Node.js 20+](https://nodejs.org/)
+- Windows 10 / 11 (for live memory tracking)
+
+### Setup:
 ```bash
+# 1. Clone repository
+git clone https://github.com/Srlimao/ScrapMechanicCoopMap.git
+cd ScrapMechanicCoopMap
+
+# 2. Install dependencies
+npm install
+
+# 3. Run in Vite Web mode (Hot Reloading)
+npm run dev
+
+# 4. Run in Desktop Electron mode
 npm run electron:dev
 ```
 
-#### Build Standalone Portable `.exe`
+### Build Standalone Portable Executable:
 ```bash
 npm run dist:portable
 ```
-The compiled binary will be placed in `dist_release/`.
-
----
-
-### 3. Web Browser Server Mode (Python Fallback)
-If you prefer running via a standard web browser:
-```bash
-python server.py
-# Or run start_server.bat
-```
-Navigate to `http://localhost:8000` in your web browser.
-
----
-
-## 🏛️ Project Architecture
-
-Built following **Vertical Slice Architecture** where all files are strictly modularized and under 300 lines of code:
-
-```
-save_map_viewer/
-├── dist_release/               # Pre-packaged release binaries (.exe)
-├── electron/                   # Electron desktop wrapper
-│   ├── main.js                 # Electron main process & IPC coordinator
-│   ├── preload.js              # ContextBridge secure API exposure
-│   ├── memory_reader.js        # Native Win32 C-FFI memory hook (koffi)
-│   └── game_scanner.js         # Dynamic Steam registry & save scanner
-├── src/                        # Modular ES6 Frontend
-│   ├── core/                   # Shared state, constants, coordinate math
-│   │   ├── constants.js
-│   │   ├── coords.js
-│   │   └── state.js
-│   ├── features/
-│   │   ├── live_tracker/       # Poller engine & player beacon/trail renderer
-│   │   ├── map_renderer/       # Canvas rendering loop, camera, tile/grid layers
-│   │   ├── save_loader/        # SQLite WASM parser & terrain stitcher
-│   │   ├── inspector/          # Sidebar detail panel & hover tooltips
-│   │   └── tools/              # Bookmarks, search, ruler, screenshots, settings
-│   ├── styles/                 # Modular design system (glassmorphism UI)
-│   ├── ui/                     # Reusable modals, toasts, HUD
-│   └── main.js                 # App bootstrapper
-├── backend/                    # Python background services
-│   ├── memory_reader.py        # Win32 ctypes memory reader
-│   ├── path_finder.py          # Dynamic Steam path resolver
-│   └── save_manager.py         # SQLite WAL checkpoint snapshotter
-├── assets/                     # Icons, local WebAssembly SQL.js vendor assets
-├── server.py                   # Standalone Python HTTP/API server
-├── package.json                # Project dependencies & build scripts
-└── vite.config.js              # Vite bundler configuration
-```
-
----
-
-## 🔒 Security & Privacy
-
-- **100% Client-Side & Local**: This application runs entirely on your local machine.
-- **Read-Only Memory Access**: Memory reading is strictly non-invasive (`PROCESS_VM_READ`) and does not modify or inject code into the game process.
-- **Save Integrity**: Save files are accessed via read-only snapshots and SQLite WAL checkpoints without risking save corruption.
+The compiled single-file binary will be generated in `dist_release/Scrap-Mechanic-Tactical-Map.exe`.
 
 ---
 
 ## 📜 License
-
-Distributed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
