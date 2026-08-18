@@ -55,12 +55,14 @@ function renderPOIs(ctx, pois, width, height) {
         const isSelected = state.selectedEntity === poi;
 
         const name = (poi.name || '').toLowerCase();
+        const cat = (poi.category || '').toLowerCase();
         if (state.subFilters && state.subFilters.pois && !isSelected && !isHovered) {
             if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
             if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
             if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
             if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
-            if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !state.subFilters.pois.other) continue;
+            if ((name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') && !state.subFilters.pois.chemOil) continue;
+            if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
         }
 
         const p = worldToScreen(poi.x, poi.y, width, height);
@@ -68,20 +70,8 @@ function renderPOIs(ctx, pois, width, height) {
 
         const radius = isSelected ? 12 : (isHovered ? 10 : 8);
 
-        // Halo / glow
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, radius + 4, 0, Math.PI * 2);
-        ctx.fillStyle = isSelected ? 'rgba(255, 122, 0, 0.4)' : 'rgba(0, 0, 0, 0.5)';
-        ctx.fill();
-
-        // Core icon circle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = poi.color || '#ff7a00';
-        ctx.fill();
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        // Core icon badge
+        drawIconBadge(ctx, p.x, p.y, radius, poi.icon || 'fa-location-dot', poi.color || '#ff7a00', isSelected, isHovered, 1);
 
         // Smart Collision-Free Label (Major POIs visible across full map)
         if (state.zoom >= 0.08 || isSelected || isHovered) {
@@ -126,6 +116,66 @@ function renderCreations(ctx, creations, width, height) {
     ctx.restore();
 }
 
+const FA_UNICODE_MAP = {
+    'fa-oil-well': '\uf68a',
+    'fa-feather': '\uf52d',
+    'fa-mountain': '\uf6fd',
+    'fa-tree': '\uf1bb',
+    'fa-wheat-awn': '\ue2cd',
+    'fa-flask-vial': '\ue4f2',
+    'fa-spa': '\uf5bb',
+    'fa-shield': '\uf3ed',
+    'fa-seedling': '\uf4d8',
+    'fa-skull': '\uf54c',
+    'fa-robot': '\uf544',
+    'fa-crosshairs': '\uf05b',
+    'fa-bolt': '\uf0e7',
+    'fa-cow': '\uf6c0',
+    'fa-gem': '\uf3a5',
+    'fa-wrench': '\uf0ad',
+    'fa-location-dot': '\uf3c5',
+    'fa-microchip': '\uf2db',
+    'fa-wand-magic-sparkles': '\ue2ca'
+};
+
+function drawIconBadge(ctx, x, y, radius, iconClass, color, isSelected, isHovered, count = 1) {
+    ctx.save();
+    // Dynamic radius based on resource count in tile
+    let baseR = radius;
+    if (count > 1) {
+        if (count <= 3) baseR = radius + 1.5;
+        else if (count <= 8) baseR = radius + 3;
+        else baseR = radius + 4.5;
+    }
+    const r = isSelected ? baseR + 2.5 : (isHovered ? baseR + 1.5 : baseR);
+
+    // Glowing halo
+    if (isSelected || isHovered) {
+        ctx.beginPath();
+        ctx.arc(x, y, r + 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? 'rgba(255, 255, 255, 0.45)' : 'rgba(255, 255, 255, 0.22)';
+        ctx.fill();
+    }
+
+    // Circular badge container
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#141820';
+    ctx.fill();
+    ctx.strokeStyle = color || '#ff7a00';
+    ctx.lineWidth = isSelected ? 2 : (count > 1 ? 1.6 : 1.2);
+    ctx.stroke();
+
+    // Icon Glyph
+    const char = FA_UNICODE_MAP[iconClass] || '\uf4d8';
+    ctx.font = `900 ${Math.round(r * 1.05)}px "Font Awesome 6 Free", "FontAwesome"`;
+    ctx.fillStyle = color || '#ff7a00';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(char, x, y + 0.5);
+    ctx.restore();
+}
+
 function renderUnits(ctx, units, width, height) {
     ctx.save();
     for (const u of units) {
@@ -148,70 +198,49 @@ function renderUnits(ctx, units, width, height) {
         const p = worldToScreen(u.x, u.y, width, height);
         if (p.x < -20 || p.x > width + 20 || p.y < -20 || p.y > height + 20) continue;
 
-        const radius = isBoss ? (isSelected ? 10 : (isHovered ? 9 : 7.5)) : (sub === 'seedbot' ? 4 : 4.5);
-
         if (isBoss) {
-            // Glowing threat halo
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, radius + 3.5, 0, Math.PI * 2);
-            ctx.fillStyle = isSelected ? 'rgba(239, 68, 68, 0.6)' : 'rgba(239, 68, 68, 0.35)';
-            ctx.fill();
-
-            // Core boss badge
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#ef4444';
-            ctx.fill();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
+            drawIconBadge(ctx, p.x, p.y, 9.5, 'fa-skull', '#ef4444', isSelected, isHovered, 1);
 
             // Smart label for Bosses
             if (state.zoom >= 0.08 || isSelected || isHovered) {
-                drawSmartLabel(ctx, u.name || 'Farmbot', p.x, p.y, radius, {
+                drawSmartLabel(ctx, u.name || 'Farmbot', p.x, p.y, 9.5, {
                     font: '700 11px "Outfit", sans-serif',
                     color: '#fca5a5'
                 });
             }
         } else {
-            // Standard small unit dot
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = u.color || '#f97316';
-            ctx.fill();
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            const icon = u.icon || (sub === 'animal' ? 'fa-cow' : (sub === 'seedbot' ? 'fa-seedling' : 'fa-robot'));
+            drawIconBadge(ctx, p.x, p.y, 6.5, icon, u.color || '#f97316', isSelected, isHovered, 1);
         }
     }
     ctx.restore();
 }
 
 function renderHarvestables(ctx, harvestables, width, height) {
-    // Dense resource nodes appear at close-up zoom >= 0.80
-    if (state.zoom < 0.80 && !state.selectedEntity) return;
+    // Resource nodes appear at zoom >= 0.24 (same level as schematic labels)
+    if (state.zoom < 0.24 && !state.selectedEntity) return;
 
     ctx.save();
     for (const h of harvestables) {
         const isHovered = state.hoveredEntity === h;
         const isSelected = state.selectedEntity === h;
 
-        if (state.zoom < 0.80 && !isSelected && !isHovered) continue;
+        if (state.zoom < 0.24 && !isSelected && !isHovered) continue;
 
         const cat = (h.category || '').toLowerCase();
-        const name = (h.name || '').toLowerCase();
-        if ((cat.includes('oil') || name.includes('oil')) && !state.subFilters.harvestables.oil) continue;
-        if ((cat.includes('cotton') || name.includes('cotton')) && !state.subFilters.harvestables.cotton) continue;
-        if ((cat.includes('mineral') || name.includes('mineral') || name.includes('stone')) && !state.subFilters.harvestables.minerals) continue;
-        if ((cat.includes('tree') || name.includes('wood') || name.includes('tree')) && !state.subFilters.harvestables.trees) continue;
+        if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
+        if (cat === 'cotton' && !state.subFilters.harvestables.cotton) continue;
+        if (cat === 'mineral' && !state.subFilters.harvestables.minerals) continue;
+        if (cat === 'tree' && !state.subFilters.harvestables.trees) continue;
+        if (cat === 'crop' && !state.subFilters.harvestables.crops) continue;
+        if (cat === 'chemical' && !state.subFilters.harvestables.chemicals) continue;
+        if (cat === 'flower' && !state.subFilters.harvestables.flowers) continue;
+        if (cat === 'other' && !state.subFilters.harvestables.other) continue;
 
         const p = worldToScreen(h.x, h.y, width, height);
-        if (p.x < -10 || p.x > width + 10 || p.y < -10 || p.y > height + 10) continue;
+        if (p.x < -25 || p.x > width + 25 || p.y < -25 || p.y > height + 25) continue;
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = h.color || '#10b981';
-        ctx.fill();
+        drawIconBadge(ctx, p.x, p.y, 6.5, h.icon || 'fa-seedling', h.color || '#10b981', isSelected, isHovered, h.count || 1);
     }
     ctx.restore();
 }
@@ -284,10 +313,13 @@ function renderSchematics(ctx, schematics, width, height) {
 }
 
 function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
-    const font = options.font || '600 11px "Outfit", sans-serif';
+    const font = options.font || '600 11.5px "Outfit", sans-serif';
     const color = options.color || '#ffffff';
 
+    ctx.save();
     ctx.font = font;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
     const textW = ctx.measureText(text).width;
     const textH = 14;
 
@@ -329,7 +361,6 @@ function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
 
     occupiedLabelBoxes.push(chosen.box);
 
-    ctx.save();
     ctx.shadowColor = '#000000';
     ctx.shadowBlur = 4;
     ctx.fillStyle = color;

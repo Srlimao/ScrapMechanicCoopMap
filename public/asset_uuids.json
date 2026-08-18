@@ -61,7 +61,10 @@
   },
   "60502d7c-b78a-44e9-a4ff-6084d2db5554": {
     "name": "obj_challenge_buttonframe_corner",
-    "source": "challenge.shapeset"
+    "source": "challenge.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "50deaf03-3c0a-441d-ae81-005809bc6a57": {
     "name": "obj_challenge_buttonframe_straight",
@@ -77,7 +80,10 @@
   },
   "f524517f-21ab-4d73-84e2-e3435c2316f3": {
     "name": "obj_challenge_goal_corner",
-    "source": "challenge.shapeset"
+    "source": "challenge.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "db16f6bd-efb6-4877-8277-04b08fc1e74e": {
     "name": "obj_challenge_balltubestraight",
@@ -637,11 +643,17 @@
   },
   "df953d9c-234f-4ac2-af5e-f0490b223e71": {
     "name": "blk_wood1",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8aedf6c2-94e1-4506-89d4-a0227c552f1e": {
     "name": "blk_metal1",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "09ca2713-28ee-4119-9622-e85490034758": {
     "name": "blk_caution",
@@ -669,7 +681,10 @@
   },
   "027bd4ec-b16d-47d2-8756-e18dc2af3eb6": {
     "name": "blk_spaceshipmetal",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "f0cba95b-2dc4-4492-8fd9-36546a4cb5aa": {
     "name": "blk_cardboard",
@@ -705,7 +720,10 @@
   },
   "c3990931-b471-4e89-beb5-0baaef47f0af": {
     "name": "obj_containers_woodbox",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "80550b05-f9eb-433c-9773-2af3beb1479d": {
     "name": "obj_containers_vegboxgreen",
@@ -717,11 +735,17 @@
   },
   "f6687d52-efc1-4f00-b573-bee4363ee14f": {
     "name": "obj_containers_vegboxcarrot",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "18a38c8e-18ec-46c5-be00-cee7724401e2": {
     "name": "obj_containers_vegboxbanana",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "8b684022-254b-41af-a58c-ec4b14791000": {
     "name": "obj_containers_vegboxblue",
@@ -737,11 +761,17 @@
   },
   "7ece2c9b-bc74-45b7-b5f1-4c6f41a03a7a": {
     "name": "obj_containers_vegboxbeetroot",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "8bcc5a38-b566-45fe-b47e-45118ee70d2d": {
     "name": "obj_containers_vegboxorange",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "faae6e1a-f431-49fd-b8b8-16f12139ee88": {
     "name": "obj_containers_plantcontainerclosed",
@@ -761,7 +791,10 @@
   },
   "e2a0770b-9bb9-4b3b-b9f2-994b534b79f3": {
     "name": "obj_decor_toiletroll",
-    "source": "decor.shapeset"
+    "source": "decor.shapeset",
+    "category": "oil",
+    "icon": "fa-oil-well",
+    "color": "#f59e0b"
   },
   "3fa0afca-7715-459e-86fa-2a81cf3027b8": {
     "name": "obj_decor_sink",
@@ -1045,7 +1078,10 @@
   },
   "0a597f6d-eb45-4f93-91e5-130e19e0f1f5": {
     "name": "obj_industrial_metalgrid",
-    "source": "industrial.shapeset"
+    "source": "industrial.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "2228cef0-f22a-4901-93c5-48e4df52caf6": {
     "name": "obj_industrial_railing",
@@ -1053,7 +1089,10 @@
   },
   "c40683f3-d9ce-4067-af24-3514c1867a1a": {
     "name": "obj_industrial_metalsupport",
-    "source": "industrial.shapeset"
+    "source": "industrial.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "15a8f24b-016a-4db6-adcc-967ee1b6c7b1": {
     "name": "obj_industrial_supportxframe",
@@ -1193,7 +1232,10 @@
   },
   "ca003562-fde7-463c-969e-f8334ae54387": {
     "name": "obj_interactive_toilet",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "oil",
+    "icon": "fa-oil-well",
+    "color": "#f59e0b"
   },
   "d5e36413-b3c1-4636-8447-3410c352ec7b": {
     "name": "obj_interactive_gasengine_creative",
@@ -1233,7 +1275,10 @@
   },
   "9f0f56e8-2c31-4d83-996c-d00a9b296c3f": {
     "name": "obj_interactive_logicgate",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8f7fd0e7-c46e-4944-a414-7ce2437bb30f": {
     "name": "obj_interactive_timer",
@@ -1321,7 +1366,10 @@
   },
   "bb443a05-b5b9-4fad-90fc-5e04aa90fd8f": {
     "name": "obj_plants_blueflower",
-    "source": "plants.shapeset"
+    "source": "plants.shapeset",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "69e362c3-32aa-4cd1-adc0-dcfc47b92c0d": {
     "name": "obj_vehicle_smallwheel",
@@ -1353,23 +1401,38 @@
   },
   "ff174ecb-fcf0-4e5f-a2ba-d3d60cce63e7": {
     "name": "env_clutter_flowerwhite",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "13d053e5-a6ef-4e19-9f6a-d3de4077e80a": {
     "name": "env_clutter_rock",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "e784a69d-4d32-4f2c-b1be-c1fb1716678a": {
     "name": "env_clutter_floweryellow",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "1da91b58-0a46-4b8f-af8e-a97195a87c4d": {
     "name": "env_clutter_flowerred",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "4a9c7175-ecce-4a5b-bb79-29246eb39a37": {
     "name": "env_clutter_flowerblue",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "e4d54b65-0488-4e05-b740-f49b075f2261": {
     "name": "env_clutter_tallgrass",
@@ -1381,7 +1444,10 @@
   },
   "f63d0128-130a-4865-88b6-5cd16f3165c8": {
     "name": "env_clutter_sandstone",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "caed4102-3779-4e2e-a0e7-76bf55e23bba": {
     "name": "env_clutter_pads",
@@ -3428,1268 +3494,1857 @@
     "source": "decal_tiremarks.json"
   },
   "c1f9d37f-ec89-4116-b7e5-e48dc90fdd77": {
-    "name": "hvs_amber_small01",
+    "name": "amber small01",
+    "rawName": "hvs_amber_small01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "amber.harvestableset"
   },
   "47c98d51-1297-4104-9444-8706edc37bd0": {
-    "name": "hvs_amber_large01",
+    "name": "amber large01",
+    "rawName": "hvs_amber_large01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "amber.harvestableset"
   },
   "dd9e449a-8649-4339-b67a-dc6b73c4df79": {
-    "name": "hvs_breakable_sapphire",
+    "name": "breakable sapphire",
+    "rawName": "hvs_breakable_sapphire",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "breakable.harvestableset"
   },
   "e67ebc76-ac0f-474c-bdcb-580d1e15f3d5": {
-    "name": "hvs_breakable_t5",
+    "name": "breakable t5",
+    "rawName": "hvs_breakable_t5",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "breakable.harvestableset"
   },
   "34debb7d-c7f0-49dc-b187-9370f1f66dea": {
-    "name": "watchtower_01",
+    "name": "watchtower 01",
+    "rawName": "watchtower_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "b58b1438-1df9-4ea0-903b-292044cda3fe": {
-    "name": "watchtower_02",
+    "name": "watchtower 02",
+    "rawName": "watchtower_02",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "d8b546bd-b864-4686-b39c-df727a4e6adc": {
-    "name": "sledgehammer_01",
+    "name": "sledgehammer 01",
+    "rawName": "sledgehammer_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "1c09cea8-bbeb-4a79-b7a0-097ce881dfa8": {
-    "name": "nicehouse_01",
+    "name": "nicehouse 01",
+    "rawName": "nicehouse_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "5ef3ef8c-d27c-4016-97b7-71009aef0408": {
-    "name": "compass_01",
+    "name": "compass 01",
+    "rawName": "compass_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "bcf3c494-2916-4a51-b05d-dbb0ced205b7": {
-    "name": "crowbar_01",
+    "name": "crowbar 01",
+    "rawName": "crowbar_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "7a3beb06-52a1-4151-a6e1-214dba60f23d": {
-    "name": "catapult_01",
+    "name": "catapult 01",
+    "rawName": "catapult_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "9f9a1015-912e-4c4b-9e2e-8ecb0e0ff6a2": {
-    "name": "steelbridge_01",
+    "name": "steelbridge 01",
+    "rawName": "steelbridge_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "33054a18-69e7-49c9-8656-13ce4da7a2bb": {
-    "name": "carousel_01",
+    "name": "carousel 01",
+    "rawName": "carousel_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "99736a94-37ac-49e7-bcaf-1e401ee18e82": {
-    "name": "beesuit_01",
+    "name": "beesuit 01",
+    "rawName": "beesuit_01",
+    "category": "flower",
+    "icon": "fa-shield",
+    "color": "#eab308",
     "source": "Builderquest.harvestableset"
   },
   "150d29f5-a528-43df-8204-28c333709d24": {
-    "name": "bigfan_01",
+    "name": "bigfan 01",
+    "rawName": "bigfan_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "c3c0a6bb-3bb4-4c52-bade-d723e9fda411": {
-    "name": "cardboardpoop_01",
+    "name": "cardboardpoop 01",
+    "rawName": "cardboardpoop_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "5162eccf-3796-4c0a-afef-e1a177267969": {
-    "name": "totebotkey_01",
+    "name": "totebotkey 01",
+    "rawName": "totebotkey_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "8de6a5f4-d32a-4510-8188-cbcf9b13445a": {
-    "name": "wochouse_01",
+    "name": "wochouse 01",
+    "rawName": "wochouse_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "15577656-7c82-4f8b-b0bf-4ce9b4ead2a5": {
-    "name": "cornheart_01",
+    "name": "cornheart 01",
+    "rawName": "cornheart_01",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "Builderquest.harvestableset"
   },
   "58e31f83-57cf-47e3-939f-571445679e79": {
-    "name": "cozybed_01",
+    "name": "cozybed 01",
+    "rawName": "cozybed_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "43c5f065-ae81-455b-829a-cf555793e627": {
-    "name": "xylophone_01",
+    "name": "xylophone 01",
+    "rawName": "xylophone_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "ba5df8dd-f58d-492d-81f5-43cf9bbbca61": {
-    "name": "garden_01",
+    "name": "garden 01",
+    "rawName": "garden_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "549bacae-c5e1-4b1f-9bac-7a4e04064e07": {
-    "name": "sawbladearm_01",
+    "name": "sawbladearm 01",
+    "rawName": "sawbladearm_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "3cd21270-4bec-4090-b461-19891d155841": {
-    "name": "popcorn_01",
+    "name": "popcorn 01",
+    "rawName": "popcorn_01",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "Builderquest.harvestableset"
   },
   "b8006c19-6528-4eeb-b886-cb81b296cb3b": {
-    "name": "baguette_01",
+    "name": "baguette 01",
+    "rawName": "baguette_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "02d8e21e-a0bd-4876-a4f7-23db15730d84": {
-    "name": "musicbox_01",
+    "name": "musicbox 01",
+    "rawName": "musicbox_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "Builderquest.harvestableset"
   },
   "9ef210c0-ea30-4442-a1fe-924b5609b0cc": {
-    "name": "hvs_burntforest_spiketree01",
+    "name": "burntforest spiketree01",
+    "rawName": "hvs_burntforest_spiketree01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "2bae67d4-c8ef-4c6e-a1a7-42281d0b7489": {
-    "name": "hvs_burntforest_spiketree02",
+    "name": "burntforest spiketree02",
+    "rawName": "hvs_burntforest_spiketree02",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "8f7a8108-2712-47b3-bce2-f25315165094": {
-    "name": "hvs_burntforest_spruce01",
+    "name": "burntforest spruce01",
+    "rawName": "hvs_burntforest_spruce01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "515aed88-0594-42b6-a352-617e5f5a3e45": {
-    "name": "hvs_burntforest_spruce02",
+    "name": "burntforest spruce02",
+    "rawName": "hvs_burntforest_spruce02",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "2d5aa53d-eb9c-478c-a70f-c57a43753814": {
-    "name": "hvs_burntforest_spruce03",
+    "name": "burntforest spruce03",
+    "rawName": "hvs_burntforest_spruce03",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "c08b553a-a917-4e26-bbb6-7b8523789cad": {
-    "name": "hvs_burntforest_spruce04",
+    "name": "burntforest spruce04",
+    "rawName": "hvs_burntforest_spruce04",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "d3fcfc06-a6b6-4598-99b1-9a6445b976b3": {
-    "name": "hvs_burntforest_spruce05",
+    "name": "burntforest spruce05",
+    "rawName": "hvs_burntforest_spruce05",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "b5f90719-fbca-4c59-89c3-187cdb5553d4": {
-    "name": "hvs_burntforest_birch01",
+    "name": "burntforest birch01",
+    "rawName": "hvs_burntforest_birch01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "burntforest.harvestableset"
   },
   "da59296e-9c61-4ab0-a5ee-ee1715e57128": {
-    "name": "hvs_crystal_medium01",
+    "name": "crystal medium01",
+    "rawName": "hvs_crystal_medium01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "crystal.harvestableset"
   },
   "22b5db6c-d7d7-4635-8b9d-c700e282e41b": {
-    "name": "hvs_crystal_large01",
+    "name": "crystal large01",
+    "rawName": "hvs_crystal_large01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "crystal.harvestableset"
   },
   "4c05950e-31e5-4cfe-a746-f2f6fe65f07f": {
-    "name": "hvs_crystal_large02",
+    "name": "crystal large02",
+    "rawName": "hvs_crystal_large02",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "crystal.harvestableset"
   },
   "7261bb49-9c63-4097-999a-4dcab9645eb0": {
-    "name": "Beehive (Beewax)",
+    "name": "farmables beehive",
     "rawName": "hvs_farmables_beehive",
-    "category": "resource",
-    "icon": "fa-archive",
-    "color": "#f59e0b",
-    "source": "survival_harvestable.lua"
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899",
+    "source": "farmables.harvestableset"
   },
   "3f1507bc-fc48-4b77-b87a-687cb1f4b787": {
-    "name": "Farmables Beehive Broken",
+    "name": "farmables beehive broken",
     "rawName": "hvs_farmables_beehive_broken",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899",
+    "source": "farmables.harvestableset"
   },
   "046a8ac8-300b-4e52-91f7-0912d53b2955": {
-    "name": "Slimy Clam",
+    "name": "farmables slimyclam",
     "rawName": "hvs_farmables_slimyclam",
-    "category": "resource",
-    "icon": "fa-water",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
     "color": "#06b6d4",
-    "source": "survival_harvestable.lua"
+    "source": "farmables.harvestableset"
   },
   "8c95cede-25a5-48b4-be97-6c16dab31057": {
-    "name": "Farmables Slimyclam Broken",
+    "name": "farmables slimyclam broken",
     "rawName": "hvs_farmables_slimyclam_broken",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4",
+    "source": "farmables.harvestableset"
   },
   "c591d94b-d7d1-4305-a9dd-76ef06d6fb49": {
-    "name": "Cotton Plant",
+    "name": "farmables cottonplant",
     "rawName": "hvs_farmables_cottonplant",
-    "category": "resource",
+    "category": "cotton",
     "icon": "fa-feather",
-    "color": "#f8fafc",
-    "source": "survival_harvestable.lua"
+    "color": "#cbd5e1",
+    "source": "farmables.harvestableset"
   },
   "062d34ac-d7ed-44ef-b523-e5b3ad70fdac": {
-    "name": "Cotton Plant (Growing)",
+    "name": "farmables growing cottonplant",
     "rawName": "hvs_farmables_growing_cottonplant",
-    "category": "resource",
+    "category": "cotton",
     "icon": "fa-feather",
-    "color": "#e2e8f0",
-    "source": "survival_harvestable.lua"
+    "color": "#cbd5e1",
+    "source": "farmables.harvestableset"
   },
   "39a5aeba-a021-4117-8cad-e08ad159281d": {
-    "name": "Corn Plant",
+    "name": "farmables cornplant",
     "rawName": "hvs_farmables_cornplant",
-    "category": "resource",
+    "category": "crop",
     "icon": "fa-wheat-awn",
-    "color": "#facc15",
-    "source": "survival_harvestable.lua"
+    "color": "#84cc16",
+    "source": "farmables.harvestableset"
   },
   "0f74d3a4-ade0-4054-8207-21f6be7903be": {
-    "name": "Farmables Growing Cornplant",
+    "name": "farmables growing cornplant",
     "rawName": "hvs_farmables_growing_cornplant",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "farmables.harvestableset"
   },
   "2ab8edca-9cfe-4b1c-9f57-5092f94ea890": {
-    "name": "Oil Geyser",
+    "name": "farmables oilgeyser",
     "rawName": "hvs_farmables_oilgeyser",
-    "category": "resource",
+    "category": "oil",
     "icon": "fa-oil-well",
     "color": "#f59e0b",
-    "source": "survival_harvestable.lua"
+    "source": "farmables.harvestableset"
   },
   "b6a26689-d803-49cc-a6e8-7f2b66dfb54d": {
-    "name": "Oil Geyser (Replenishing)",
+    "name": "farmables growing oilgeyser",
     "rawName": "hvs_farmables_growing_oilgeyser",
-    "category": "resource",
+    "category": "oil",
     "icon": "fa-oil-well",
-    "color": "#d97706",
-    "source": "survival_harvestable.lua"
+    "color": "#f59e0b",
+    "source": "farmables.harvestableset"
   },
   "f7567939-d170-437e-b5c4-352ee9d5850d": {
-    "name": "Pigment Flower",
+    "name": "farmables pigmentflower",
     "rawName": "hvs_farmables_pigmentflower",
-    "category": "resource",
-    "icon": "fa-palette",
+    "category": "flower",
+    "icon": "fa-spa",
     "color": "#ec4899",
-    "source": "survival_harvestable.lua"
+    "source": "farmables.harvestableset"
   },
   "1c5bdfa2-e28f-4ccd-8a4e-be52d812f18a": {
-    "name": "Pigment Flower (Growing)",
+    "name": "farmables growing pigmentflower",
     "rawName": "hvs_farmables_growing_pigmentflower",
-    "category": "resource",
-    "icon": "fa-palette",
-    "color": "#f472b6",
-    "source": "survival_harvestable.lua"
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899",
+    "source": "farmables.harvestableset"
   },
   "d862dea3-36af-4eb6-bce1-8d12d8be0f00": {
-    "name": "hvs_farmables_coral01",
+    "name": "farmables coral01",
+    "rawName": "hvs_farmables_coral01",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "farmables.harvestableset"
   },
   "0e79a87f-b242-4332-94de-7975fd99fed3": {
-    "name": "hvs_farmables_coral02",
+    "name": "farmables coral02",
+    "rawName": "hvs_farmables_coral02",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "farmables.harvestableset"
   },
   "6903b378-3fce-45b3-917b-e502e22834cc": {
-    "name": "hvs_farmables_coral03",
+    "name": "farmables coral03",
+    "rawName": "hvs_farmables_coral03",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "farmables.harvestableset"
   },
   "f4b34366-4805-477b-8e35-c91fb730152f": {
-    "name": "hvs_farmables_nimbolium",
+    "name": "farmables nimbolium",
+    "rawName": "hvs_farmables_nimbolium",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "farmables.harvestableset"
   },
   "a98a1502-7c9e-4dae-b7f9-30f31fc99496": {
-    "name": "Quartz Crystal",
+    "name": "farmables quartz",
     "rawName": "hvs_farmables_quartz",
-    "category": "resource",
-    "icon": "fa-gem",
-    "color": "#e879f9",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "farmables.harvestableset"
   },
   "3ab8ab0f-2179-46b5-a5c5-8ae458844675": {
-    "name": "hvs_farmables_lemonium",
+    "name": "farmables lemonium",
+    "rawName": "hvs_farmables_lemonium",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "farmables.harvestableset"
   },
   "40164941-d92a-4df3-bc11-ae3a335e1590": {
-    "name": "Gold Deposit",
-    "rawName": "hvs_farmables_golddeposit",
-    "category": "resource",
-    "icon": "fa-coins",
-    "color": "#fbbf24",
-    "source": "survival_harvestable.lua"
+    "name": "farmables t2",
+    "rawName": "hvs_farmables_t2",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "farmables.harvestableset"
   },
   "6fe3635b-e668-4fb6-8460-b64679942ae0": {
-    "name": "Farmables Mud",
+    "name": "farmables mud",
     "rawName": "hvs_farmables_mud",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "farmables.harvestableset"
   },
   "c0f19413-6d8e-4b20-819a-949553242259": {
-    "name": "hvs_plank_long",
+    "name": "plank long",
+    "rawName": "hvs_plank_long",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "144b5e79-483e-4da6-86ab-c575d0fdcd11": {
-    "name": "hvs_plank_short",
+    "name": "plank short",
+    "rawName": "hvs_plank_short",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "ead875db-59d0-45f5-861e-b3075e1f8434": {
-    "name": "hvs_plank_corner",
+    "name": "plank corner",
+    "rawName": "hvs_plank_corner",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "fences.harvestableset"
   },
   "59cf7d6a-63d3-4db8-a8ba-fe1f14523f56": {
-    "name": "hvs_FarmFence_01",
+    "name": "FarmFence 01",
+    "rawName": "hvs_FarmFence_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "20ce1efe-577b-4649-a2f6-f9a2c914a1c0": {
-    "name": "hvs_FarmFence_02",
+    "name": "FarmFence 02",
+    "rawName": "hvs_FarmFence_02",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "4b416c42-030c-49a8-bbdc-826b05c58929": {
-    "name": "hvs_FarmFence_03",
+    "name": "FarmFence 03",
+    "rawName": "hvs_FarmFence_03",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "f7170f6d-de51-41c5-97f8-8118e30829de": {
-    "name": "hvs_FarmFence_04",
+    "name": "FarmFence 04",
+    "rawName": "hvs_FarmFence_04",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "f1f6de00-33de-4e81-8d4f-a4f1baf3d30a": {
-    "name": "hvs_hideout_sign03",
+    "name": "hideout sign03",
+    "rawName": "hvs_hideout_sign03",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "f3daa59e-6411-45ee-bfa2-35fd59a95394": {
-    "name": "hvs_hideout_sign04",
+    "name": "hideout sign04",
+    "rawName": "hvs_hideout_sign04",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "215becae-cef0-44b5-a24f-29c03a771191": {
-    "name": "hvs_hideout_sign07",
+    "name": "hideout sign07",
+    "rawName": "hvs_hideout_sign07",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "bc716090-91df-4cab-aa16-304309791a94": {
-    "name": "hvs_hideout_fence01",
+    "name": "hideout fence01",
+    "rawName": "hvs_hideout_fence01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "474554d4-a37f-4732-bd26-5714369e139a": {
-    "name": "hvs_hideout_fence02",
+    "name": "hideout fence02",
+    "rawName": "hvs_hideout_fence02",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "0c130b14-5813-409b-a99b-7f8d0e025358": {
-    "name": "hvs_hideout_fence04",
+    "name": "hideout fence04",
+    "rawName": "hvs_hideout_fence04",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "8521b05a-29b0-4892-9a65-6457de3e47cb": {
-    "name": "hvs_hideout_fence05",
+    "name": "hideout fence05",
+    "rawName": "hvs_hideout_fence05",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "c1ede49b-7f79-4586-b3ed-a13289ff0071": {
-    "name": "hvs_hideout_fence06",
+    "name": "hideout fence06",
+    "rawName": "hvs_hideout_fence06",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fences.harvestableset"
   },
   "a1ee78c2-0b46-467c-927b-0b3c67cd9d90": {
-    "name": "hvs_fillers_haypile_01",
+    "name": "fillers haypile 01",
+    "rawName": "hvs_fillers_haypile_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fillers.harvestableset"
   },
   "57bfa2f0-f949-467e-bb85-a9eed63e2c41": {
-    "name": "hvs_fillers_haypile_02",
+    "name": "fillers haypile 02",
+    "rawName": "hvs_fillers_haypile_02",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fillers.harvestableset"
   },
   "e6e501ac-e1d8-4304-bd9f-e60383eeba4a": {
-    "name": "hvs_fillers_haypile_03",
+    "name": "fillers haypile 03",
+    "rawName": "hvs_fillers_haypile_03",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fillers.harvestableset"
   },
   "6f9e92fd-07dd-4679-9b3c-4305b67e449f": {
-    "name": "hvs_leafpile_01",
+    "name": "leafpile 01",
+    "rawName": "hvs_leafpile_01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fillers.harvestableset"
   },
   "bf8902e7-f163-4bfc-bb54-c2f11bb84bf7": {
-    "name": "hvs_leafpile_02",
+    "name": "leafpile 02",
+    "rawName": "hvs_leafpile_02",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "fillers.harvestableset"
   },
   "f6e17e84-126e-4d5a-805b-ae5a08013026": {
-    "name": "hvs_filler_rock_medium01",
+    "name": "filler rock medium01",
+    "rawName": "hvs_filler_rock_medium01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "fillers.harvestableset"
   },
   "45435aa6-d7ad-4444-89b7-81af5978ed6d": {
-    "name": "hvs_fillers_stalagmitestonesmall01",
+    "name": "fillers stalagmitestonesmall01",
+    "rawName": "hvs_fillers_stalagmitestonesmall01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "fillers.harvestableset"
   },
   "0f60fadd-5342-4874-81d2-d7cbc4ffe77c": {
-    "name": "hvs_fillers_stalagmitestonemedium01",
+    "name": "fillers stalagmitestonemedium01",
+    "rawName": "hvs_fillers_stalagmitestonemedium01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "fillers.harvestableset"
   },
   "60f9e96d-da03-45cb-abef-973868b2de40": {
-    "name": "hvs_fillers_stalagmitestonelarge01",
+    "name": "fillers stalagmitestonelarge01",
+    "rawName": "hvs_fillers_stalagmitestonelarge01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "fillers.harvestableset"
   },
   "907ea67e-07cf-4752-9604-9c793c4787cc": {
-    "name": "hvs_fillers_fluffplant01",
+    "name": "fillers fluffplant01",
+    "rawName": "hvs_fillers_fluffplant01",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "fillers.harvestableset"
   },
   "b1d28fe9-247e-4fbf-a5e8-6f58f649d3d5": {
-    "name": "hvs_fillers_bacterius01",
+    "name": "fillers bacterius01",
+    "rawName": "hvs_fillers_bacterius01",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4",
     "source": "fillers.harvestableset"
   },
   "8cbf9161-bfac-4a9e-8c53-d883484a5f2d": {
-    "name": "hvs_fillers_bacterius02",
+    "name": "fillers bacterius02",
+    "rawName": "hvs_fillers_bacterius02",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4",
     "source": "fillers.harvestableset"
   },
   "d45b6015-dd36-45a9-a15b-6e41b2952ff0": {
-    "name": "hvs_gaspotato_potato01",
+    "name": "gaspotato potato01",
+    "rawName": "hvs_gaspotato_potato01",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "gaspotato.harvestableset"
   },
   "d45b2615-f22a-4fd1-98ff-1da47911d89a": {
-    "name": "hvs_gaspotato_potato02",
+    "name": "gaspotato potato02",
+    "rawName": "hvs_gaspotato_potato02",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "gaspotato.harvestableset"
   },
   "8870d748-c1e0-4723-93de-4a92bc7f3fa6": {
-    "name": "hvs_gaspotato_potato03",
+    "name": "gaspotato potato03",
+    "rawName": "hvs_gaspotato_potato03",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "gaspotato.harvestableset"
   },
   "489ae5a6-8b59-430a-8887-99e7d6779bb8": {
-    "name": "hvs_gaspotato_root01",
+    "name": "gaspotato root01",
+    "rawName": "hvs_gaspotato_root01",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "gaspotato.harvestableset"
   },
   "f8af8fba-83be-41cf-be65-0eecf59efefd": {
-    "name": "hvs_gaspotato_root02",
+    "name": "gaspotato root02",
+    "rawName": "hvs_gaspotato_root02",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "gaspotato.harvestableset"
   },
   "4492379e-376d-4fad-ad69-fcb27d6b03c1": {
-    "name": "hvs_gaspotato_root03",
+    "name": "gaspotato root03",
+    "rawName": "hvs_gaspotato_root03",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "gaspotato.harvestableset"
   },
   "b8eb68ca-25a0-47aa-8745-12f2dd13d873": {
-    "name": "Loot Crate",
+    "name": "lootcrate",
     "rawName": "hvs_lootcrate",
-    "category": "loot",
-    "icon": "fa-box-open",
-    "color": "#38bdf8",
-    "source": "survival_harvestable.lua"
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
+    "source": "loot.harvestableset"
   },
   "a6b9fa26-df80-4f5b-9679-418f4567e5ca": {
-    "name": "Epic Gold Loot Crate",
-    "rawName": "hvs_lootcrateepic",
-    "category": "loot",
-    "icon": "fa-box-open",
-    "color": "#facc15",
-    "source": "survival_harvestable.lua"
+    "name": "lootcrat rare",
+    "rawName": "hvs_lootcrat_rare",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
+    "source": "loot.harvestableset"
   },
   "97fe0cf2-0591-4e98-9beb-9186f4fd83c8": {
-    "name": "Loot",
+    "name": "loot",
     "rawName": "hvs_loot",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "74ffe0eb-17fe-41b3-a532-8dbb5924e5dc": {
-    "name": "Loot Audiologfile",
+    "name": "loot audiologfile",
     "rawName": "hvs_loot_audiologfile",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "loot.harvestableset"
   },
   "6e7611e1-ad18-413a-a4cb-bab7e3a5ca75": {
-    "name": "Loot Picturelogfile",
+    "name": "loot picturelogfile",
     "rawName": "hvs_loot_picturelogfile",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "loot.harvestableset"
   },
   "6726c35c-f8e6-49cf-b0b6-05e7efac4115": {
-    "name": "Loot Informationlogfile",
+    "name": "loot informationlogfile",
     "rawName": "hvs_loot_informationlogfile",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "loot.harvestableset"
   },
   "3b7054d0-9ca7-4efa-8b4a-e8658eda3181": {
-    "name": "Loot Logbook",
+    "name": "loot logbook",
     "rawName": "hvs_loot_logbook",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "loot.harvestableset"
   },
   "e3cb14d5-9d28-45e8-96f7-fc79c60de292": {
-    "name": "Loot Outfitrare",
+    "name": "loot outfitrare",
     "rawName": "hvs_loot_outfitrare",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "cceec00b-8a34-4d68-a419-8c3bc7aa075a": {
-    "name": "Loot Outfitepic",
+    "name": "loot outfitepic",
     "rawName": "hvs_loot_outfitepic",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "fa982977-bf82-476a-b404-792e10451ce5": {
-    "name": "Loot Quest Reward",
+    "name": "loot quest reward",
     "rawName": "hvs_loot_quest_reward",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "f8f1b878-24ec-4241-acfd-9f0d91395765": {
-    "name": "Loot Logbook Entry",
+    "name": "loot logbook entry",
     "rawName": "hvs_loot_logbook_entry",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "loot.harvestableset"
   },
   "ff9a1a71-f411-46a5-a8b6-40e18a8642ab": {
-    "name": "Loot Quest Event",
+    "name": "loot quest event",
     "rawName": "hvs_loot_quest_event",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "3bb80384-1f4c-4c1f-803d-6d1838882029": {
-    "name": "Legendary Purple Loot Crate",
-    "rawName": "hvs_lootcratelegendary",
-    "category": "loot",
-    "icon": "fa-box-open",
-    "color": "#c084fc",
-    "source": "survival_harvestable.lua"
+    "name": "lootcrate epic",
+    "rawName": "hvs_lootcrate_epic",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
+    "source": "loot.harvestableset"
   },
   "58ae6c48-bd59-4311-acda-45c0b3d9233b": {
-    "name": "hvs_lootcrate_growlab",
+    "name": "lootcrate growlab",
+    "rawName": "hvs_lootcrate_growlab",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "loot.harvestableset"
   },
   "d1d56712-a3f0-4af8-bb53-7ad6cb37d34b": {
-    "name": "Loot Limited",
+    "name": "loot limited",
     "rawName": "hvs_loot_limited",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "facc327b-6bda-4097-9161-ee392e541a63": {
-    "name": "hvs_quest_phone",
+    "name": "quest phone",
+    "rawName": "hvs_quest_phone",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "loot.harvestableset"
   },
   "282f332e-eb95-4553-b711-4a027e92391d": {
-    "name": "Loot Bigger",
+    "name": "loot bigger",
     "rawName": "hvs_loot_bigger",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "loot.harvestableset"
   },
   "9e23e57b-525c-4d77-ac75-9020ac325347": {
-    "name": "hvs_mineralcluster_keyblockerblue",
+    "name": "mineralcluster keyblockerblue",
+    "rawName": "hvs_mineralcluster_keyblockerblue",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "1895485a-3c96-44a5-b363-5007b0d4c962": {
-    "name": "hvs_mineralcluster_keyblockerpurple",
+    "name": "mineralcluster keyblockerpurple",
+    "rawName": "hvs_mineralcluster_keyblockerpurple",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "e67d93ea-65e7-483a-a5e9-34179bc8779a": {
-    "name": "hvs_mineralcluster_keyblockerred",
+    "name": "mineralcluster keyblockerred",
+    "rawName": "hvs_mineralcluster_keyblockerred",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "d635810e-f273-4b38-928d-22cd8269ffaa": {
-    "name": "hvs_mineralcluster_blue01",
+    "name": "mineralcluster blue01",
+    "rawName": "hvs_mineralcluster_blue01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "3ce53d55-d240-4dcd-b8d7-da97c46a38d1": {
-    "name": "hvs_mineralcluster_blue02",
+    "name": "mineralcluster blue02",
+    "rawName": "hvs_mineralcluster_blue02",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "9f6886b2-57c7-4fd4-8a0b-16964309abe2": {
-    "name": "hvs_mineralcluster_blue03",
+    "name": "mineralcluster blue03",
+    "rawName": "hvs_mineralcluster_blue03",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "3d7cf576-dcf9-4e90-9152-5998eb29062c": {
-    "name": "hvs_mineralcluster_purple01",
+    "name": "mineralcluster purple01",
+    "rawName": "hvs_mineralcluster_purple01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "95840920-81a2-44d2-a5ef-07fe47f53055": {
-    "name": "hvs_mineralcluster_purple02",
+    "name": "mineralcluster purple02",
+    "rawName": "hvs_mineralcluster_purple02",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "83c64e31-44ee-43df-96b2-df0cc9a4a519": {
-    "name": "hvs_mineralcluster_purple03",
+    "name": "mineralcluster purple03",
+    "rawName": "hvs_mineralcluster_purple03",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "456094c0-23d7-4d7b-8375-4e5829083dbf": {
-    "name": "hvs_mineralcluster_red01",
+    "name": "mineralcluster red01",
+    "rawName": "hvs_mineralcluster_red01",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "644eeab0-5ad3-4ad0-8fa2-48ae6a6a9917": {
-    "name": "hvs_mineralcluster_red02",
+    "name": "mineralcluster red02",
+    "rawName": "hvs_mineralcluster_red02",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "83bbe8b2-7d73-4a36-ae3d-095b2f3daf60": {
-    "name": "hvs_mineralcluster_red03",
+    "name": "mineralcluster red03",
+    "rawName": "hvs_mineralcluster_red03",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "Mineralcluster.harvestableset"
   },
   "20bb2d93-cdc7-45f6-8d15-18742706bd36": {
-    "name": "hvs_triggers_powerbreaker",
+    "name": "triggers powerbreaker",
+    "rawName": "hvs_triggers_powerbreaker",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "minidungeon.harvestableset"
   },
   "939bd3ae-c92d-401a-864a-9d05028e2e2e": {
-    "name": "hvs_survivalobjects_doorprogresslight",
+    "name": "survivalobjects doorprogresslight",
+    "rawName": "hvs_survivalobjects_doorprogresslight",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "minidungeon.harvestableset"
   },
   "b1a44f59-df94-42f5-b569-433d6fc5e68d": {
     "name": "doorunlocklight",
+    "rawName": "doorunlocklight",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "minidungeon.harvestableset"
   },
   "4636bbb6-b1a4-48c7-b0b7-29f230d7981a": {
     "name": "smallunlocklight",
+    "rawName": "smallunlocklight",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "minidungeon.harvestableset"
   },
   "354eee30-8345-4502-b4ed-6fbe35d894e6": {
     "name": "rewardlocker",
+    "rawName": "rewardlocker",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "minidungeon.harvestableset"
   },
   "4b735c21-f3d5-41c1-bd1a-054064ab5088": {
-    "name": "rewardlocker_destroyed",
+    "name": "rewardlocker destroyed",
+    "rawName": "rewardlocker_destroyed",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "minidungeon.harvestableset"
   },
   "4de65980-8fb6-4017-9a1c-061503c4fc06": {
-    "name": "hvs_deposit_azuritesmall",
+    "name": "deposit azuritesmall",
+    "rawName": "hvs_deposit_azuritesmall",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "b9029c5c-64da-42f0-b526-a4abad5dc300": {
-    "name": "hvs_deposit_amethystsmall",
+    "name": "deposit amethystsmall",
+    "rawName": "hvs_deposit_amethystsmall",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "0647aaa3-2ccd-4a1c-9ab3-fc8103df156c": {
-    "name": "hvs_deposit_rubysmall",
+    "name": "deposit rubysmall",
+    "rawName": "hvs_deposit_rubysmall",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "6a4d1c7e-2ae2-4cd2-9e1b-409d1af0ccf1": {
-    "name": "hvs_deposit_silversmall",
+    "name": "deposit silversmall",
+    "rawName": "hvs_deposit_silversmall",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "d758bea3-8484-4fb4-8713-339808ec899c": {
-    "name": "hvs_deposit_goldsmall",
+    "name": "deposit goldsmall",
+    "rawName": "hvs_deposit_goldsmall",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "a71b5865-3a9e-445e-bac5-f0e0d5df4783": {
-    "name": "hvs_deposit_goldmedium",
+    "name": "deposit goldmedium",
+    "rawName": "hvs_deposit_goldmedium",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "e1daea66-1b3f-4b2a-9b02-5f9d85ef92bc": {
-    "name": "hvs_deposit_azuritebig",
+    "name": "deposit azuritebig",
+    "rawName": "hvs_deposit_azuritebig",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "81df3937-a8f8-4841-879a-899f7e5824bf": {
-    "name": "hvs_deposit_amethystbig",
+    "name": "deposit amethystbig",
+    "rawName": "hvs_deposit_amethystbig",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "05707a34-aed6-4652-bb63-204b96b87123": {
-    "name": "hvs_deposit_rubybig",
+    "name": "deposit rubybig",
+    "rawName": "hvs_deposit_rubybig",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "159d843b-8174-4838-a344-427a2a458aec": {
-    "name": "hvs_deposit_silverbig",
+    "name": "deposit silverbig",
+    "rawName": "hvs_deposit_silverbig",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "9e581ea2-e269-4121-9def-4fffdf895027": {
-    "name": "hvs_deposit_goldbig",
+    "name": "deposit goldbig",
+    "rawName": "hvs_deposit_goldbig",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "ore.harvestableset"
   },
   "b39349ae-9b7e-48e2-8e9d-6f9dc6472fd6": {
-    "name": "Soil",
-    "rawName": "hvs_soil",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "name": "harvestable farming soil",
+    "rawName": "harvestable_farming_soil",
+    "category": "oil",
+    "icon": "fa-oil-well",
+    "color": "#f59e0b",
+    "source": "plantables.harvestableset"
   },
   "d3fdedca-7e1c-45cc-a1db-f0deee381a71": {
-    "name": "Growing Banana",
+    "name": "growing banana",
     "rawName": "hvs_growing_banana",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "80cd6e60-154f-46da-8f26-ff30f2961fa2": {
-    "name": "Mature Banana",
+    "name": "mature banana",
     "rawName": "hvs_mature_banana",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "bb600268-cd29-4715-babe-5fd02645eb1c": {
-    "name": "Growing Blueberry",
+    "name": "growing blueberry",
     "rawName": "hvs_growing_blueberry",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "9b031ec3-bc91-47b9-93fb-df79a8ef3026": {
-    "name": "Mature Blueberry",
+    "name": "mature blueberry",
     "rawName": "hvs_mature_blueberry",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "b1a17952-b6a2-436d-81e4-df8ffb552166": {
-    "name": "Growing Orange",
+    "name": "growing orange",
     "rawName": "hvs_growing_orange",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "133ae17a-c038-4a55-ab79-f40f6840ab2b": {
-    "name": "Mature Orange",
+    "name": "mature orange",
     "rawName": "hvs_mature_orange",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "1337f492-aa23-42d0-af7a-fae45b47e55f": {
-    "name": "Growing Pineapple",
+    "name": "growing pineapple",
     "rawName": "hvs_growing_pineapple",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "plantables.harvestableset"
   },
   "2cedbc23-92c5-4fba-8a08-ecbae23a28e5": {
-    "name": "Mature Pineapple",
+    "name": "mature pineapple",
     "rawName": "hvs_mature_pineapple",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e",
+    "source": "plantables.harvestableset"
   },
   "6dd177f4-3312-4b1e-a986-4421b5e83bff": {
-    "name": "Growing Carrot",
+    "name": "growing carrot",
     "rawName": "hvs_growing_carrot",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "18990ae9-62d1-41f7-aab9-5199b31e3e89": {
-    "name": "Mature Carrot",
+    "name": "mature carrot",
     "rawName": "hvs_mature_carrot",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "18efedc5-8706-4ecb-afd4-e9294d3f1052": {
-    "name": "Growing Redbeet",
+    "name": "growing redbeet",
     "rawName": "hvs_growing_redbeet",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "1a167796-8162-4990-97a7-b3810b3f94ca": {
-    "name": "Mature Redbeet",
+    "name": "mature redbeet",
     "rawName": "hvs_mature_redbeet",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "c6f80a93-5b16-45ef-a478-ca56a50f61ae": {
-    "name": "Growing Tomato",
+    "name": "growing tomato",
     "rawName": "hvs_growing_tomato",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "534b13a0-3ec1-4558-a77a-cfccf6c3cb3e": {
-    "name": "Mature Tomato",
+    "name": "mature tomato",
     "rawName": "hvs_mature_tomato",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "1675314b-0dfc-4d34-b854-0bdf0476221d": {
-    "name": "Growing Broccoli",
+    "name": "growing broccoli",
     "rawName": "hvs_growing_broccoli",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "b166b142-792a-4c8f-9d06-f277dab6dba6": {
-    "name": "Mature Broccoli",
+    "name": "mature broccoli",
     "rawName": "hvs_mature_broccoli",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "ec1cf82f-e8f3-4ca6-8e35-a4bdf0e8e259": {
-    "name": "Growing Potato",
+    "name": "growing potato",
     "rawName": "hvs_growing_potato",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "c42ad18d-797b-4196-ab79-86e222d8f767": {
-    "name": "Mature Potato",
+    "name": "mature potato",
     "rawName": "hvs_mature_potato",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "779b5e09-7ce7-4a16-9817-02f5cb8e11f6": {
-    "name": "Growing Cotton",
+    "name": "growing cotton",
     "rawName": "hvs_growing_cotton",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "cotton",
+    "icon": "fa-feather",
+    "color": "#cbd5e1",
+    "source": "plantables.harvestableset"
   },
   "4d923a91-0c98-40f9-ae3f-ef386362ab1c": {
-    "name": "Mature Cotton",
+    "name": "mature cotton",
     "rawName": "hvs_mature_cotton",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "cotton",
+    "icon": "fa-feather",
+    "color": "#cbd5e1",
+    "source": "plantables.harvestableset"
   },
   "81f76937-af88-4882-a64c-bc86a4092c20": {
-    "name": "Growing Chili",
+    "name": "growing chili",
     "rawName": "hvs_growing_chili",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "4ef9170e-c57b-4b76-9a39-4a111eb5cc0d": {
-    "name": "Mature Chili",
+    "name": "mature chili",
     "rawName": "hvs_mature_chili",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
+    "source": "plantables.harvestableset"
   },
   "1ebfd7c2-89df-4455-a0cc-2a43a718125b": {
-    "name": "Growing Pigmentflower",
+    "name": "growing pigmentflower",
     "rawName": "hvs_growing_pigmentflower",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899",
+    "source": "plantables.harvestableset"
   },
   "bd35a291-3ea6-4c89-ab05-606ce1399251": {
-    "name": "Mature Pigmentflower",
+    "name": "mature pigmentflower",
     "rawName": "hvs_mature_pigmentflower",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899",
+    "source": "plantables.harvestableset"
   },
   "7745d036-ed25-4559-9eb2-47b6da8d007e": {
-    "name": "hvs_questitem_water_bucket",
+    "name": "questitem water bucket",
+    "rawName": "hvs_questitem_water_bucket",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4",
     "source": "questitems.harvestableset"
   },
   "c0245e76-27b1-48ba-9748-07fbe52cc07b": {
-    "name": "hvs_quest_ballooncrate",
+    "name": "quest ballooncrate",
+    "rawName": "hvs_quest_ballooncrate",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "questitems.harvestableset"
   },
   "3c51a75c-f201-4f2b-b995-b2036adf1427": {
-    "name": "hvs_quest_ballooncrate_open",
+    "name": "quest ballooncrate open",
+    "rawName": "hvs_quest_ballooncrate_open",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "questitems.harvestableset"
   },
   "6757b211-f50c-42c5-bd7c-648dcbe3ed52": {
-    "name": "Remains Glowstick",
+    "name": "remains glowstick",
     "rawName": "hvs_remains_glowstick",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4",
+    "source": "remains.harvestableset"
   },
   "740cabea-0640-4b78-b179-28e968c318eb": {
-    "name": "Sparkstone",
+    "name": "sparkstone",
     "rawName": "hvs_sparkstone",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
+    "source": "sparkstones.harvestableset"
   },
   "0d3362ae-4cb3-42ae-8a08-d3f9ed79e274": {
-    "name": "Small Stone Node",
+    "name": "stone small01",
     "rawName": "hvs_stone_small01",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#94a3b8",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "f6b8e9b8-5592-46b6-acf9-86123bf630a9": {
-    "name": "Small Stone Node",
+    "name": "stone small02",
     "rawName": "hvs_stone_small02",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#94a3b8",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "60ad4b7f-a7ef-4944-8a87-0844e6305513": {
-    "name": "Small Stone Node",
+    "name": "stone small03",
     "rawName": "hvs_stone_small03",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#94a3b8",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "ab5b947e-a223-4842-83dd-aa6b23ac2b86": {
-    "name": "Medium Stone Node",
+    "name": "stone medium01",
     "rawName": "hvs_stone_medium01",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#94a3b8",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "5da6c862-8a5c-4b56-90d3-5f038d569c4a": {
-    "name": "Medium Stone Node",
+    "name": "stone medium02",
     "rawName": "hvs_stone_medium02",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#94a3b8",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "90e0ef6a-8409-4459-8926-e5351d7da611": {
-    "name": "Stone Medium03",
+    "name": "stone medium03",
     "rawName": "hvs_stone_medium03",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "ab362045-0444-4749-9f24-f5e850162857": {
-    "name": "Large Stone / Metal Node",
+    "name": "stone large01",
     "rawName": "hvs_stone_large01",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#cbd5e1",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "63fb92b3-e1dc-4b5c-9ed3-7b572bc01ca4": {
-    "name": "Large Stone / Metal Node",
+    "name": "stone large02",
     "rawName": "hvs_stone_large02",
     "category": "mineral",
     "icon": "fa-mountain",
-    "color": "#cbd5e1",
-    "source": "survival_harvestable.lua"
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "67111401-1ee1-4bfb-8780-fa878352f90d": {
-    "name": "Stone Large03",
+    "name": "stone large03",
     "rawName": "hvs_stone_large03",
-    "category": "resource",
-    "icon": "fa-seedling",
-    "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
+    "source": "stones.harvestableset"
   },
   "0ba2860b-1205-4b77-b89d-f770b0ef9240": {
-    "name": "hvs_storage_container_orange",
+    "name": "storage container orange",
+    "rawName": "hvs_storage_container_orange",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "storage.harvestableset"
   },
   "97e1c202-d79a-4e90-ae59-0af3f594fe32": {
-    "name": "hvs_storage_container_broccoli",
+    "name": "storage container broccoli",
+    "rawName": "hvs_storage_container_broccoli",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "storage.harvestableset"
   },
   "5686045a-a028-40e2-97db-977af8db07e3": {
-    "name": "hvs_building_container_banana",
+    "name": "building container banana",
+    "rawName": "hvs_building_container_banana",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "storage.harvestableset"
   },
   "992ba422-3591-4b30-a2d9-b820e98825ae": {
-    "name": "hvs_building_container_beetroot",
+    "name": "building container beetroot",
+    "rawName": "hvs_building_container_beetroot",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "storage.harvestableset"
   },
   "3a21a461-8f58-48cf-962d-ed2c0ac6b68c": {
-    "name": "hvs_building_container_blueberry",
+    "name": "building container blueberry",
+    "rawName": "hvs_building_container_blueberry",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16",
     "source": "storage.harvestableset"
   },
   "577b6f30-b602-4441-8f12-31d8cad89d52": {
-    "name": "hvs_storage_container_broken",
+    "name": "storage container broken",
+    "rawName": "hvs_storage_container_broken",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "storage.harvestableset"
   },
   "cbf64d72-4574-48f8-8d81-5e071657ec7a": {
-    "name": "hvs_survivalobjects_latchleverbase",
+    "name": "survivalobjects latchleverbase",
+    "rawName": "hvs_survivalobjects_latchleverbase",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "ce087eb1-47bc-4b2d-8408-8780f771965a": {
-    "name": "hvs_survivalobjects_warehouseconsolebase",
+    "name": "survivalobjects warehouseconsolebase",
+    "rawName": "hvs_survivalobjects_warehouseconsolebase",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "f811de38-5b13-49a8-8d33-ee4e05e7eb52": {
-    "name": "hvs_survivalobjects_warehouseconsolebase_breakstate01",
+    "name": "survivalobjects warehouseconsolebase breakstate01",
+    "rawName": "hvs_survivalobjects_warehouseconsolebase_breakstate01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "11ffeef5-42d2-4cd6-b242-b981cc904d0e": {
-    "name": "Survivalobjects Builderguide Infopanel",
+    "name": "survivalobjects builderguide infopanel",
     "rawName": "hvs_survivalobjects_builderguide_infopanel",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "survivalobjects.harvestableset"
   },
   "fc584dff-f102-4a5f-bfdc-7a17da6c3763": {
-    "name": "hvs_survivalobjects_builderquestbutton_queststarter",
+    "name": "survivalobjects builderquestbutton queststarter",
+    "rawName": "hvs_survivalobjects_builderquestbutton_queststarter",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "d9eaf727-7839-48a6-bec7-189922a2d202": {
-    "name": "hvs_minidungeon_breakable_lock",
+    "name": "minidungeon breakable lock",
+    "rawName": "hvs_minidungeon_breakable_lock",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "857e51e5-82ac-4624-a069-0c5ea61bdd23": {
     "name": "powerladderbase",
+    "rawName": "powerladderbase",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "895f5d04-c29a-46fd-bff5-742fc310940b": {
-    "name": "hvs_powerstation_activationslot",
+    "name": "powerstation activationslot",
+    "rawName": "hvs_powerstation_activationslot",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "survivalobjects.harvestableset"
   },
   "6905ab4d-1349-4ca2-bd8f-5eb69abb11a0": {
-    "name": "Voxelspawncontainer",
+    "name": "voxelspawncontainer",
     "rawName": "hvs_voxelspawncontainer",
-    "category": "resource",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "survivalobjects.harvestableset"
   },
   "55253f85-08d3-4940-8468-7b414cc89c21": {
-    "name": "Cablebot Pocket",
-    "rawName": "hvs_cablebot_pocket",
-    "category": "resource",
+    "name": "cablebot pocket01",
+    "rawName": "hvs_cablebot_pocket01",
+    "category": "other",
     "icon": "fa-seedling",
     "color": "#10b981",
-    "source": "survival_harvestable.lua"
+    "source": "traps.harvestableset"
   },
   "5ece57cb-5251-4951-906b-52f8615e3aaf": {
-    "name": "hvs_traps_surprisespawner",
+    "name": "traps surprisespawner",
+    "rawName": "hvs_traps_surprisespawner",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "traps.harvestableset"
   },
   "a9667fbe-3991-48c9-b830-0a5dcdce4d36": {
-    "name": "hvs_traps_surprisespawner_hay",
+    "name": "traps surprisespawner hay",
+    "rawName": "hvs_traps_surprisespawner_hay",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "traps.harvestableset"
   },
   "c4ea19d3-2469-4059-9f13-3ddb4f7e0b79": {
-    "name": "Birch Tree",
-    "rawName": "hvs_tree_birch01",
+    "name": "harvestable tree birch01",
+    "rawName": "harvestable_tree_birch01",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#86efac",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "711c3e72-7ba1-4424-ae70-c13d23afe818": {
-    "name": "Birch Tree",
-    "rawName": "hvs_tree_birch02",
+    "name": "harvestable tree birch02",
+    "rawName": "harvestable_tree_birch02",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#86efac",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "a7aa52af-4276-4b2d-af44-36bc41864e04": {
-    "name": "Birch Tree",
-    "rawName": "hvs_tree_birch03",
+    "name": "harvestable tree birch03",
+    "rawName": "harvestable_tree_birch03",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#86efac",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "91ec04ea-9bf7-4a9d-bb7f-3d0125ff78c7": {
-    "name": "Leafy Tree",
-    "rawName": "hvs_tree_leafy01",
+    "name": "harvestable tree leafy01",
+    "rawName": "harvestable_tree_leafy01",
     "category": "tree",
     "icon": "fa-tree",
     "color": "#22c55e",
-    "source": "survival_harvestable.lua"
+    "source": "trees.harvestableset"
   },
   "4d482999-98b7-4023-a149-d47be709b8f7": {
-    "name": "Leafy Tree",
-    "rawName": "hvs_tree_leafy02",
+    "name": "harvestable tree leafy02",
+    "rawName": "harvestable_tree_leafy02",
     "category": "tree",
     "icon": "fa-tree",
     "color": "#22c55e",
-    "source": "survival_harvestable.lua"
+    "source": "trees.harvestableset"
   },
   "3db0a60d-8668-4c8a-8dd2-f5ceb294977e": {
-    "name": "Leafy Tree",
-    "rawName": "hvs_tree_leafy03",
+    "name": "harvestable tree leafy03",
+    "rawName": "harvestable_tree_leafy03",
     "category": "tree",
     "icon": "fa-tree",
     "color": "#22c55e",
-    "source": "survival_harvestable.lua"
+    "source": "trees.harvestableset"
   },
   "8411caba-63db-4b93-ad67-7ae8e350d360": {
-    "name": "Pine Tree",
-    "rawName": "hvs_tree_pine01",
+    "name": "harvestable tree pine01",
+    "rawName": "harvestable_tree_pine01",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#15803d",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "1cb503a4-9306-412f-9e13-371bc634af60": {
-    "name": "Pine Tree",
-    "rawName": "hvs_tree_pine02",
+    "name": "harvestable tree pine02",
+    "rawName": "harvestable_tree_pine02",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#15803d",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "fa864e51-67db-4ac9-823b-cfbdf523375d": {
-    "name": "Pine Tree",
-    "rawName": "hvs_tree_pine03",
+    "name": "harvestable tree pine03",
+    "rawName": "harvestable_tree_pine03",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#15803d",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "73f968f0-d3a3-4334-86a8-a90203a3a56d": {
-    "name": "Spruce Tree",
-    "rawName": "hvs_tree_spruce01",
+    "name": "harvestable tree spruce01",
+    "rawName": "harvestable_tree_spruce01",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#166534",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "86324c5b-e97a-41f6-aa2c-7c6462f1f2e7": {
-    "name": "Spruce Tree",
-    "rawName": "hvs_tree_spruce02",
+    "name": "harvestable tree spruce02",
+    "rawName": "harvestable_tree_spruce02",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#166534",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "27aa53ea-1e09-4251-a284-437f93850409": {
-    "name": "Spruce Tree",
-    "rawName": "hvs_tree_spruce03",
+    "name": "harvestable tree spruce03",
+    "rawName": "harvestable_tree_spruce03",
     "category": "tree",
     "icon": "fa-tree",
-    "color": "#166534",
-    "source": "survival_harvestable.lua"
+    "color": "#22c55e",
+    "source": "trees.harvestableset"
   },
   "7a11bba0-e4ff-407f-890f-3400c3f2ae80": {
-    "name": "hvs_fence_plasticroadblock01",
+    "name": "fence plasticroadblock01",
+    "rawName": "hvs_fence_plasticroadblock01",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "undergroundstation.harvestableset"
   },
   "9c1997ee-873d-4b01-b916-5f2c6183863e": {
-    "name": "hvs_fence_plasticroadblock02",
+    "name": "fence plasticroadblock02",
+    "rawName": "hvs_fence_plasticroadblock02",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "undergroundstation.harvestableset"
   },
   "c852c67e-40a5-43cb-a88c-ee6c996c21fe": {
-    "name": "hvs_fence_plasticroadblock03",
+    "name": "fence plasticroadblock03",
+    "rawName": "hvs_fence_plasticroadblock03",
+    "category": "other",
+    "icon": "fa-seedling",
+    "color": "#10b981",
     "source": "undergroundstation.harvestableset"
   },
   "be3b153c-d71c-4d3a-9570-013ebf128a12": {
     "name": "log_babywoc_whistle",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ee4ab0d3-027a-4969-9436-5b23c26e5eeb": {
     "name": "log_crashedship",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "29d72e47-8eac-4fb9-95b1-ecccc06ff84f": {
     "name": "log_mechanicstation",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "40a7cbfb-3e9c-47cb-b054-ed6758007cdb": {
     "name": "log_garage",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "dd5082ff-066a-4e98-be26-d8e9ef1df20d": {
     "name": "log_mininghub",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "71fa62f6-c121-4e60-b1c1-5a4fbfd41522": {
     "name": "log_packingstation_vegetable",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "d16f9ffd-f18a-4428-8a6f-72d1afe8aed6": {
     "name": "log_packingstation_fruit",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "2e3dbf78-f4e3-4d37-bff6-c11b5031c1b9": {
     "name": "log_hideout",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "6d7cf454-4c01-4e3b-8f6d-a9dbf6234522": {
     "name": "log_audioBunkRecording",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "1be51b09-65a1-4241-bcaf-1e64f3152e02": {
     "name": "log_audioBunkRecording2",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "fe721e78-eff6-4dd8-a323-deb65a17648f": {
     "name": "log_warehouseRecording",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "67c579bf-d0f8-4e66-8504-50b6eddd7c56": {
     "name": "log_growlab_01",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ceb02530-80f8-4bf5-a57e-7d05946b2f21": {
     "name": "log_growlab_02",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "74ccefaf-8984-4e4b-ba04-f07a33e48ba8": {
     "name": "log_growlab_03",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "eea67672-c5b1-4c28-8783-ecd05e7b5310": {
     "name": "log_growlab_04",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "e5ff8eed-dd5b-4533-9152-a6c393164798": {
     "name": "log_growlab_05",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "db5bcb14-7138-49fd-acd7-b831c182e3df": {
     "name": "log_growlab_06",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "b2c71b5f-163f-48d8-b470-5c08ac3c128b": {
     "name": "log_growlab_07",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "38d9393a-1abb-427f-aaa6-6a58f62085c6": {
     "name": "log_underground_minerboss_key",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "e877b877-0387-4a8b-a7e4-a66663c8e7fe": {
     "name": "log_warehouse_key",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "cabd1534-6d08-406c-a15c-f598a9594ba6": {
     "name": "log_warehousemasterkey",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "6eb805a0-e19f-4619-a1fe-aa1a2167352b": {
     "name": "log_underground_elevator_key_01",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "364d2f17-de2b-4c55-ab02-07d7b8fe3bc9": {
     "name": "log_lorenzo_photo",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "7cd0faee-77bb-4afc-a2e2-d198a5c16200": {
     "name": "log_accesscard_01",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ae6773eb-c842-4dd8-8421-d83ed7069ace": {
     "name": "log_accesscard_02",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "d8239bc7-7232-4d66-9d7f-893cd3b45dcd": {
     "name": "log_accesscard_03",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "63ad737c-e03e-4c64-a8de-86cac9e5e6b7": {
     "name": "log_accesscard_04",
-    "source": "log_entries.json"
+    "source": "log_entries.json",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5b335dd6-10da-4a3c-9faa-36c1f8154d2c": {
     "name": "CablebotBite",
@@ -4737,31 +5392,52 @@
   },
   "1fc74a28-addb-451a-878d-c3c605d63811": {
     "name": "blk_scrapwood",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "1897ee42-0291-43e4-9645-8c5a5d310398": {
     "name": "blk_wood2",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "061b5d4b-0a6a-4212-b0ae-9e9681f1cbfb": {
     "name": "blk_wood3",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "1f7ac0bb-ad45-4246-9817-59bdf7f7ab39": {
     "name": "blk_scrapmetal",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "1016cafc-9f6b-40c9-8713-9019d399783f": {
     "name": "blk_metal2",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "c0dfdea5-a39d-433a-b94a-299345a5df46": {
     "name": "blk_metal3",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "30a2288b-e88e-4a92-a916-1edbfc2b2dac": {
     "name": "blk_scrapstone",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ff234e42-5da4-43cc-8893-940547c97882": {
     "name": "blk_concrete2",
@@ -4777,7 +5453,10 @@
   },
   "220b201e-aa40-4995-96c8-e6007af160de": {
     "name": "blk_metalbricks",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "25a5ffe7-11b1-4d3e-8d7a-48129cbaf05e": {
     "name": "blk_beam",
@@ -4809,7 +5488,10 @@
   },
   "4aa2a6f0-65a4-42e3-bf96-7dec62570e0b": {
     "name": "blk_metalnet",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "3d0b7a6e-5b40-474c-bbaf-efaa54890e6a": {
     "name": "blk_crossnet",
@@ -4841,7 +5523,10 @@
   },
   "d740a27d-cc0f-4866-9e07-6a5c516ad719": {
     "name": "blk_wornmetal",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "4ad97d49-c8a5-47f3-ace3-d56ba3affe50": {
     "name": "blk_spaceshipfloor",
@@ -4853,7 +5538,10 @@
   },
   "b5ee5539-75a2-4fef-873b-ef7c9398b3f5": {
     "name": "blk_armoredglass",
-    "source": "blocks.shapeset"
+    "source": "blocks.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5721f7ad-a9b2-4fc5-a264-c2c98fa464bc": {
     "name": "blk_crystal",
@@ -4889,7 +5577,10 @@
   },
   "5fa7d58a-19b1-4ef1-a938-1406f8716941": {
     "name": "blk_spaceshipmetal_resticted",
-    "source": "blocks_survivalobject.shapeset"
+    "source": "blocks_survivalobject.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "1ae2cbd0-bc7d-45ed-bf19-57ef5dc14391": {
     "name": "blk_undergroundstation",
@@ -4913,11 +5604,17 @@
   },
   "2e792123-4a10-4cc6-b9ef-c5a518655cb4": {
     "name": "obj_tool_bucket_chemical",
-    "source": "bucket.shapeset"
+    "source": "bucket.shapeset",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4"
   },
   "cc80b6e0-f756-4036-9cd6-77af13a6de36": {
     "name": "obj_tool_bucket_oil",
-    "source": "bucket.shapeset"
+    "source": "bucket.shapeset",
+    "category": "oil",
+    "icon": "fa-oil-well",
+    "color": "#f59e0b"
   },
   "c3065683-98ff-4ef6-9862-ed0443ec71c2": {
     "name": "bq_watchtower_01",
@@ -4993,11 +5690,17 @@
   },
   "67ec22d4-cec0-47ee-9ff6-6f5996645270": {
     "name": "bq_cornheart_01",
-    "source": "builderguide.shapeset"
+    "source": "builderguide.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "65d543fd-54c4-4520-bee3-f59e1db9cce3": {
     "name": "bq_popcorn_01",
-    "source": "builderguide.shapeset"
+    "source": "builderguide.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "60268822-dff6-46bb-95e6-8db72fa5a2b4": {
     "name": "bq_beesuit_01",
@@ -5249,7 +5952,10 @@
   },
   "54d8ef21-357d-48a3-a66d-40446f6bb686": {
     "name": "obj_consumable_carrotburger",
-    "source": "consumable_creative.shapeset"
+    "source": "consumable_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "e243f642-6934-42bb-8cdd-f8ff1704d411": {
     "name": "obj_consumable_longsandwich",
@@ -5281,7 +5987,10 @@
   },
   "a3046bed-5cea-4bbb-a164-4b46448f87b3": {
     "name": "obj_loot_schematic",
-    "source": "consumable.shapeset"
+    "source": "consumable.shapeset",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4"
   },
   "869d4736-289a-4952-96cd-8a40117a2d28": {
     "name": "obj_consumable_water",
@@ -5289,11 +5998,17 @@
   },
   "bfcfac34-db0f-42d6-bd0c-74a7a5c95e82": {
     "name": "obj_plantables_potato",
-    "source": "consumable_shared.shapeset"
+    "source": "consumable_shared.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "f74c2891-79a9-45e0-982e-4896651c2e25": {
     "name": "obj_consumable_chemical",
-    "source": "consumable_shared.shapeset"
+    "source": "consumable_shared.shapeset",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4"
   },
   "c7322cd1-3158-41d9-b15a-eff2f2f8d9f7": {
     "name": "obj_consumable_inkammo",
@@ -5301,11 +6016,17 @@
   },
   "3a3280e4-03b6-4a4d-9e02-e348478213c9": {
     "name": "obj_consumable_glowstick",
-    "source": "consumable_shared.shapeset"
+    "source": "consumable_shared.shapeset",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4"
   },
   "e3bdeea5-d349-4d08-9b5a-5695ea05537e": {
     "name": "obj_consumable_cornade",
-    "source": "consumable_shared.shapeset"
+    "source": "consumable_shared.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "68a58472-368d-4b09-ad36-9093f11d76ae": {
     "name": "obj_consumable_fireammo",
@@ -5317,7 +6038,10 @@
   },
   "a4c1590f-c491-4e7f-974a-f1cd09503c18": {
     "name": "obj_interactive_cornade_explosive",
-    "source": "consumable_shared.shapeset"
+    "source": "consumable_shared.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "c76b89a3-7731-4ae1-99d4-788a29319360": {
     "name": "obj_containers_haycrate",
@@ -5325,11 +6049,17 @@
   },
   "3bd4430f-75bc-452c-9e80-1bd639898689": {
     "name": "obj_containers_stonecrate",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "f8b984da-4b24-4e36-b440-86ead126b6dc": {
     "name": "obj_containers_treecrate",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8a4a55b0-0228-4839-933b-0716cedb3f96": {
     "name": "obj_containers_cardboardstack_small",
@@ -5353,11 +6083,17 @@
   },
   "7e2b1dcb-4853-43ed-a7c5-0eb1a24b49d0": {
     "name": "obj_containers_barrel_blueberry",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "a0654dd8-f36a-4c41-bafd-18d9e5f0df2e": {
     "name": "obj_containers_barrel_tomato",
-    "source": "containers.shapeset"
+    "source": "containers.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "2af00456-b22e-4743-b338-a91934aba7c5": {
     "name": "obj_craftbot_cookbot",
@@ -5725,19 +6461,31 @@
   },
   "3de7e8ca-f7f4-4faf-b348-4848741528c1": {
     "name": "obj_destructable_tape_cornertape01",
-    "source": "destructable_tape.shapeset"
+    "source": "destructable_tape.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "46f4a939-b20c-4fae-bf37-8410796a05f2": {
     "name": "obj_destructable_tape_cornertape02",
-    "source": "destructable_tape.shapeset"
+    "source": "destructable_tape.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "50668b05-41de-4b48-abf2-6a576ab550fe": {
     "name": "obj_destructable_tape_cornertape03",
-    "source": "destructable_tape.shapeset"
+    "source": "destructable_tape.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "dfcff000-e027-4f43-9bfb-f9a84b3b50c4": {
     "name": "obj_destructable_tape_cornertape04",
-    "source": "destructable_tape.shapeset"
+    "source": "destructable_tape.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "20e0b1f2-dd7b-4b69-9308-b6c26c0b0e6e": {
     "name": "obj_destructable_tape_corridor01",
@@ -6165,419 +6913,731 @@
   },
   "02ee2a98-bd8d-4a09-bb69-38edaf66b8e1": {
     "name": "obj_harvest_stone",
-    "source": "harvests_shared.shapeset"
+    "source": "harvests_shared.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "968de65c-75f3-471b-954e-6165a4b6d3d6": {
     "name": "obj_harvest_wood",
-    "source": "harvests_shared.shapeset"
+    "source": "harvests_shared.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "f99ebc34-4821-4b39-a625-b839c5802ed5": {
     "name": "obj_harvest_wood2",
-    "source": "harvests_shared.shapeset"
+    "source": "harvests_shared.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5cb39ea5-554d-4c40-9d9a-6b2dd59de953": {
     "name": "obj_harvest_metal",
-    "source": "harvests_shared.shapeset"
+    "source": "harvests_shared.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "7468db55-b29d-4ce0-82b9-2414f493a376": {
     "name": "obj_harvest_metal2",
-    "source": "harvests_shared.shapeset"
+    "source": "harvests_shared.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "cd18840d-d4ee-4f36-8ab1-843c823b0dcf": {
     "name": "obj_harvests_stones_p01",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "b2d9e40b-e8e8-4d1e-86f9-86d0bdc5ddc4": {
     "name": "obj_harvests_stones_p02",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "c9d61f53-ebd3-4bb5-8789-43b00edbcc8b": {
     "name": "obj_harvests_stones_p03",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "126be16e-10c1-4ccd-82c5-368edc7f766a": {
     "name": "obj_harvests_stones_p04",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "8c0ad43a-4bc8-41ef-ab3a-de70eb9ef510": {
     "name": "obj_harvests_stones_p05",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "92bae57d-ae30-4a75-a7ad-8bf91f20d660": {
     "name": "obj_harvests_stones_p06",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "0b114031-5065-4365-922d-3980d791e00d": {
     "name": "obj_harvest_stonechunk01",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "4e3f17bb-0169-4eb5-a4b4-84725a607b2c": {
     "name": "obj_harvest_stonechunk02",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "4cd7a389-a1ac-47f4-8cc0-2776174985da": {
     "name": "obj_harvest_stonechunk03",
-    "source": "harvests_stones.shapeset"
+    "source": "harvests_stones.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "88dc2a60-7e1a-4c24-8584-2491acd79753": {
     "name": "obj_harvest_log_s01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "135967d2-7faa-495f-98f4-5130350396a4": {
     "name": "obj_harvest_log_m01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "a4ab4df5-403d-4baa-a3c3-ecc19dd87340": {
     "name": "obj_harvest_log_l01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3e6d2a8a-c836-4ae5-b6bf-9ec01c6393b0": {
     "name": "obj_harvest_log_l02a",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "10149368-0d49-44c1-9521-dbec436eb770": {
     "name": "obj_harvest_log_l02b",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5a508601-485f-4db6-8134-69a4d3d02bc1": {
     "name": "obj_harvests_trees_spruce02_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "b95bcc20-9581-4228-b444-b1c7ebc73507": {
     "name": "obj_harvests_trees_spruce02_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3104311d-a1c6-4f26-8eb9-7eea54fe164f": {
     "name": "obj_harvests_trees_spruce02_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "de637191-d84d-4c1e-8a55-7bb86e54ce70": {
     "name": "obj_harvests_trees_spruce02_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "a68470c8-67f4-4248-8c76-15fa7fb09ec6": {
     "name": "obj_harvests_trees_spruce02_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "bb14330f-4698-4c2b-a5ba-732443a67d72": {
     "name": "obj_harvests_trees_spruce01_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3b0c9ff3-6c5a-404a-b830-4872471bf33f": {
     "name": "obj_harvests_trees_spruce02_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8f9e059a-4c3a-4664-967a-28f127529aaf": {
     "name": "obj_harvests_trees_spruce03_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "4126d267-c8df-4c3c-98c7-9cb17f87f770": {
     "name": "obj_harvests_trees_leafy01_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "fd381577-bcd2-4b72-b86c-de47d7783820": {
     "name": "obj_harvests_trees_leafy01_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "c52c6da1-dad9-4649-b02f-34dec0bbd411": {
     "name": "obj_harvests_trees_leafy01_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "90f31b94-a831-4786-a5e7-6d423c224718": {
     "name": "obj_harvests_trees_leafy01_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "88dc4f4a-18c2-4d79-8dee-f0e7ac9d5845": {
     "name": "obj_harvests_trees_leafy01_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "f708c190-6155-4769-ae0e-884cc8c21300": {
     "name": "obj_harvests_trees_leafy02_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "bd2af8d6-ecc4-4071-82cb-56620345c06e": {
     "name": "obj_harvests_trees_leafy02_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5cf2c67c-62f6-4219-a857-943901611c6f": {
     "name": "obj_harvests_trees_leafy02_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "42bac230-35c5-4d22-a141-1cf693137548": {
     "name": "obj_harvests_trees_leafy02_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3d9dd135-5e3d-412a-bb1b-2ad58f0ea8be": {
     "name": "obj_harvests_trees_leafy02_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "9ca81758-7c90-4368-ab57-1d9d62b32a37": {
     "name": "obj_harvests_trees_leafy02_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5a0ffe5b-f7cf-482b-915f-1d6b0876c26c": {
     "name": "obj_harvests_trees_leafy02_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "b1647259-50bd-4838-814a-bfddd770ba70": {
     "name": "obj_harvests_trees_leafy02_p07",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ef7115ea-a497-4a4a-a1ec-44b810094ef1": {
     "name": "obj_harvests_trees_leafy03_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3b30e244-edca-44c3-a2b8-08ae779c69e6": {
     "name": "obj_harvests_trees_leafy03_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "40ff42d8-6e6f-4da4-a91c-8289e72b9ea1": {
     "name": "obj_harvests_trees_leafy03_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8821ec7c-477d-4d3b-9b0c-aee479d3e6c3": {
     "name": "obj_harvests_trees_leafy03_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "6e7eb9bb-4b8e-400a-b9c4-2e9320e03ead": {
     "name": "obj_harvests_trees_leafy03_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "92a6186b-9c42-48d0-9ebc-a978044e6a22": {
     "name": "obj_harvests_trees_leafy03_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "57d39e43-5c0b-476c-b8a2-474c77c22607": {
     "name": "obj_harvests_trees_leafy03_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "c1e99269-4090-489f-bcaf-f7cb04b03a73": {
     "name": "obj_harvests_trees_leafy03_p07",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "a6523fd2-869c-4d11-ba42-dc967a8aad25": {
     "name": "obj_harvests_trees_leafy03_p08",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "fbc59ea5-993f-48a7-8b49-c1cdf67f75e2": {
     "name": "obj_harvests_trees_leafy03_p09",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "55b19e7f-e45b-48b2-8f7c-d9e84fed0736": {
     "name": "obj_harvests_trees_birch01_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "22947bb1-7c64-477c-8656-d7857df39b78": {
     "name": "obj_harvests_trees_birch01_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5ee9b950-839f-479a-bc06-902b830504cf": {
     "name": "obj_harvests_trees_birch01_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "7b78d74f-c4c7-4c48-80f5-8f7f4bbd5de9": {
     "name": "obj_harvests_trees_birch01_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "1d667253-849c-4f9f-9109-1a2d91795247": {
     "name": "obj_harvests_trees_birch01_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "64555383-f1c9-4027-a1c4-02951d085b76": {
     "name": "obj_harvests_trees_birch01_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "89ca09da-4e7c-404f-99eb-beb275cfc217": {
     "name": "obj_harvests_trees_birch02_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "13cf98bf-d033-4be5-a0a0-560cb946a4ba": {
     "name": "obj_harvests_trees_birch02_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ce37c509-2be6-4368-8ac7-a34a75fab248": {
     "name": "obj_harvests_trees_birch02_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "47b95667-6296-4bc4-a93e-8e2bf51c8b80": {
     "name": "obj_harvests_trees_birch02_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "06c564e2-ca8d-4843-94e9-322cb835f59e": {
     "name": "obj_harvests_trees_birch02_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "de556b89-a4be-4d7e-ab49-e6485af16836": {
     "name": "obj_harvests_trees_birch02_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3b683206-f4b6-4652-bb32-dd488e73f367": {
     "name": "obj_harvests_trees_birch02_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "b7756219-75f2-4eb8-93d1-262e8ddded27": {
     "name": "obj_harvests_trees_birch03_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "0a2544c9-902d-42e2-91af-f35dad9c5d0e": {
     "name": "obj_harvests_trees_birch03_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "a73f7005-b89a-427d-8e94-c3d6f729be52": {
     "name": "obj_harvests_trees_birch03_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "2133fdb7-5e3c-4fb9-99ad-5b4f8bf5c6e5": {
     "name": "obj_harvests_trees_birch03_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "0b423e11-50dd-4272-92a2-506f42c992d4": {
     "name": "obj_harvests_trees_birch03_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "d00f05c6-f704-49a0-acdc-b4391086d254": {
     "name": "obj_harvests_trees_birch03_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "079b7a15-7718-444b-8560-7717109dabff": {
     "name": "obj_harvests_trees_birch03_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "fe1d102e-992a-4a24-a942-5fb37e8879d3": {
     "name": "obj_harvests_trees_pine01_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "608d6e20-bc3e-4440-907f-f0bd5fb45eac": {
     "name": "obj_harvests_trees_pine01_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "93ace99a-f58c-4dd3-8334-0ee890e42feb": {
     "name": "obj_harvests_trees_pine01_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "c713ed53-14fc-4a0d-93cf-9c2c865a2086": {
     "name": "obj_harvests_trees_pine01_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "e4df268d-5845-4532-ba75-75bb7b71fcdf": {
     "name": "obj_harvests_trees_pine01_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "79e41f5c-7b69-42ba-9172-7e3df49231bd": {
     "name": "obj_harvests_trees_pine01_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5ca61a85-7040-47bc-8f87-5d2ce295cb6e": {
     "name": "obj_harvests_trees_pine01_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "1b24e0a4-3f04-4dfe-83ea-612da2eff922": {
     "name": "obj_harvests_trees_pine01_p07",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "2f955589-701b-4c47-9127-37feeb80d35a": {
     "name": "obj_harvests_trees_pine01_p08",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "c1593ec8-ed29-4f95-8bce-507f028810d2": {
     "name": "obj_harvests_trees_pine01_p09",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "2311afca-ca99-4b7b-a209-8382ed7ea356": {
     "name": "obj_harvests_trees_pine01_p10",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "f9a71b9b-d872-4097-863c-a11783642221": {
     "name": "obj_harvests_trees_pine01_p11",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "46a78456-aa4f-409d-98d2-d1fdeac94e41": {
     "name": "obj_harvests_trees_pine02_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ff5bee6a-81a3-49ba-a4b7-d94dbd4b8519": {
     "name": "obj_harvests_trees_pine02_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "9518dd16-f207-4dd5-9c52-91a655446a80": {
     "name": "obj_harvests_trees_pine02_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "61f24d00-3d2d-44bf-818e-50a11c920aca": {
     "name": "obj_harvests_trees_pine02_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "1986c34b-c318-4992-ab1d-34a1531a4095": {
     "name": "obj_harvests_trees_pine02_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "aff3fcf0-9b67-42b5-bced-5acdf223c9aa": {
     "name": "obj_harvests_trees_pine02_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "6f89ff7b-f49d-4f6e-904a-5758c29b0d8e": {
     "name": "obj_harvests_trees_pine02_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "b2c6c47e-7443-4566-a194-d3f24435733d": {
     "name": "obj_harvests_trees_pine02_p07",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "7a31b721-c944-4b40-ba71-c1b2e3f00b9c": {
     "name": "obj_harvests_trees_pine02_p08",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "ca208216-99f0-43d1-900d-cb0924223b65": {
     "name": "obj_harvests_trees_pine02_p09",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8089b86c-7390-4cb6-b30e-7b281e8c329e": {
     "name": "obj_harvests_trees_pine02_p10",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "737a5987-a586-4a06-9e9d-3661ab8d69d2": {
     "name": "obj_harvests_trees_pine03_p00",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8c0a32e1-50a4-4e23-be1d-a09d12fc65c1": {
     "name": "obj_harvests_trees_pine03_p01",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "a20e79dd-d74e-4e10-845a-b101b3a95ab2": {
     "name": "obj_harvests_trees_pine03_p02",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "e3bc44d7-2173-47c0-86c3-0a9348812692": {
     "name": "obj_harvests_trees_pine03_p03",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "85a54457-4172-4be5-a750-96df4d40286c": {
     "name": "obj_harvests_trees_pine03_p04",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "3f7c3f3c-9b28-4a26-abbd-8f2948e9b027": {
     "name": "obj_harvests_trees_pine03_p05",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "8e2dfa65-c08e-4f51-a007-5fed80d846a3": {
     "name": "obj_harvests_trees_pine03_p06",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "4f693e6e-7819-46ff-aef3-5cfd2fc5bbde": {
     "name": "obj_harvests_trees_pine03_p07",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "0539121b-9588-4c64-bdd0-25b0a29b081a": {
     "name": "obj_harvests_trees_pine03_p08",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "05c81c17-3780-4edb-80a4-1648c25ca460": {
     "name": "obj_harvests_trees_pine03_p09",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "15ee8b4c-d58b-462f-a0a0-5c9bcdff495f": {
     "name": "obj_harvests_trees_pine03_p10",
-    "source": "harvests_trees.shapeset"
+    "source": "harvests_trees.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "7feba511-4910-429d-a0e3-f1727259ae5c": {
     "name": "obj_industrial_rooftankslice",
@@ -6685,7 +7745,10 @@
   },
   "98a85002-3b45-4fe8-b2fb-390a9953e877": {
     "name": "obj_interactive_beehive",
-    "source": "interactive_creative.shapeset"
+    "source": "interactive_creative.shapeset",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "479e8131-cc76-48e1-9979-8053a7295d1f": {
     "name": "obj_interactive_freezer",
@@ -6713,43 +7776,73 @@
   },
   "d0084e20-90a8-4460-920c-f2dab4600c04": {
     "name": "obj_interactive_growbed_potato_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "998c250a-e814-4c67-be0e-f8abe084ab72": {
     "name": "obj_interactive_growbed_potato_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "2e977f44-35f1-4184-b780-3f8563e92330": {
     "name": "obj_interactive_growbed_banana_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "7be411a0-8693-4910-800f-990122cbfca4": {
     "name": "obj_interactive_growbed_banana_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "c5e58c01-6e69-4477-ad60-02aef761ab00": {
     "name": "obj_interactive_growbed_blueberry_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "b70e6fe1-26e2-4dee-bb70-ab33426379ad": {
     "name": "obj_interactive_growbed_blueberry_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "1d689938-56fa-445f-a71c-eed9af0292c4": {
     "name": "obj_interactive_growbed_broccoli_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "5cb58060-1221-4935-b13e-04097b61cfbe": {
     "name": "obj_interactive_growbed_broccoli_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "5e610f08-1195-4b68-85b3-adf799efa411": {
     "name": "obj_interactive_growbed_carrot_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "240d38b9-af66-42f4-8c2b-7bbf26fa5f66": {
     "name": "obj_interactive_growbed_carrot_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "98a4c187-4049-4628-842b-5cc6e5dac9f5": {
     "name": "obj_interactive_growbed_chili_sprout",
@@ -6761,51 +7854,87 @@
   },
   "287f63c4-58dd-449d-9895-2bf9fdfef9a3": {
     "name": "obj_interactive_growbed_cotton_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "cotton",
+    "icon": "fa-feather",
+    "color": "#cbd5e1"
   },
   "8b45b80d-2415-4ef4-aec4-90d0e3ee4cf5": {
     "name": "obj_interactive_growbed_cotton_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "cotton",
+    "icon": "fa-feather",
+    "color": "#cbd5e1"
   },
   "13b7b0ba-5cbb-4501-9862-5879f20306fb": {
     "name": "obj_interactive_growbed_orange_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "8e2ff26d-8856-46d5-94ff-060f9cfd4ade": {
     "name": "obj_interactive_growbed_orange_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "99a76f79-f9ca-4c71-9098-7300ebacf1bd": {
     "name": "obj_interactive_growbed_pigmentflower_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "f0c365f6-fcb4-4135-9769-79f7e7aba240": {
     "name": "obj_interactive_growbed_pigmentflower_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "11ee95f2-b486-4f2d-a59b-106b79908a22": {
     "name": "obj_interactive_growbed_pineapple_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "0ff9cf8f-b9b9-44cd-9de2-77508fda3318": {
     "name": "obj_interactive_growbed_pineapple_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "16676910-7011-4514-891f-d1536b5cf56e": {
     "name": "obj_interactive_growbed_redbeet_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "7d7691d7-5059-4a43-9384-0b11905b0e3a": {
     "name": "obj_interactive_growbed_redbeet_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "e559dc2f-cbf9-47cc-95f3-42c2bb1b77a7": {
     "name": "obj_interactive_growbed_tomato_sprout",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "f2f3209d-9df3-410e-b87e-603ddd0d9918": {
     "name": "obj_interactive_growbed_tomato_mature",
-    "source": "interactive.shapeset"
+    "source": "interactive.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "992ae45d-63b5-42c5-bc58-3b6c207834d9": {
     "name": "obj_topdepartment_chair",
@@ -6825,7 +7954,10 @@
   },
   "8694192c-d91b-444c-a184-910911bbb354": {
     "name": "obj_interactive_stafftoilet",
-    "source": "interactive_shared.shapeset"
+    "source": "interactive_shared.shapeset",
+    "category": "oil",
+    "icon": "fa-oil-well",
+    "color": "#f59e0b"
   },
   "d6ce5127-c5be-42e3-a55f-0261bf1ac145": {
     "name": "obj_interactive_ladder",
@@ -6909,7 +8041,10 @@
   },
   "be29592a-ef58-4b1d-b18c-895023abd27f": {
     "name": "obj_container_chemical",
-    "source": "interactive_containers_shared.shapeset"
+    "source": "interactive_containers_shared.shapeset",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4"
   },
   "056e5ff1-f030-40df-946a-b830bf494c92": {
     "name": "obj_container_gas",
@@ -7273,7 +8408,10 @@
   },
   "7b2c96af-a4a1-420e-9370-ea5b58f23a7e": {
     "name": "obj_light_fluorescentlamp",
-    "source": "lights.shapeset"
+    "source": "lights.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5e3dff9b-2450-44ae-ad46-d2f6b5148cbf": {
     "name": "obj_light_arealight",
@@ -7369,35 +8507,59 @@
   },
   "0bc74539-df8a-47c7-aad8-d55d809a01e4": {
     "name": "obj_crates_banana",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "e77d9577-589a-446b-96c1-f6d0d7495489": {
     "name": "obj_crates_blueberry",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "99477093-e819-4199-b62a-fda6143aae89": {
     "name": "obj_crates_broccoli",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "c10a77d5-3357-4cb4-8113-a2cbe69c7ff2": {
     "name": "obj_crates_orange",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "bc69cb3b-7e0c-4c36-805d-f8d89fcfced3": {
     "name": "obj_crates_pineapple",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "9cd8288c-5a19-479f-af47-9eb55230ade2": {
     "name": "obj_crates_carrot",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "628fd350-577d-413f-82a8-7f08a83de3d8": {
     "name": "obj_crates_redbeet",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "1dcd74ca-39ba-4b00-a36a-3381b25055f4": {
     "name": "obj_crates_tomato",
-    "source": "packingcrates.shapeset"
+    "source": "packingcrates.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "deabb19a-1acd-4bbf-8bd2-f8f17410170b": {
     "name": "obj_containers_cowcrate",
@@ -7405,43 +8567,73 @@
   },
   "22beade5-38ca-47b4-a2ee-32403f58a862": {
     "name": "obj_seed_banana",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "4b6d2bee-d0f1-4e56-96f0-d2596388cad2": {
     "name": "obj_seed_blueberry",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "bee966b0-b5e5-41da-b992-5d363ab85ae4": {
     "name": "obj_seed_orange",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "9edb6f7c-fb44-4348-a1c4-8afb41b92d8a": {
     "name": "obj_seed_pineapple",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "9c82a525-8a8b-4483-9595-505aaa042486": {
     "name": "obj_seed_carrot",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "64051718-a3f1-422b-bda3-277efa0c4545": {
     "name": "obj_seed_redbeet",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "38e41fb5-dd50-4294-829d-a517f0282fed": {
     "name": "obj_seed_tomato",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "1c6756ca-3a60-4dcb-a5d1-353edf818308": {
     "name": "obj_seed_broccoli",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "eb1ef696-5c05-4662-9e47-fe1e0875ff84": {
     "name": "obj_seed_potato",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "93c27ab2-4930-4654-ba1c-bcfe35e966f6": {
     "name": "obj_seed_cotton",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "cotton",
+    "icon": "fa-feather",
+    "color": "#cbd5e1"
   },
   "8883e0ee-8a6e-423a-a4e0-583d9bf105bd": {
     "name": "obj_seed_chili",
@@ -7449,43 +8641,73 @@
   },
   "c44b27da-88cf-4e17-b872-6236a1172688": {
     "name": "obj_seed_pigmentflower",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "aa4c9c5e-7fc6-4c27-967f-c550e551c872": {
     "name": "obj_plantables_banana",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "6a43fff2-8c6d-4460-9f44-e5483b5267dd": {
     "name": "obj_plantables_blueberry",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "f5098301-1693-457b-8efc-83b3504105ac": {
     "name": "obj_plantables_orange",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "4ec64cda-1a5b-4465-88b4-5ea452c4a556": {
     "name": "obj_plantables_pineapple",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "47ece75a-bfca-4e8a-b618-4f609fcea0da": {
     "name": "obj_plantables_carrot",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "4ce00048-f735-4fab-b978-5f405e60f48f": {
     "name": "obj_plantables_redbeet",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "6d92d8e7-25e9-4698-b83d-a64dc97978c8": {
     "name": "obj_plantables_tomato",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "b5cdd503-fe1c-482b-86ab-6a5d2cc4fc8f": {
     "name": "obj_plantables_broccoli",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "ba3fbedc-1802-4406-852d-3f3a7ddc4be2": {
     "name": "obj_plantables_chili",
-    "source": "plantables_creative.shapeset"
+    "source": "plantables_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "3e10ef67-383a-4b60-aa5b-b1173134e437": {
     "name": "obj_powertools_sawblade",
@@ -7513,7 +8735,10 @@
   },
   "5f5b2a0d-b629-4bea-93ca-e1f45ccac62b": {
     "name": "gyrocore",
-    "source": "quest_items.shapeset"
+    "source": "quest_items.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "a5093336-af02-42c4-8afd-196f22a0917f": {
     "name": "gyroslot",
@@ -7545,15 +8770,24 @@
   },
   "40e8bd0d-04a0-4e95-b593-4038b54b156f": {
     "name": "obj_resources_slimyclam",
-    "source": "resource_creative.shapeset"
+    "source": "resource_creative.shapeset",
+    "category": "chemical",
+    "icon": "fa-flask-vial",
+    "color": "#06b6d4"
   },
   "3440440b-d362-4473-aa03-b7c41e1fe7ad": {
     "name": "obj_resource_cotton",
-    "source": "resource_creative.shapeset"
+    "source": "resource_creative.shapeset",
+    "category": "cotton",
+    "icon": "fa-feather",
+    "color": "#cbd5e1"
   },
   "fe8bfeba-850b-4827-9785-10e2468c9c23": {
     "name": "obj_resource_corn",
-    "source": "resource_creative.shapeset"
+    "source": "resource_creative.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "f152e4df-bc40-44fb-8d20-3b3ff70cdfe3": {
     "name": "obj_resource_circuitboard",
@@ -7569,7 +8803,10 @@
   },
   "c9396a42-67c3-4fa3-b682-31428ff9eced": {
     "name": "obj_resource_flower",
-    "source": "resource_creative.shapeset"
+    "source": "resource_creative.shapeset",
+    "category": "flower",
+    "icon": "fa-spa",
+    "color": "#ec4899"
   },
   "36335664-6e61-4d44-9876-54f9660a8565": {
     "name": "obj_consumable_glue",
@@ -7577,11 +8814,17 @@
   },
   "1147e59d-6940-42b4-840b-07f05054f5e0": {
     "name": "obj_resource_crudeoil",
-    "source": "resource_creative.shapeset"
+    "source": "resource_creative.shapeset",
+    "category": "oil",
+    "icon": "fa-oil-well",
+    "color": "#f59e0b"
   },
   "0f6d1667-ddf8-4ca9-b290-8bd3ec9b038b": {
     "name": "obj_resource_residueore",
-    "source": "resource.shapeset"
+    "source": "resource.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "efb2837c-f1d2-412b-bff1-a210b3426fd9": {
     "name": "obj_resource_wonkstonks",
@@ -7909,7 +9152,10 @@
   },
   "e96e15d9-0997-4ed6-8c75-751848fb8edd": {
     "name": "obj_shoprewards_bonsaitree",
-    "source": "shoprewards.shapeset"
+    "source": "shoprewards.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "196586b5-897f-40f3-926c-b5dfa4f772eb": {
     "name": "obj_spaceship_blinds",
@@ -8037,19 +9283,31 @@
   },
   "f15b5fa7-6113-4af8-b3e1-b05560ed946a": {
     "name": "obj_spaceship_corner01",
-    "source": "spaceship_survivalobject.shapeset"
+    "source": "spaceship_survivalobject.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "45ee9f5a-cfc0-4f3a-bbe8-09f2ce1dbc4c": {
     "name": "obj_spaceship_corner01_damaged",
-    "source": "spaceship_survivalobject.shapeset"
+    "source": "spaceship_survivalobject.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "988b5592-9e53-4782-a058-d26be442bd49": {
     "name": "obj_spaceship_corner02",
-    "source": "spaceship_survivalobject.shapeset"
+    "source": "spaceship_survivalobject.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "90686663-1a3e-479a-b1c4-f81699274f50": {
     "name": "obj_spaceship_corner03",
-    "source": "spaceship_survivalobject.shapeset"
+    "source": "spaceship_survivalobject.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "5ba206c2-d10b-4815-b95b-04be4959ec31": {
     "name": "obj_spaceship_wall11",
@@ -8125,7 +9383,10 @@
   },
   "6bc1a2b3-0e25-4c05-9965-95ed610931d0": {
     "name": "obj_structure_woodstairs",
-    "source": "structure.shapeset"
+    "source": "structure.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "e6796f6a-138e-4086-9fe3-da6910e00484": {
     "name": "obj_structure_postalcrate",
@@ -8145,23 +9406,38 @@
   },
   "5d2f2d3f-cd6b-4d84-8320-7844b672b192": {
     "name": "obj_structure_metalcanisterframe",
-    "source": "structure.shapeset"
+    "source": "structure.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "202b1841-fd43-4993-9720-e181df634077": {
     "name": "obj_structure_metalcube",
-    "source": "structure.shapeset"
+    "source": "structure.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "f4107fbf-2c39-455c-9aaf-2bb94d915ae8": {
     "name": "obj_structure_metalbarrier",
-    "source": "structure.shapeset"
+    "source": "structure.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5b8d77d3-b129-4d5c-b4c6-1d4f86b22058": {
     "name": "obj_structure_metalbeam",
-    "source": "structure.shapeset"
+    "source": "structure.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "69fffafa-8084-4de0-9368-e7954d8e1686": {
     "name": "obj_structure_metalstairs",
-    "source": "structure.shapeset"
+    "source": "structure.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "d6f0de5e-8ba9-42e6-9dac-bfe5fc4606be": {
     "name": "obj_structure_concretefoundation02",
@@ -8245,7 +9521,10 @@
   },
   "f47612db-e035-4d62-81e2-64fc3453ccc3": {
     "name": "obj_survivalobject_bananabox",
-    "source": "survivalobject.shapeset"
+    "source": "survivalobject.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "c4a0a65b-3b24-4beb-bd7a-d687f4210169": {
     "name": "obj_survivalobject_elevatorlamp",
@@ -8277,11 +9556,17 @@
   },
   "c0159b96-edf3-46cd-9fbe-96ee1126304b": {
     "name": "obj_survivalobject_powercoresocket",
-    "source": "survivalobject.shapeset"
+    "source": "survivalobject.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "c654a023-ca53-4109-9f18-d297c18e9a02": {
     "name": "obj_survivalobject_powercore",
-    "source": "survivalobject.shapeset"
+    "source": "survivalobject.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ebd73cee-988f-4ffb-95d1-d3c3c81fd506": {
     "name": "obj_survivalobject_dispenserbot",
@@ -8429,7 +9714,10 @@
   },
   "b40f65a0-ac9f-4fdf-863a-7623e22bf009": {
     "name": "obj_survivalobject_topdepartment_log",
-    "source": "survivalobject.shapeset"
+    "source": "survivalobject.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "05170ad2-4d8a-48c1-9cd6-9be870e8af42": {
     "name": "obj_survivalobject_topdepcardreader",
@@ -8557,7 +9845,10 @@
   },
   "c673cca4-c363-4a21-a576-5d3451a1f33d": {
     "name": "obj_survivalobject_fluorescentlamp_warehouse",
-    "source": "survivalobject_lights.shapeset"
+    "source": "survivalobject_lights.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "4349bf0e-1244-4136-b597-2fa86354eb78": {
     "name": "obj_warehouse_doorframelight_warehouse",
@@ -8661,7 +9952,10 @@
   },
   "64fdc73f-259a-49df-94ac-24db25a4dc42": {
     "name": "obj_vehicle_wheelhousecorner",
-    "source": "vehicle.shapeset"
+    "source": "vehicle.shapeset",
+    "category": "crop",
+    "icon": "fa-wheat-awn",
+    "color": "#84cc16"
   },
   "4d974692-e011-4556-952c-d50da68dd961": {
     "name": "obj_vehicle_gripwheel_x7",
@@ -8945,11 +10239,17 @@
   },
   "cb529af8-14b9-11ed-861d-0242ac120002": {
     "name": "wdg_wood1",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "a358c216-14b9-11ed-861d-0242ac120002": {
     "name": "wdg_metal1",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "56b4d3fc-14bc-11ed-861d-0242ac120002": {
     "name": "wdg_caution",
@@ -8977,7 +10277,10 @@
   },
   "396c8a9a-14be-11ed-861d-0242ac120002": {
     "name": "wdg_spaceshipmetal",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5d5144be-14be-11ed-861d-0242ac120002": {
     "name": "wdg_cardboard",
@@ -8985,31 +10288,52 @@
   },
   "a5a857de-14be-11ed-861d-0242ac120002": {
     "name": "wdg_scrapwood",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5dae0b3a-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_wood2",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5dae0d42-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_wood3",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "tree",
+    "icon": "fa-tree",
+    "color": "#22c55e"
   },
   "5dae0e46-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_scrapmetal",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5dae0f2c-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_metal2",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5dae1008-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_metal3",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5dae16a2-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_scrapstone",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "5dae15c6-14bf-11ed-861d-0242ac120002": {
     "name": "wdg_concrete2",
@@ -9025,7 +10349,10 @@
   },
   "a29f7ce6-14c0-11ed-861d-0242ac120002": {
     "name": "wdg_metalbricks",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "a29f7c00-14c0-11ed-861d-0242ac120002": {
     "name": "wdg_beam",
@@ -9057,7 +10384,10 @@
   },
   "9acece58-14c1-11ed-861d-0242ac120002": {
     "name": "wdg_metalnet",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "9acecf66-14c1-11ed-861d-0242ac120002": {
     "name": "wdg_crossnet",
@@ -9089,7 +10419,10 @@
   },
   "3f2e8e84-14c7-11ed-861d-0242ac120002": {
     "name": "wdg_wornmetal",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "3f2e9064-14c7-11ed-861d-0242ac120002": {
     "name": "wdg_spaceshipfloor",
@@ -9101,7 +10434,10 @@
   },
   "32053708-14c7-11ed-861d-0242ac120002": {
     "name": "wdg_armoredglass",
-    "source": "wedges.shapeset"
+    "source": "wedges.shapeset",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "320538d4-14c7-11ed-861d-0242ac120002": {
     "name": "wdg_fancycarpet",
@@ -9245,19 +10581,31 @@
   },
   "fa77ad36-fa15-4176-bc6c-d27f6a884283": {
     "name": "env_clutter_brownrock",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "be97b6f4-0803-4420-8118-e04319d71fbb": {
     "name": "env_clutter_metalscrap01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ce8ae2e4-4e73-4967-a7be-dfe558de228b": {
     "name": "env_clutter_metalscrap02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "1c0372e4-5cd2-4d96-8b4e-3a9a57de1e8c": {
     "name": "env_clutter_metalscrap03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "118ceb92-ccf5-4a8b-b706-e74fd43339c0": {
     "name": "env_clutter_roots",
@@ -9305,39 +10653,66 @@
   },
   "66a9e081-3e9d-473f-b944-370659d54a97": {
     "name": "env_clutter_voxelicerock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "1ed07adc-0e63-4115-a5d7-b3eee94c9467": {
     "name": "env_clutter_voxelicerock02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "3c88ba30-1721-45ec-a877-f6c165e340ff": {
     "name": "env_clutter_voxelrock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "e629518f-2fef-47e3-b52f-ff27b178262c": {
     "name": "env_clutter_voxelrock02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ff11b327-9423-4dff-bb1e-694a4281c7e4": {
     "name": "env_clutter_voxelrock03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "dbcdb539-1434-4c78-9b74-8f70912608cb": {
     "name": "env_clutter_voxelrock04",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "262cf6fe-9acf-4dc8-b925-c6f208ddfb97": {
     "name": "env_clutter_voxelrock05",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "c19d4187-3684-4f7d-9361-7bc59ade4fba": {
     "name": "env_clutter_voxelrock06",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "62d5e891-a98d-4374-ba62-daa38d3c7680": {
     "name": "env_clutter_voxelrock07",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "9cbcd676-f780-44aa-9154-bf65a71dee80": {
     "name": "env_clutter_stalactite01",
@@ -9353,11 +10728,17 @@
   },
   "dfce173d-2638-4970-96e3-89fc0bbc6bcf": {
     "name": "env_clutter_dirtrock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "3a3895a5-5ebf-41ce-9759-6578bac671e5": {
     "name": "env_clutter_dirtrock02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "a24c02cd-0b90-4dea-92d6-7aaa669d532f": {
     "name": "env_clutter_micromineralbue01",
@@ -9545,27 +10926,45 @@
   },
   "83229c1a-de77-42fc-8bbe-be4fa14ea2ef": {
     "name": "env_clutter_spore01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "192f1ea8-4cf6-4157-97f6-2509acc27fd1": {
     "name": "env_clutter_spore02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ea3513fb-423a-41e1-85fc-0f8127f6ff64": {
     "name": "env_clutter_spore03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "1fcd39f8-0554-4565-8ae7-4325691a09ba": {
     "name": "env_clutter_rock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "f24f524b-63fa-4b2d-b9f8-adcc54ac9011": {
     "name": "env_clutter_rock02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "3a91efd3-4d89-4e54-a099-7e3966e2387c": {
     "name": "env_clutter_rock03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "a7ae6afb-e252-4744-bac5-7547ee42ba2e": {
     "name": "env_clutter_pebble01",
@@ -9617,23 +11016,38 @@
   },
   "7267c6d3-fe8f-49a7-8488-13b02e702f15": {
     "name": "env_clutter_hexarock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "f5eea81f-6e7d-462f-8da5-1368497ebc0e": {
     "name": "env_clutter_hexarock03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "dc61dba1-74c3-4549-be45-49d841efc6e4": {
     "name": "env_clutter_bulbrock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "958f3a06-14ad-4a2f-9085-63781be9a37d": {
     "name": "env_clutter_bulbrock02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ada15b11-3f9b-46a9-b014-b2be20e4ac74": {
     "name": "env_clutter_bulbrock03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "a0f12029-859e-4289-b410-1392e5f19582": {
     "name": "env_clutter_bulbcrystal01",
@@ -9645,27 +11059,45 @@
   },
   "1a617808-74f7-4713-bb9b-4cdc3870fcb5": {
     "name": "env_clutter_orerich01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "00682bc0-f687-4c95-a327-5fdeb92d42c0": {
     "name": "env_clutter_orerich02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ac396dd5-4c4e-44fb-b7de-89e0e65598d5": {
     "name": "env_clutter_orerich03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "cbd0952b-0476-4260-af36-37d9138f00e1": {
     "name": "env_clutter_slaterock01",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "ad21bfdd-499b-4d50-8266-865b452c9e35": {
     "name": "env_clutter_slaterock02",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "d4bdafb0-af5a-405c-9b0a-2bafc871b293": {
     "name": "env_clutter_slaterock03",
-    "source": "clutter.json"
+    "source": "clutter.json",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7"
   },
   "d5d3f0bd-55ea-4a05-991a-a5394777ae2f": {
     "name": "env_clutter_cavemoss01",
@@ -9758,9 +11190,9 @@
   "55c4c10d-7f56-47c3-a274-32fc2767d298": {
     "name": "Questnpclorenzo",
     "rawName": "unit_questnpclorenzo",
-    "category": "bot",
-    "icon": "fa-robot",
-    "color": "#ef4444",
+    "category": "mineral",
+    "icon": "fa-mountain",
+    "color": "#a855f7",
     "source": "survival_units.lua"
   },
   "fd8e1f0c-364b-4522-8ecd-3c7dc582ea06": {

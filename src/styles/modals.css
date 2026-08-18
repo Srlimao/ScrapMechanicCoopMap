@@ -208,41 +208,110 @@
     transform: scale(1.1);
 }
 
-/* Toast Notifications */
+/* Toast Notifications (Industrial Tactical Theme) */
 .toast-container {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 28px;
+    right: 28px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    z-index: 200;
+    gap: 10px;
+    z-index: 9999;
     pointer-events: none;
 }
 
-.toast {
+.toast-item {
     pointer-events: auto;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #1e2430;
-    border: 1.5px solid #334155;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(18, 23, 33, 0.96);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-sm);
-    padding: 10px 14px;
+    padding: 12px 16px;
     color: #fff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-    font-size: 12px;
-    min-width: 220px;
-    animation: toastSlide 0.25s ease;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    min-width: 280px;
+    max-width: 440px;
+    animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    user-select: none;
 }
 
-.toast-success { border-color: #10b981; }
-.toast-error { border-color: #ef4444; }
-.toast-info { border-color: #38bdf8; }
+.toast-item.toast-hiding {
+    opacity: 0;
+    transform: translateX(30px) scale(0.95);
+}
 
-@keyframes toastSlide {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+.toast-icon {
+    font-size: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.toast-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #f8fafc;
+    letter-spacing: 0.2px;
+}
+
+.toast-message {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #94a3b8;
+    line-height: 1.45;
+    word-break: break-word;
+}
+
+.toast-success {
+    border-left: 4px solid #10b981;
+}
+.toast-success .toast-icon {
+    color: #10b981;
+}
+
+.toast-error {
+    border-left: 4px solid #ef4444;
+}
+.toast-error .toast-icon {
+    color: #ef4444;
+}
+
+.toast-warning {
+    border-left: 4px solid #f59e0b;
+}
+.toast-warning .toast-icon {
+    color: #f59e0b;
+}
+
+.toast-info {
+    border-left: 4px solid #38bdf8;
+}
+.toast-info .toast-icon {
+    color: #38bdf8;
+}
+
+.toast-loading {
+    border-left: 4px solid var(--sm-orange);
+}
+.toast-loading .toast-icon {
+    color: var(--sm-orange);
+}
+
+@keyframes toastSlideIn {
+    from { transform: translateX(40px) translateY(0); opacity: 0; }
+    to { transform: translateX(0) translateY(0); opacity: 1; }
 }
 
 /* Drag & Drop Save File Overlay */

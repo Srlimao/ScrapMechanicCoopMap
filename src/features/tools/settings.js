@@ -68,6 +68,7 @@ export function setupLayerControls(elements) {
         { id: 'subPoiTrader', key: 'traders' },
         { id: 'subPoiPacking', key: 'packingStations' },
         { id: 'subPoiGrowlabs', key: 'growlabs' },
+        { id: 'subPoiChemOil', key: 'chemOil' },
         { id: 'subPoiOther', key: 'other' }
     ];
     poiMap.forEach(({ id, key }) => {
@@ -108,7 +109,11 @@ export function setupLayerControls(elements) {
         { id: 'subOil', key: 'oil' },
         { id: 'subCotton', key: 'cotton' },
         { id: 'subMinerals', key: 'minerals' },
-        { id: 'subTrees', key: 'trees' }
+        { id: 'subTrees', key: 'trees' },
+        { id: 'subCrops', key: 'crops' },
+        { id: 'subChemicals', key: 'chemicals' },
+        { id: 'subFlowers', key: 'flowers' },
+        { id: 'subOtherRes', key: 'other' }
     ];
     harvMap.forEach(({ id, key }) => {
         const el = document.getElementById(id);

@@ -62,13 +62,17 @@ function safeDecode(val) {
     } catch (e) { return ''; }
 }
 
-export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
-    showLoadingOverlay('INITIALIZING SQLITE WASM...', `Decoding ${filename}...`);
+export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAutoSync = false) {
+    if (!isAutoSync) {
+        showLoadingOverlay('INITIALIZING SQLITE WASM...', `Decoding ${filename}...`);
+    }
     const SQL = await initSqlEngine();
     if (!SQL) throw new Error("SQL.js WASM engine not loaded.");
     const uuidMap = await loadAssetUuidMap();
 
-    showLoadingOverlay('PARSING SAVE ENTITIES...', 'Extracting RigidBodies, Units, Harvestables, and POIs...');
+    if (!isAutoSync) {
+        showLoadingOverlay('PARSING SAVE ENTITIES...', 'Extracting RigidBodies, Units, Harvestables, and POIs...');
+    }
     const Uints = new Uint8Array(arrayBuffer);
     const db = new SQL.Database(Uints);
 
@@ -118,93 +122,148 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
         }
     } catch (e) {}
 
-    // 3. Units & Entities (Classified into Aggressive Enemies, Passive Seedbots, and Wildlife)
+    // 3. Units (Bots & Animals)
     const units = [];
     try {
-        const resUnits = db.exec("SELECT id, worldId, x, y, data FROM Unit");
-        if (resUnits.length) {
-            resUnits[0].values.forEach(r => {
-                const uid = r[0], wid = r[1], cx = r[2], cy = r[3], blob = r[4];
-                let unitUuid = blob && blob.length >= 34 ? parseReversedUUID(blob.slice(18, 34)) : "unknown";
-                const info = uuidMap[unitUuid] || { name: 'Unit', category: 'enemy', icon: 'fa-robot', color: '#f97316' };
-                const uName = (info.name || '').toLowerCase();
-                const rawName = (info.rawName || '').toLowerCase();
-                const catLower = (info.category || '').toLowerCase();
+        const resUnit = db.exec("SELECT id, worldId, data FROM Unit WHERE worldId = 1");
+        if (resUnit.length) {
+            resUnit[0].values.forEach(r => {
+                const uid = r[0], wid = r[1], blob = r[2];
+                if (blob && blob.length >= 48) {
+                    const view = new DataView(blob.buffer, blob.byteOffset, blob.byteLength);
+                    const x = view.getFloat32(36, true);
+                    const y = view.getFloat32(40, true);
+                    const z = view.getFloat32(44, true);
 
-                let subType = 'haybot';
-                let finalCategory = 'enemy';
-                let finalIcon = info.icon || 'fa-robot';
-                let finalColor = info.color || '#f97316';
-                let finalName = info.name || 'Bot';
+                    if (x >= MAP_MIN_X && x <= MAP_MAX_X && y >= MAP_MIN_Y && y <= MAP_MAX_Y) {
+                        let uUuid = blob.length >= 36 ? parseReversedUUID(blob.slice(20, 36)) : "unknown";
+                        const info = uuidMap[uUuid] || { name: 'Unit', category: 'enemy', icon: 'fa-robot', color: '#f97316' };
+                        let name = info.name || 'Unit';
+                        let subType = 'haybot';
+                        let uColor = '#f97316';
+                        let uIcon = 'fa-robot';
 
-                if (uName.includes('farmbot') || uName.includes('trashbot') || catLower === 'boss') {
-                    subType = 'boss';
-                    finalCategory = 'boss';
-                    finalColor = '#ef4444';
-                    finalIcon = 'fa-skull';
-                    if (!info.name || info.name === 'Unit') finalName = 'Farmbot';
-                } else if (uName.includes('haybot')) {
-                    subType = 'haybot';
-                    finalCategory = 'enemy';
-                    finalColor = '#f97316';
-                    finalIcon = 'fa-robot';
-                } else if (uName.includes('tapebot')) {
-                    subType = 'tapebot';
-                    finalCategory = 'enemy';
-                    finalColor = '#06b6d4';
-                    finalIcon = 'fa-crosshairs';
-                } else if (uName.includes('totebot')) {
-                    subType = 'totebot';
-                    finalCategory = 'enemy';
-                    finalColor = '#84cc16';
-                    finalIcon = 'fa-bolt';
-                } else if (uName.includes('seedbot') || rawName.includes('seedbot') || uName.includes('lootbot') || uName.includes('farmer') || uName.includes('quest') || uName.includes('mechanic') || uName.includes('craftbot')) {
-                    subType = 'seedbot';
-                    finalCategory = 'passive';
-                    finalColor = '#34d399';
-                    finalIcon = 'fa-seedling';
-                    if (uName.includes('seedbot') || rawName.includes('seedbot')) finalName = 'Seedbot';
-                } else if (uName.includes('woc') || uName.includes('glowbug') || catLower === 'animal') {
-                    subType = 'animal';
-                    finalCategory = 'animal';
-                    finalColor = '#eab308';
-                    finalIcon = uName.includes('glow') ? 'fa-wand-magic-sparkles' : 'fa-cow';
-                } else {
-                    subType = 'haybot';
-                    finalCategory = 'enemy';
-                    finalColor = '#f97316';
-                    finalIcon = 'fa-robot';
+                        const lower = name.toLowerCase();
+                        if (lower.includes('farmbot') || lower.includes('boss') || lower.includes('trashbot')) {
+                            subType = 'boss';
+                            uColor = '#ef4444';
+                            uIcon = 'fa-skull';
+                            name = name || 'Farmbot';
+                        } else if (lower.includes('tapebot')) {
+                            subType = 'tapebot';
+                            uColor = '#06b6d4';
+                            uIcon = 'fa-crosshairs';
+                        } else if (lower.includes('totebot')) {
+                            subType = 'totebot';
+                            uColor = '#84cc16';
+                            uIcon = 'fa-bolt';
+                        } else if (lower.includes('seedbot') || lower.includes('npc')) {
+                            subType = 'seedbot';
+                            uColor = '#34d399';
+                            uIcon = 'fa-seedling';
+                        } else if (lower.includes('woc') || lower.includes('glowbug') || lower.includes('animal')) {
+                            subType = 'animal';
+                            uColor = '#eab308';
+                            uIcon = 'fa-cow';
+                        } else if (lower.includes('haybot')) {
+                            subType = 'haybot';
+                            uColor = '#f97316';
+                            uIcon = 'fa-robot';
+                        }
+
+                        units.push({
+                            id: uid, worldId: wid,
+                            x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10, z: Math.round(z * 10) / 10,
+                            uuid: uUuid,
+                            name: name,
+                            category: info.category || 'enemy',
+                            subType: subType,
+                            icon: uIcon,
+                            color: uColor
+                        });
+                    }
                 }
-
-                units.push({
-                    id: uid, worldId: wid, cellX: cx, cellY: cy,
-                    x: cx * CELL_SIZE + 32, y: cy * CELL_SIZE + 32,
-                    uuid: unitUuid, name: finalName, category: finalCategory,
-                    subType: subType,
-                    icon: finalIcon, color: finalColor
-                });
             });
         }
     } catch (e) {}
 
-    // 4. Harvestables
+    // 4. Harvestables: Aggregated by Tile & Category (1 icon per resource type per tile, scaled by count)
     const harvestables = [];
     try {
         const resHarv = db.exec("SELECT id, worldId, x, y, size, data FROM Harvestable");
         if (resHarv.length) {
+            const tileCategoryMap = new Map(); // key: `${cx},${cy}_${category}` -> deposit object
+
             resHarv[0].values.forEach(r => {
                 const hid = r[0], wid = r[1], cx = r[2], cy = r[3], size = r[4], blob = r[5];
                 let hUuid = blob && blob.length >= 36 ? parseReversedUUID(blob.slice(20, 36)) : "unknown";
-                const info = uuidMap[hUuid] || { name: 'Resource Node', category: 'resource', icon: 'fa-seedling', color: '#10b981' };
-                harvestables.push({
-                    id: hid, worldId: wid, cellX: cx, cellY: cy,
-                    x: cx * CELL_SIZE + 32, y: cy * CELL_SIZE + 32, size: size,
-                    uuid: hUuid, name: info.name || 'Resource Node', category: info.category || 'resource',
-                    icon: info.icon || 'fa-seedling', color: info.color || '#10b981'
+                const info = uuidMap[hUuid] || { name: 'Resource Node', category: 'other', icon: 'fa-seedling', color: '#10b981' };
+                const cat = info.category || 'other';
+
+                const key = `${cx},${cy}_${cat}`;
+                if (!tileCategoryMap.has(key)) {
+                    tileCategoryMap.set(key, {
+                        id: hid,
+                        worldId: wid,
+                        cellX: cx,
+                        cellY: cy,
+                        category: cat,
+                        name: info.name || 'Resource Node',
+                        icon: info.icon || 'fa-seedling',
+                        color: info.color || '#10b981',
+                        count: 0,
+                        items: []
+                    });
+                }
+                const dep = tileCategoryMap.get(key);
+                dep.count++;
+                dep.items.push({ id: hid, uuid: hUuid, name: info.name });
+            });
+
+            // Offset multiple different categories residing on the same tile
+            const cellDepositsMap = new Map();
+            tileCategoryMap.forEach(dep => {
+                const cellKey = `${dep.cellX},${dep.cellY}`;
+                if (!cellDepositsMap.has(cellKey)) cellDepositsMap.set(cellKey, []);
+                cellDepositsMap.get(cellKey).push(dep);
+            });
+
+            cellDepositsMap.forEach((depList) => {
+                const catCount = depList.length;
+                depList.forEach((dep, idx) => {
+                    if (catCount === 1) {
+                        dep.x = dep.cellX * CELL_SIZE + 32;
+                        dep.y = dep.cellY * CELL_SIZE + 32;
+                    } else {
+                        const angle = (idx / catCount) * Math.PI * 2 - Math.PI / 2;
+                        const dist = Math.min(18, 10 + catCount * 2);
+                        dep.x = Math.round((dep.cellX * CELL_SIZE + 32 + Math.cos(angle) * dist) * 10) / 10;
+                        dep.y = Math.round((dep.cellY * CELL_SIZE + 32 + Math.sin(angle) * dist) * 10) / 10;
+                    }
+
+                    dep.clusterCount = dep.count;
+                    dep.clusterItems = dep.items;
+                    harvestables.push(dep);
                 });
             });
         }
-    } catch (e) {}
+    } catch (e) {
+        console.warn("[SqlDecoder] Harvestables extraction error:", e);
+    }
+
+    // Fast-path for AutoSync: If the world seed matches existing map, update dynamic entities quietly and exit
+    const isSameWorld = state.mapData && state.mapData.gameInfo && state.mapData.gameInfo.seed === gameInfo.seed;
+    if (isAutoSync && isSameWorld) {
+        db.close();
+        state.mapData.creations = creations;
+        state.mapData.units = units;
+        state.mapData.harvestables = harvestables;
+        state.mapData.gameInfo = gameInfo;
+
+        updateMetadataDOM(gameInfo, state.mapData.pois, state.mapData.schematics, creations, units, harvestables);
+        notifyStateChange('entities_updated', state.mapData);
+        return state.mapData;
+    }
 
     // 5. POIs & Schematics / Builder Guide Platforms from ScriptData
     let pois = [];
@@ -217,31 +276,70 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db') {
 
             resScript[0].values.forEach(r => {
                 const keyStr = safeDecode(r[0]);
-                const m = keyStr.match(/ts_(\d+):\((-?\d+),(-?\d+)\)/);
-                if (m) {
+                const dataStr = safeDecode(r[2]);
+                const combined = keyStr + " " + dataStr;
+                const matches = combined.matchAll(/ts_(\d+):\((-?\d+),(-?\d+)\)/g);
+
+                for (const m of matches) {
                     const wid = parseInt(m[1]), cx = parseInt(m[2]), cy = parseInt(m[3]);
-                    const dataStr = safeDecode(r[2]);
-                    const dataLower = dataStr.toLowerCase();
+                    const combLower = combined.toLowerCase();
                     const wx = cx * CELL_SIZE + 32, wy = cy * CELL_SIZE + 32;
 
-                    // POIs Extraction
-                    const types = [];
-                    let pIcon = 'fa-location-dot', pColor = '#f59e0b';
-                    if (dataLower.includes('mechanicstation')) { types.push('Mechanic Station'); pIcon = 'fa-wrench'; pColor = '#ff7a00'; }
-                    if (dataLower.includes('hideout')) { types.push('Hideout'); pIcon = 'fa-store'; pColor = '#10b981'; }
-                    if (dataLower.includes('warehouse')) { types.push('Warehouse'); pIcon = 'fa-building-shield'; pColor = '#ef4444'; }
-                    if (dataLower.includes('farmer') || dataLower.includes('trader')) { types.push('Trader / Farmer'); pIcon = 'fa-handshake'; pColor = '#10b981'; }
-                    if (dataLower.includes('silo') || dataLower.includes('packing')) { types.push('Packing Station'); pIcon = 'fa-boxes-packing'; pColor = '#06b6d4'; }
+                    // Comprehensive POIs Extraction
+                    let pName = null, pIcon = 'fa-location-dot', pColor = '#f59e0b', pCat = 'other';
 
-                    if (types.length > 0) {
-                        const k = `${cx},${cy}`;
-                        if (!seenPOI.has(k)) {
-                            seenPOI.add(k);
-                            pois.push({ worldId: wid, cellX: cx, cellY: cy, x: wx, y: wy, name: types.join(' & '), icon: pIcon, color: pColor });
-                        }
+                    if (combLower.includes('chemicalplant') || combLower.includes('chemicallake') || (combLower.includes('chemical') && combLower.includes('road'))) {
+                        pName = 'Chemical Plant / Pool';
+                        pIcon = 'fa-flask-vial';
+                        pColor = '#06b6d4';
+                        pCat = 'chemical';
+                    } else if (combLower.includes('oillake') || combLower.includes('oil_dessert')) {
+                        pName = 'Oil Lake Reserve';
+                        pIcon = 'fa-oil-well';
+                        pColor = '#f59e0b';
+                        pCat = 'oil';
+                    } else if (combLower.includes('mechanicstation')) {
+                        pName = 'Mechanic Station';
+                        pIcon = 'fa-wrench';
+                        pColor = '#ff7a00';
+                        pCat = 'mechanic';
+                    } else if (combLower.includes('hideout') || combLower.includes('farmer') || combLower.includes('trader')) {
+                        pName = 'Trader / Hideout';
+                        pIcon = 'fa-store';
+                        pColor = '#10b981';
+                        pCat = 'trader';
+                    } else if (combLower.includes('warehouse')) {
+                        pName = 'Warehouse';
+                        pIcon = 'fa-building-shield';
+                        pColor = '#ef4444';
+                        pCat = 'warehouse';
+                    } else if (combLower.includes('silo') || combLower.includes('packing')) {
+                        pName = 'Packing Station';
+                        pIcon = 'fa-boxes-packing';
+                        pColor = '#06b6d4';
+                        pCat = 'packing';
+                    } else if (combLower.includes('scrapyard')) {
+                        pName = 'Scrapyard';
+                        pIcon = 'fa-recycle';
+                        pColor = '#eab308';
+                        pCat = 'scrapyard';
                     }
 
-                    // Schematics & Builder Guide Platforms Extraction
+                    if (pName) {
+                        const k = `${cx},${cy}_${pName}`;
+                        if (!seenPOI.has(k)) {
+                            seenPOI.add(k);
+                            pois.push({ worldId: wid, cellX: cx, cellY: cy, x: wx, y: wy, name: pName, icon: pIcon, color: pColor, category: pCat });
+                        }
+                    }
+                }
+
+                // Schematics & Builder Guide Platforms Extraction
+                const mSchem = keyStr.match(/ts_(\d+):\((-?\d+),(-?\d+)\)/);
+                if (mSchem) {
+                    const wid = parseInt(mSchem[1]), cx = parseInt(mSchem[2]), cy = parseInt(mSchem[3]);
+                    const dataLower = dataStr.toLowerCase();
+                    const wx = cx * CELL_SIZE + 32, wy = cy * CELL_SIZE + 32;
                     let schName = null;
                     let schKind = 'guide';
                     let schIcon = 'fa-microchip';

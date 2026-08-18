@@ -44,6 +44,17 @@ export function openInspector(entity) {
                 <div class="prop-label">Description</div>
                 <div class="prop-value">${entity.desc}</div>
             </div>` : ''}
+            ${entity.clusterItems && entity.clusterItems.length > 1 ? `
+            <div class="detail-property-card">
+                <div class="prop-label">Deposit Cluster (${entity.clusterItems.length} Nodes in Tile)</div>
+                <div class="prop-value" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; font-size: 11.5px;">
+                    ${(() => {
+                        const counts = {};
+                        entity.clusterItems.forEach(i => { counts[i.name] = (counts[i.name] || 0) + 1; });
+                        return Object.entries(counts).map(([name, count]) => `<div><i class="fa-solid fa-gem" style="color:var(--color-harvestable); margin-right:4px;"></i> <b>${count}×</b> ${name}</div>`).join('');
+                    })()}
+                </div>
+            </div>` : ''}
             ${entity.blocks ? `
             <div class="detail-property-card">
                 <div class="prop-label">Block / Shape Count</div>

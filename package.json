@@ -1,6 +1,6 @@
 {
   "name": "scrap-mechanic-tactical-map",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Scrap Mechanic Tactical Save Map Viewer & Real-Time Player Tracker",
   "main": "electron/main.js",
   "scripts": {

@@ -55,12 +55,14 @@ function findHoveredEntity(worldX, worldY) {
     if (state.layers.pois && state.mapData.pois) {
         for (const poi of state.mapData.pois) {
             const name = (poi.name || '').toLowerCase();
+            const cat = (poi.category || '').toLowerCase();
             if (state.subFilters && state.subFilters.pois && state.selectedEntity !== poi) {
                 if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
                 if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
                 if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
                 if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
-                if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !state.subFilters.pois.other) continue;
+                if ((name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') && !state.subFilters.pois.chemOil) continue;
+                if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
             }
 
             if (calculateDistance(worldX, worldY, poi.x, poi.y) < hitDist) {
@@ -120,15 +122,18 @@ function findHoveredEntity(worldX, worldY) {
         }
     }
 
-    // 5. Check Harvestables (Tier 5: zoom >= 0.80)
-    if (state.layers.harvestables && state.mapData.harvestables && (state.zoom >= 0.80 || state.selectedEntity)) {
+    // 5. Check Harvestables (Tier 5: zoom >= 0.24)
+    if (state.layers.harvestables && state.mapData.harvestables && (state.zoom >= 0.24 || state.selectedEntity)) {
         for (const h of state.mapData.harvestables) {
             const cat = (h.category || '').toLowerCase();
-            const name = (h.name || '').toLowerCase();
-            if ((cat.includes('oil') || name.includes('oil')) && !state.subFilters.harvestables.oil) continue;
-            if ((cat.includes('cotton') || name.includes('cotton')) && !state.subFilters.harvestables.cotton) continue;
-            if ((cat.includes('mineral') || name.includes('mineral') || name.includes('stone')) && !state.subFilters.harvestables.minerals) continue;
-            if ((cat.includes('tree') || name.includes('wood') || name.includes('tree')) && !state.subFilters.harvestables.trees) continue;
+            if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
+            if (cat === 'cotton' && !state.subFilters.harvestables.cotton) continue;
+            if (cat === 'mineral' && !state.subFilters.harvestables.minerals) continue;
+            if (cat === 'tree' && !state.subFilters.harvestables.trees) continue;
+            if (cat === 'crop' && !state.subFilters.harvestables.crops) continue;
+            if (cat === 'chemical' && !state.subFilters.harvestables.chemicals) continue;
+            if (cat === 'flower' && !state.subFilters.harvestables.flowers) continue;
+            if (cat === 'other' && !state.subFilters.harvestables.other) continue;
 
             if (calculateDistance(worldX, worldY, h.x, h.y) < hitDist) {
                 state.hoveredEntity = h;
@@ -145,7 +150,13 @@ function updateTooltipPosition(localX, localY, canvasWidth, canvasHeight) {
 
     if (state.hoveredEntity) {
         const ent = state.hoveredEntity;
-        if (tooltipTitle) tooltipTitle.textContent = ent.name || `Creation #${ent.id}` || 'Entity';
+        const isCluster = ent.clusterItems && ent.clusterItems.length > 1;
+        
+        if (tooltipTitle) {
+            tooltipTitle.textContent = isCluster 
+                ? `${ent.name} (${ent.clusterItems.length} Nodes)`
+                : (ent.name || `Creation #${ent.id}` || 'Entity');
+        }
         if (tooltipCoords) tooltipCoords.textContent = formatCoords(ent.x, ent.y);
         if (tooltipCategory) tooltipCategory.textContent = ent.category ? ent.category.toUpperCase() : 'POI';
 
@@ -154,7 +165,12 @@ function updateTooltipPosition(localX, localY, canvasWidth, canvasHeight) {
             tooltipIcon.style.color = ent.color || '#ff8e1a';
         }
 
-        if (ent.desc && tooltipExtraVal && tooltipExtraRow) {
+        if (isCluster && tooltipExtraVal && tooltipExtraRow) {
+            const counts = {};
+            ent.clusterItems.forEach(i => { counts[i.name] = (counts[i.name] || 0) + 1; });
+            tooltipExtraVal.textContent = Object.entries(counts).map(([name, count]) => `${count}× ${name}`).join(', ');
+            tooltipExtraRow.style.display = 'flex';
+        } else if (ent.desc && tooltipExtraVal && tooltipExtraRow) {
             tooltipExtraVal.textContent = ent.desc;
             tooltipExtraRow.style.display = 'flex';
         } else if (tooltipExtraRow) {

@@ -11,15 +11,9 @@ export function initAutoSyncListener() {
     if (window.electronAPI && typeof window.electronAPI.onActiveSaveUpdated === 'function') {
         window.electronAPI.onActiveSaveUpdated(async (saveData) => {
             if (saveData && saveData.data) {
-                console.log(`[AutoSync] Received save update: ${saveData.filename}`);
                 try {
-                    const mapData = await decodeSaveBuffer(saveData.data, saveData.filename);
-                    showToast(
-                        "Auto-Synced Save",
-                        `Updated from Scrap Mechanic: ${mapData?.creations?.length || 0} creations active.`,
-                        "info",
-                        3500
-                    );
+                    // Quiet, lightweight dynamic entity sync: no screen blink, no map re-stitching, no toast spam
+                    const mapData = await decodeSaveBuffer(saveData.data, saveData.filename, true);
 
                     // Broadcast updated entities to squad if connected
                     if (state.squad.connected && state.squad.roomCode && mapData) {
