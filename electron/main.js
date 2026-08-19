@@ -1,10 +1,18 @@
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, globalShortcut, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { getSurvivalSaves, snapshotActiveSave, findGameDirectory, setCustomGameDirectory, checkRadarInstalled, installRadarFiles, restartGame } = require('./game_scanner');
 const { NodeMemoryReader } = require('./memory_reader');
 
 let mainWindow = null;
+let overlayWindow = null;
+let overlayBounds = { x: null, y: null, width: 340, height: 340 };
+let overlayShortcut = 'F9';
+let mapOverlayShortcut = 'M';
+let activeDisplayMode = 'in-app'; // 'in-app', 'radar-in-game', 'all-in-game'
+let isOverlayEditMode = false;
+let isMapOverlayActive = false;
+
 const memoryReader = new NodeMemoryReader();
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
@@ -20,6 +28,260 @@ function getBackendDir() {
     return process.cwd();
 }
 
+let user32 = null;
+let FindWindowA = null;
+let SetForegroundWindow = null;
+let ShowWindow = null;
+let GetForegroundWindow = null;
+let GetWindowTextA = null;
+let GetWindowThreadProcessId = null;
+
+try {
+    const koffi = require('koffi');
+    user32 = koffi.load('user32.dll');
+    FindWindowA = user32.func('void* FindWindowA(str lpClassName, str lpWindowName)');
+    SetForegroundWindow = user32.func('bool SetForegroundWindow(void* hWnd)');
+    ShowWindow = user32.func('bool ShowWindow(void* hWnd, int nCmdShow)');
+    GetForegroundWindow = user32.func('void* GetForegroundWindow()');
+    GetWindowTextA = user32.func('int GetWindowTextA(void* hWnd, _Out_ uint8_t *lpString, int nMaxCount)');
+    GetWindowThreadProcessId = user32.func('uint32_t GetWindowThreadProcessId(void* hWnd, _Out_ uint32_t *lpdwProcessId)');
+} catch (e) {}
+
+function isGameOrOverlayFocused() {
+    try {
+        // If our overlay or mainWindow itself is focused, allow shortcut so user can close/toggle it
+        if (mainWindow && !mainWindow.isDestroyed() && mainWindow.isFocused()) return true;
+        if (overlayWindow && !overlayWindow.isDestroyed() && overlayWindow.isFocused()) return true;
+
+        if (GetForegroundWindow) {
+            const fgHwnd = GetForegroundWindow();
+            if (!fgHwnd) return false;
+
+            // 1. Check window title of focused window
+            if (GetWindowTextA) {
+                const buf = Buffer.alloc(256);
+                const len = GetWindowTextA(fgHwnd, buf, 256);
+                if (len > 0) {
+                    const title = buf.toString('utf8', 0, len);
+                    if (title.includes('Scrap Mechanic') || title.includes('ScrapMechanic')) {
+                        return true;
+                    }
+                }
+            }
+
+            // 2. Check process PID of focused window
+            if (GetWindowThreadProcessId && memoryReader && memoryReader.pid) {
+                const outPid = [0];
+                GetWindowThreadProcessId(fgHwnd, outPid);
+                if (outPid[0] === memoryReader.pid) {
+                    return true;
+                }
+            }
+        }
+    } catch (e) {
+        return true;
+    }
+    return false;
+}
+
+function refreshGlobalShortcuts() {
+    try {
+        globalShortcut.unregisterAll();
+
+        // 1. Register F9 (Radar Edit Mode) if in 'radar-in-game' or 'all-in-game'
+        if ((activeDisplayMode === 'radar-in-game' || activeDisplayMode === 'all-in-game') && overlayShortcut) {
+            const success = globalShortcut.register(overlayShortcut, () => {
+                if (!isGameOrOverlayFocused()) return;
+                toggleOverlayEditMode();
+            });
+            if (success) {
+                console.log(`[Electron] Registered Radar shortcut: ${overlayShortcut} (game-focus only)`);
+            }
+        }
+
+        // 2. Register M (Map Overlay Summon) if in 'all-in-game'
+        if (activeDisplayMode === 'all-in-game' && mapOverlayShortcut) {
+            const success = globalShortcut.register(mapOverlayShortcut, () => {
+                if (!isGameOrOverlayFocused()) return;
+                toggleMapOverlay();
+            });
+            if (success) {
+                console.log(`[Electron] Registered Map Overlay shortcut: ${mapOverlayShortcut} (game-focus only)`);
+            }
+        }
+    } catch (e) {
+        console.error('[Electron] Error refreshing shortcuts:', e.message);
+    }
+}
+
+function focusGameWindow() {
+    try {
+        let focused = false;
+        if (FindWindowA && SetForegroundWindow) {
+            const hWnd = FindWindowA(null, "Scrap Mechanic");
+            if (hWnd) {
+                if (ShowWindow) ShowWindow(hWnd, 9); // SW_RESTORE
+                SetForegroundWindow(hWnd);
+                focused = true;
+            }
+        }
+        if (!focused) {
+            const pid = (memoryReader && memoryReader.pid) ? memoryReader.pid : null;
+            const target = pid || "'Scrap Mechanic'";
+            const cmd = `powershell -NoProfile -Command "$ws = New-Object -ComObject Wscript.Shell; $ws.AppActivate(${target})"`;
+            require('child_process').exec(cmd);
+        }
+    } catch (e) {
+        console.warn('[Electron] Could not focus game window:', e.message);
+    }
+}
+
+function toggleOverlayEditMode(forceMode) {
+    if (!overlayWindow || overlayWindow.isDestroyed()) return;
+
+    if (typeof forceMode === 'boolean') {
+        isOverlayEditMode = forceMode;
+    } else {
+        isOverlayEditMode = !isOverlayEditMode;
+    }
+
+    if (isOverlayEditMode) {
+        overlayWindow.setIgnoreMouseEvents(false);
+        overlayWindow.focus();
+    } else {
+        overlayWindow.setIgnoreMouseEvents(true, { forward: true });
+        focusGameWindow();
+    }
+
+    const payload = { editMode: isOverlayEditMode, shortcut: overlayShortcut };
+    if (!overlayWindow.isDestroyed()) {
+        overlayWindow.webContents.send('overlay-mode-changed', payload);
+    }
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('overlay-mode-changed', payload);
+    }
+}
+
+function toggleMapOverlay(forceState) {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+
+    if (typeof forceState === 'boolean') {
+        isMapOverlayActive = forceState;
+    } else {
+        isMapOverlayActive = !mainWindow.isVisible();
+    }
+
+    if (isMapOverlayActive) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.show();
+        mainWindow.setAlwaysOnTop(true, 'screen-saver');
+        mainWindow.focus();
+        mainWindow.webContents.send('map-overlay-summoned', { isOpen: true, shortcut: mapOverlayShortcut });
+        toggleOverlayEditMode(true);
+    } else {
+        mainWindow.setAlwaysOnTop(false);
+        mainWindow.hide();
+        mainWindow.webContents.send('map-overlay-summoned', { isOpen: false, shortcut: mapOverlayShortcut });
+        toggleOverlayEditMode(false);
+        focusGameWindow();
+    }
+}
+
+function createOverlayWindow() {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+        overlayWindow.show();
+        overlayWindow.focus();
+        return overlayWindow;
+    }
+
+    // Default position: Top-Right corner of primary display if not previously positioned
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { width: screenWidth } = primaryDisplay.workAreaSize;
+    const defaultX = overlayBounds.x !== null ? overlayBounds.x : (screenWidth - 370);
+    const defaultY = overlayBounds.y !== null ? overlayBounds.y : 30;
+
+    overlayWindow = new BrowserWindow({
+        width: overlayBounds.width || 320,
+        height: overlayBounds.height || 320,
+        x: defaultX,
+        y: defaultY,
+        transparent: true,
+        frame: false,
+        alwaysOnTop: true,
+        hasShadow: false,
+        skipTaskbar: true,
+        resizable: true,
+        backgroundColor: '#00000000',
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: false,
+            contextIsolation: true,
+            sandbox: false,
+            webSecurity: false
+        }
+    });
+
+    overlayWindow.setAlwaysOnTop(true, 'screen-saver');
+    overlayWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+    // Start in interactive Edit Mode so the user sees the header and can drag it immediately
+    overlayWindow.setIgnoreMouseEvents(false);
+    isOverlayEditMode = true;
+
+    const appDir = path.resolve(__dirname, '..');
+    const distOverlay = path.join(appDir, 'dist', 'overlay.html');
+    const rootOverlay = path.join(appDir, 'overlay.html');
+
+    if (isDev && process.env.VITE_DEV_SERVER_URL) {
+        const devUrl = new URL('overlay.html', process.env.VITE_DEV_SERVER_URL).toString();
+        overlayWindow.loadURL(devUrl);
+    } else if (fs.existsSync(distOverlay)) {
+        overlayWindow.loadFile(distOverlay);
+    } else {
+        overlayWindow.loadFile(rootOverlay);
+    }
+
+    overlayWindow.webContents.on('did-finish-load', () => {
+        if (!overlayWindow || overlayWindow.isDestroyed()) return;
+        overlayWindow.webContents.send('overlay-mode-changed', { editMode: true, shortcut: overlayShortcut });
+    });
+
+    overlayWindow.on('moved', () => {
+        if (!overlayWindow || overlayWindow.isDestroyed()) return;
+        const [x, y] = overlayWindow.getPosition();
+        overlayBounds.x = x;
+        overlayBounds.y = y;
+    });
+
+    overlayWindow.on('resized', () => {
+        if (!overlayWindow || overlayWindow.isDestroyed()) return;
+        const [width, height] = overlayWindow.getSize();
+        overlayBounds.width = width;
+        overlayBounds.height = height;
+    });
+
+    overlayWindow.on('closed', () => {
+        overlayWindow = null;
+        isOverlayEditMode = false;
+        if (activeDisplayMode !== 'in-app') {
+            activeDisplayMode = 'in-app';
+            refreshGlobalShortcuts();
+            if (mainWindow && !mainWindow.isDestroyed()) {
+                mainWindow.webContents.send('display-mode-changed', {
+                    mode: 'in-app',
+                    overlayOpen: false,
+                    radarShortcut: overlayShortcut,
+                    mapShortcut: mapOverlayShortcut
+                });
+            }
+        }
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('overlay-mode-changed', { isOpen: false, editMode: false, shortcut: overlayShortcut });
+        }
+    });
+
+    return overlayWindow;
+}
+
 function createWindow() {
     const iconPath = path.join(__dirname, 'icon.png');
     mainWindow = new BrowserWindow({
@@ -30,6 +292,9 @@ function createWindow() {
         backgroundColor: '#080c14',
         title: 'Scrap Mechanic - Tactical Save Map Viewer',
         icon: fs.existsSync(iconPath) ? iconPath : undefined,
+        frame: false,
+        hasShadow: false,
+        thickFrame: false,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -55,6 +320,9 @@ function createWindow() {
 
     mainWindow.on('closed', () => {
         mainWindow = null;
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+            overlayWindow.close();
+        }
     });
 }
 
@@ -256,8 +524,183 @@ ipcMain.handle('generate-terrain', async (event, seed) => {
     return { success: false, error: "Terrain generator requires Python in system PATH" };
 });
 
+// Radar & Display Modes IPC Handlers
+ipcMain.handle('set-display-mode', async (event, mode) => {
+    if (!['in-app', 'radar-in-game', 'all-in-game'].includes(mode)) {
+        return { success: false, mode: activeDisplayMode };
+    }
+
+    // Guard against redundant sets
+    if (mode === activeDisplayMode) {
+        return { success: true, mode: activeDisplayMode };
+    }
+
+    activeDisplayMode = mode;
+    console.log(`[Electron] Active Display Mode set to: ${mode}`);
+
+    if (mode === 'in-app') {
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+            overlayWindow.close();
+        }
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.setAlwaysOnTop(false);
+            if (!mainWindow.isVisible()) mainWindow.show();
+            mainWindow.focus();
+        }
+    } else if (mode === 'radar-in-game') {
+        createOverlayWindow();
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.setAlwaysOnTop(false);
+            if (!mainWindow.isVisible()) mainWindow.show();
+        }
+    } else if (mode === 'all-in-game') {
+        createOverlayWindow();
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            isMapOverlayActive = false;
+            mainWindow.setAlwaysOnTop(false);
+            mainWindow.hide();
+            focusGameWindow();
+        }
+    }
+
+    refreshGlobalShortcuts();
+
+    const payload = {
+        mode: activeDisplayMode,
+        overlayOpen: Boolean(overlayWindow && !overlayWindow.isDestroyed()),
+        radarShortcut: overlayShortcut,
+        mapShortcut: mapOverlayShortcut
+    };
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('display-mode-changed', payload);
+    }
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+        overlayWindow.webContents.send('display-mode-changed', payload);
+    }
+
+    return { success: true, mode: activeDisplayMode };
+});
+
+ipcMain.handle('get-display-mode', async () => {
+    return {
+        mode: activeDisplayMode,
+        overlayOpen: Boolean(overlayWindow && !overlayWindow.isDestroyed()),
+        radarShortcut: overlayShortcut,
+        mapShortcut: mapOverlayShortcut
+    };
+});
+
+ipcMain.handle('update-map-overlay-shortcut', async (event, keybind) => {
+    if (keybind && typeof keybind === 'string') {
+        mapOverlayShortcut = keybind.trim().toUpperCase();
+        refreshGlobalShortcuts();
+    }
+    return { success: true, shortcut: mapOverlayShortcut };
+});
+
+ipcMain.handle('hide-map-overlay', async () => {
+    if (activeDisplayMode === 'all-in-game') {
+        toggleMapOverlay(false);
+    }
+    return { success: true };
+});
+
+ipcMain.handle('toggle-radar-overlay', async (event, forceState) => {
+    let shouldOpen = false;
+    if (typeof forceState === 'boolean') {
+        shouldOpen = forceState;
+    } else {
+        shouldOpen = !overlayWindow || overlayWindow.isDestroyed();
+    }
+
+    if (shouldOpen) {
+        createOverlayWindow();
+        if (activeDisplayMode === 'in-app') activeDisplayMode = 'radar-in-game';
+    } else if (overlayWindow && !overlayWindow.isDestroyed()) {
+        overlayWindow.close();
+        activeDisplayMode = 'in-app';
+    }
+
+    refreshGlobalShortcuts();
+    return { 
+        isOpen: Boolean(overlayWindow && !overlayWindow.isDestroyed()),
+        editMode: isOverlayEditMode,
+        shortcut: overlayShortcut,
+        mode: activeDisplayMode
+    };
+});
+
+ipcMain.handle('get-radar-overlay-status', async () => {
+    return {
+        isOpen: Boolean(overlayWindow && !overlayWindow.isDestroyed()),
+        editMode: isOverlayEditMode,
+        shortcut: overlayShortcut,
+        bounds: overlayBounds
+    };
+});
+
+ipcMain.handle('set-radar-overlay-interactive', async (event, interactive) => {
+    toggleOverlayEditMode(interactive);
+    return { editMode: isOverlayEditMode };
+});
+
+ipcMain.handle('update-radar-overlay-shortcut', async (event, keybind) => {
+    if (keybind && typeof keybind === 'string') {
+        overlayShortcut = keybind.trim().toUpperCase();
+        refreshGlobalShortcuts();
+    }
+    return { success: true, shortcut: overlayShortcut };
+});
+
+ipcMain.handle('save-radar-overlay-bounds', async (event, bounds) => {
+    if (bounds) {
+        Object.assign(overlayBounds, bounds);
+    }
+    return { success: true, bounds: overlayBounds };
+});
+
+ipcMain.handle('sync-data-to-overlay', async (event, payload) => {
+    if (overlayWindow && !overlayWindow.isDestroyed()) {
+        overlayWindow.webContents.send('radar-overlay-data', payload);
+    }
+    return { success: true };
+});
+
+// Window Management IPC Handlers
+ipcMain.handle('window-minimize', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.minimize();
+    }
+    return { success: true };
+});
+
+ipcMain.handle('window-maximize', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        if (mainWindow.isMaximized()) {
+            mainWindow.unmaximize();
+        } else {
+            mainWindow.maximize();
+        }
+        return { success: true, isMaximized: mainWindow.isMaximized() };
+    }
+    return { success: false };
+});
+
+ipcMain.handle('window-close', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.close();
+    }
+    return { success: true };
+});
+
+ipcMain.handle('is-window-maximized', () => {
+    return { isMaximized: Boolean(mainWindow && !mainWindow.isDestroyed() && mainWindow.isMaximized()) };
+});
+
 app.whenReady().then(() => {
     memoryReader.start(30);
+    refreshGlobalShortcuts();
     createWindow();
 
     app.on('activate', () => {
@@ -266,6 +709,9 @@ app.whenReady().then(() => {
 });
 
 app.on('will-quit', () => {
+    try {
+        globalShortcut.unregisterAll();
+    } catch (e) {}
     if (memoryReader) memoryReader.stop();
 });
 
@@ -274,3 +720,4 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+

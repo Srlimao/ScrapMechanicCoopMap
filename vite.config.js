@@ -10,7 +10,8 @@ export default defineConfig({
         assetsDir: 'assets',
         rollupOptions: {
             input: {
-                main: path.resolve(__dirname, 'index.html')
+                main: path.resolve(__dirname, 'index.html'),
+                overlay: path.resolve(__dirname, 'overlay.html')
             }
         }
     },

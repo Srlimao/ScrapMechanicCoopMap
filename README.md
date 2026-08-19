@@ -7,7 +7,7 @@
 
 A high-performance, release-ready desktop tactical map application and real-time multiplayer co-op companion for **Scrap Mechanic** survival worlds.
 
-Featuring **zero-mod live memory character tracking**, **instant cloud squad room relays**, **authentic 12,288-cell procedural terrain stitching**, and comprehensive **save file entity inspection**.
+Featuring **in-game full-screen map overlays**, **floating proximity radar HUD**, **zero-mod live memory character tracking**, **instant cloud squad room relays**, **authentic 12,288-cell procedural terrain stitching**, and comprehensive **save file entity inspection**.
 
 ---
 
@@ -21,7 +21,15 @@ Featuring **zero-mod live memory character tracking**, **instant cloud squad roo
 
 ## ✨ Features
 
-### 📡 1. Tactical Proximity Radar & Proxy DLL Bridge
+### 🎮 1. In-Game Full Map Overlay & Floating Radar HUD (v1.5.0)
+- **`All In Game` Mode ([M])**: Press <kbd>M</kbd> anytime while playing *Scrap Mechanic* to summon the full interactive tactical workbench directly over your game screen. Press <kbd>Esc</kbd>, <kbd>M</kbd>, or click *Return to Game* to dismiss the map and automatically restore game focus and 3D mouse look with zero desktop cursor interruptions.
+- **Floating Proximity Radar HUD ([F9])**: Proximity radar floats seamlessly over the game. Press <kbd>F9</kbd> in-game to unlock, drag, and resize the HUD.
+- **Game-Focus Protected Hotkeys**: Shortcuts (<kbd>M</kbd> / <kbd>F9</kbd>) only trigger while *Scrap Mechanic* is the active foreground window, preventing conflicts while typing in Discord, browser, or other apps.
+- **Collapsible Sidebar & POI Waypoints**: In-game overlay mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs, Oil Lakes) with live distance and perimeter waypoints.
+
+---
+
+### 📡 2. Tactical Proximity Radar & Proxy DLL Bridge
 - **360° Military Proximity Scope**: Live circular radar in the bottom-right corner with phosphor sweep beam, dynamic range settings (50m to 500m), and customizable blip scale.
 - **Directional Altitude Threats**: Farmbots, Tapebots, Haybots, and Totebots render as pure red threat blips with crisp altitude arrows:
   - 🔺 **▲ Red Arrow Up**: Hostile bot is above the player ($> 2.5\text{m}$).
@@ -34,7 +42,7 @@ Featuring **zero-mod live memory character tracking**, **instant cloud squad roo
 
 ---
 
-### 🛰️ 2. Zero-Mod Real-Time Player Tracking
+### 🛰️ 3. Zero-Mod Real-Time Player Tracking
 - **Ultra-Fast Memory Hook**: Native Win32 C-FFI memory reader connecting directly to `ScrapMechanic.exe` in **0.18 ms** at **20 Hz**.
 - **Zero Game Modifications**: Operates completely externally via Windows memory pointers—no mods, Lua injection, or custom game files required.
 - **Dynamic Orientation & Breadcrumbs**: Displays live world coordinates $(X, Y, Z)$, heading cone, movement speed, and historical breadcrumb trails.

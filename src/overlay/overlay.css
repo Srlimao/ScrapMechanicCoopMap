@@ -1,0 +1,301 @@
+/* In-Game Radar Holographic HUD Stylesheet */
+:root {
+    --radar-phosphor: #22c55e;
+    --radar-phosphor-glow: rgba(34, 197, 94, 0.4);
+    --radar-cyan: #00e5ff;
+    --radar-cyan-glow: rgba(0, 229, 255, 0.5);
+    --radar-bg: rgba(8, 12, 20, 0.85);
+    --radar-border: rgba(34, 197, 94, 0.35);
+    --font-hud: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent !important;
+    font-family: var(--font-hud);
+    color: #f1f5f9;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Main Container */
+.overlay-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid transparent;
+    overflow: hidden;
+}
+
+/* Edit Mode High-Tech Hologram Shell */
+.overlay-container.edit-mode {
+    background: rgba(10, 15, 26, 0.90);
+    border: 2px solid var(--radar-cyan);
+    box-shadow: 0 0 25px var(--radar-cyan-glow), inset 0 0 15px rgba(0, 229, 255, 0.2);
+    backdrop-filter: blur(8px);
+}
+
+/* Corner Accent Brackets for Edit Mode */
+.edit-bracket {
+    display: none;
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--radar-cyan);
+    pointer-events: none;
+    z-index: 30;
+}
+.overlay-container.edit-mode .edit-bracket {
+    display: block;
+}
+.bracket-tl { top: 3px; left: 3px; border-right: none; border-bottom: none; }
+.bracket-tr { top: 3px; right: 3px; border-left: none; border-bottom: none; }
+.bracket-bl { bottom: 3px; left: 3px; border-right: none; border-top: none; }
+.bracket-br { bottom: 3px; right: 3px; border-left: none; border-top: none; }
+
+/* Drag Header in Edit Mode */
+.overlay-header {
+    display: none;
+    width: 100%;
+    height: 38px;
+    min-height: 38px;
+    background: rgba(0, 229, 255, 0.15);
+    border-bottom: 1px solid rgba(0, 229, 255, 0.35);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--radar-cyan);
+    cursor: move;
+    -webkit-app-region: drag;
+    z-index: 20;
+}
+.overlay-container.edit-mode .overlay-header {
+    display: flex;
+}
+
+.header-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-title-wrap i {
+    font-size: 13px;
+}
+
+.btn-lock {
+    -webkit-app-region: no-drag;
+    background: var(--radar-cyan);
+    color: #080c14;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: transform 0.1s, background 0.2s;
+}
+.btn-lock:hover {
+    background: #ffffff;
+    transform: scale(1.04);
+}
+
+/* Radar Center Viewport */
+.radar-view {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    overflow: hidden;
+}
+
+#overlayRadarCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px var(--radar-phosphor-glow));
+    transition: opacity 0.2s ease;
+}
+
+/* Threat Badge Overlay on Radar - Supports both class names */
+.radar-threat-badge, .overlay-threat-badge {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8, 12, 20, 0.90);
+    border: 1px solid var(--radar-phosphor);
+    color: var(--radar-phosphor);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.8), 0 0 8px rgba(34, 197, 94, 0.3);
+    z-index: 25;
+    transition: all 0.2s ease;
+}
+
+.radar-threat-badge.warning, .overlay-threat-badge.warning {
+    border-color: #f59e0b;
+    color: #fbbf24;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+}
+
+.radar-threat-badge.danger-blink, .overlay-threat-badge.danger-blink {
+    border-color: #ef4444;
+    color: #ef4444;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.9);
+    animation: dangerPulse 0.8s infinite alternate;
+}
+
+.radar-threat-badge.normal, .overlay-threat-badge.normal {
+    border-color: var(--radar-phosphor);
+    color: var(--radar-phosphor);
+}
+
+@keyframes dangerPulse {
+    from { opacity: 0.75; transform: translateX(-50%) scale(0.96); }
+    to { opacity: 1.0; transform: translateX(-50%) scale(1.04); }
+}
+
+/* Edit Mode Bottom Toolbar */
+.overlay-toolbar {
+    display: none;
+    width: 100%;
+    background: rgba(10, 15, 26, 0.95);
+    border-top: 1px solid rgba(0, 229, 255, 0.2);
+    padding: 8px 10px;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 10px;
+    -webkit-app-region: no-drag;
+    z-index: 20;
+}
+.overlay-container.edit-mode .overlay-toolbar {
+    display: flex;
+}
+
+.toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.toolbar-label {
+    color: #94a3b8;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.btn-group-pills {
+    display: flex;
+    gap: 3px;
+}
+
+.btn-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #cbd5e1;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.btn-pill:hover {
+    background: rgba(0, 229, 255, 0.2);
+    border-color: var(--radar-cyan);
+    color: #ffffff;
+}
+.btn-pill.active {
+    background: var(--radar-cyan);
+    border-color: var(--radar-cyan);
+    color: #080c14;
+}
+
+.slider-opacity {
+    width: 80px;
+    height: 4px;
+    accent-color: var(--radar-cyan);
+    cursor: pointer;
+}
+
+/* Resize Grip */
+.resize-grip {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    cursor: nwse-resize;
+    -webkit-app-region: no-drag;
+    z-index: 30;
+}
+.overlay-container.edit-mode .resize-grip {
+    display: block;
+    background: linear-gradient(135deg, transparent 50%, var(--radar-cyan) 50%);
+    border-bottom-right-radius: 18px;
+}
+
+/* Hotkey Indicator Banner (Shown for 3 seconds when entering locked mode) */
+.hotkey-hint-banner {
+    position: absolute;
+    bottom: 12px;
+    background: rgba(0, 0, 0, 0.90);
+    border: 1px solid var(--radar-cyan);
+    color: var(--radar-cyan);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 0 12px rgba(0, 229, 255, 0.5);
+    z-index: 40;
+}
+.hotkey-hint-banner.show {
+    opacity: 1;
+    transform: translateY(0);
+}

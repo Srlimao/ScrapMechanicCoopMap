@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tactical Radar In-Game Overlay</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="src/overlay/overlay.css">
+</head>
+<body>
+    <div class="overlay-container" id="overlayContainer">
+        <!-- Accent Brackets -->
+        <div class="edit-bracket bracket-tl"></div>
+        <div class="edit-bracket bracket-tr"></div>
+        <div class="edit-bracket bracket-bl"></div>
+        <div class="edit-bracket bracket-br"></div>
+
+        <!-- Draggable Header (Edit Mode Only) -->
+        <header class="overlay-header" id="overlayHeader">
+            <div class="header-title-wrap">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>TACTICAL RADAR <span style="font-size:9px; opacity:0.8;">[EDIT MODE]</span></span>
+            </div>
+            <button class="btn-lock" id="btnLockOverlay" title="Lock into Click-Through Mode (or press shortcut)">
+                <i class="fa-solid fa-lock"></i> <span id="lockKeyText">LOCK (F9)</span>
+            </button>
+        </header>
+
+        <!-- Main Radar Viewport -->
+        <div class="radar-view">
+            <div class="overlay-threat-badge" id="radarThreatBadge">
+                <i class="fa-solid fa-shield-halved"></i> CLEAR [150m]
+            </div>
+            <canvas id="overlayRadarCanvas" width="340" height="340"></canvas>
+        </div>
+
+        <!-- Bottom Controls (Edit Mode Only) -->
+        <div class="overlay-toolbar" id="overlayToolbar">
+            <div class="toolbar-row">
+                <span class="toolbar-label"><i class="fa-solid fa-crosshairs"></i> Range</span>
+                <div class="btn-group-pills">
+                    <button class="btn-pill" data-range="50">50m</button>
+                    <button class="btn-pill" data-range="100">100m</button>
+                    <button class="btn-pill active" data-range="150">150m</button>
+                    <button class="btn-pill" data-range="300">300m</button>
+                </div>
+            </div>
+            <div class="toolbar-row">
+                <span class="toolbar-label"><i class="fa-solid fa-circle-half-stroke"></i> Opacity</span>
+                <input type="range" class="slider-opacity" id="opacitySlider" min="20" max="100" value="85">
+                <button class="btn-pill" id="btnCloseOverlay" title="Hide Overlay" style="color:#ef4444; border-color:rgba(239,68,68,0.4);">
+                    <i class="fa-solid fa-xmark"></i> Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Resize Grip -->
+        <div class="resize-grip" id="resizeGrip" title="Drag to Resize"></div>
+
+        <!-- Notification Banner -->
+        <div class="hotkey-hint-banner" id="hintBanner">HUD LOCKED • Press F9 to Edit</div>
+    </div>
+
+    <script type="module" src="src/overlay/overlay.js"></script>
+</body>
+</html>

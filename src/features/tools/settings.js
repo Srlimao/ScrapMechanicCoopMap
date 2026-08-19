@@ -2,7 +2,97 @@
 import { state, notifyStateChange, subscribe } from '../../core/state.js';
 import { setTerrainImageSource } from '../map_renderer/layer_terrain.js';
 
-const STORAGE_KEY = 'sm_tactical_map_settings_v7';
+const STORAGE_KEY = 'sm_tactical_map_settings_v8';
+
+export function setSidebarCollapsed(collapsed) {
+    const panel = document.getElementById('controlPanel');
+    const wrapper = document.getElementById('tabletWrapper');
+    const tab = document.getElementById('sidebarToggleTab');
+    const tabIcon = document.getElementById('sidebarToggleTabIcon');
+
+    if (panel) panel.classList.toggle('sidebar-collapsed', collapsed);
+    if (wrapper) wrapper.classList.toggle('sidebar-collapsed', collapsed);
+    if (tab) tab.title = collapsed ? 'Expand Sidebar Controls' : 'Collapse Sidebar Controls';
+    if (tabIcon) tabIcon.className = collapsed ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-left';
+
+    // Trigger canvas resize
+    setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+    }, 300);
+}
+
+export function setFilterSectionsCollapsed(collapsed) {
+    const cards = document.querySelectorAll('.layer-card.collapsible');
+    cards.forEach(c => {
+        c.classList.toggle('collapsed', collapsed);
+    });
+    const poiAccordion = document.getElementById('poiAccordion');
+    if (poiAccordion) {
+        poiAccordion.classList.toggle('collapsed', collapsed);
+    }
+    const btnCollapse = document.getElementById('toggleCollapseFilters');
+    if (btnCollapse) {
+        btnCollapse.textContent = collapsed ? 'Expand All' : 'Collapse All';
+    }
+}
+
+export async function applyDisplayMode(mode, silent = false, notifyElectron = true) {
+    if (!['in-app', 'radar-in-game', 'all-in-game'].includes(mode)) return;
+    const changed = state.displayMode !== mode;
+    state.displayMode = mode;
+
+    // 1. Update Header Buttons UI
+    const modeBtns = document.querySelectorAll('#displayModeSelector .mode-btn');
+    modeBtns.forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+    });
+
+    // 2. Update Settings Modal Dropdown
+    const cfgDisplayMode = document.getElementById('cfgDisplayMode');
+    if (cfgDisplayMode && cfgDisplayMode.value !== mode) {
+        cfgDisplayMode.value = mode;
+    }
+
+    // 3. Update In-App Docked Radar Visibility
+    const radarContainer = document.getElementById('radarModuleContainer');
+    if (radarContainer) {
+        if (mode === 'in-app') {
+            // Visible if player is online
+            radarContainer.classList.toggle('hidden', !state.livePlayer.online);
+        } else {
+            // Hidden in desktop app when floating in-game
+            radarContainer.classList.add('hidden');
+        }
+    }
+
+    // 4. Auto-collapse/expand sidebar and filter sub-options based on mode
+    if (mode === 'all-in-game') {
+        setSidebarCollapsed(true);
+        setFilterSectionsCollapsed(true);
+    } else if (mode === 'in-app') {
+        setSidebarCollapsed(false);
+        setFilterSectionsCollapsed(false);
+    }
+
+    // 5. Send to Electron Process
+    if (notifyElectron && window.electronAPI && typeof window.electronAPI.setDisplayMode === 'function') {
+        await window.electronAPI.setDisplayMode(mode);
+    }
+
+    saveSettings();
+    notifyStateChange('display_mode_changed', { mode });
+
+    if (!silent && changed) {
+        const { showToast } = await import('../../ui/toasts.js');
+        if (mode === 'in-app') {
+            showToast("Mode: In App", "Standard desktop workstation mode active.", "info", 3500);
+        } else if (mode === 'radar-in-game') {
+            showToast("Mode: Radar In Game", `Proximity radar floating over game. Press ${state.overlayShortcut || 'F9'} to Move/Resize.`, "success", 4500);
+        } else if (mode === 'all-in-game') {
+            showToast("Mode: All In Game", `Radar in-game + press [${state.mapOverlayShortcut || 'M'}] anytime in-game to summon tactical map!`, "success", 5000);
+        }
+    }
+}
 
 export function loadSettings() {
     try {
@@ -22,6 +112,21 @@ export function loadSettings() {
         if (typeof data.radarMode === 'string') state.radarMode = data.radarMode;
         if (typeof data.autoSyncSave === 'boolean') state.autoSyncSave = data.autoSyncSave;
         if (typeof data.syncInterval === 'number') state.syncInterval = data.syncInterval;
+        if (typeof data.displayMode === 'string') state.displayMode = data.displayMode;
+        if (typeof data.mapOverlayShortcut === 'string') state.mapOverlayShortcut = data.mapOverlayShortcut;
+        if (typeof data.overlayShortcut === 'string') state.overlayShortcut = data.overlayShortcut;
+
+        if (window.electronAPI) {
+            if (typeof window.electronAPI.updateRadarOverlayShortcut === 'function') {
+                window.electronAPI.updateRadarOverlayShortcut(state.overlayShortcut || 'F9');
+            }
+            if (typeof window.electronAPI.updateMapOverlayShortcut === 'function') {
+                window.electronAPI.updateMapOverlayShortcut(state.mapOverlayShortcut || 'M');
+            }
+            if (typeof window.electronAPI.setDisplayMode === 'function' && state.displayMode) {
+                applyDisplayMode(state.displayMode, true);
+            }
+        }
     } catch (e) {
         console.warn("Failed to load settings:", e);
     }
@@ -42,7 +147,10 @@ export function saveSettings() {
             radarCreationMin: state.radarCreationMin,
             radarMode: state.radarMode,
             autoSyncSave: state.autoSyncSave,
-            syncInterval: state.syncInterval
+            syncInterval: state.syncInterval,
+            displayMode: state.displayMode || 'in-app',
+            mapOverlayShortcut: state.mapOverlayShortcut || 'M',
+            overlayShortcut: state.overlayShortcut || 'F9'
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) {}
@@ -99,11 +207,48 @@ export function setupLayerControls(elements) {
         });
     }
 
-    // POI Accordion Collapse Handler
+    // Collapsible Layer Card Handlers
+    document.querySelectorAll('.layer-card.collapsible').forEach(card => {
+        const titleWrap = card.querySelector('.layer-title-wrap');
+        if (titleWrap) {
+            titleWrap.addEventListener('click', (e) => {
+                e.stopPropagation();
+                card.classList.toggle('collapsed');
+                const allCollapsible = document.querySelectorAll('.layer-card.collapsible');
+                const allCollapsed = Array.from(allCollapsible).every(c => c.classList.contains('collapsed'));
+                const btnCollapse = document.getElementById('toggleCollapseFilters');
+                if (btnCollapse) {
+                    btnCollapse.textContent = allCollapsed ? 'Expand All' : 'Collapse All';
+                }
+            });
+        }
+    });
+
+    const btnCollapse = document.getElementById('toggleCollapseFilters');
+    if (btnCollapse) {
+        btnCollapse.addEventListener('click', () => {
+            const allCollapsible = document.querySelectorAll('.layer-card.collapsible');
+            const anyExpanded = Array.from(allCollapsible).some(c => !c.classList.contains('collapsed'));
+            setFilterSectionsCollapsed(anyExpanded);
+        });
+    }
+
+    // Whole Left Sidebar Collapse Toggle Handlers
+    const panel = document.getElementById('controlPanel');
+    const toggleSidebar = () => {
+        const isCollapsed = panel ? panel.classList.contains('sidebar-collapsed') : false;
+        setSidebarCollapsed(!isCollapsed);
+    };
+
+    const sidebarToggleTab = document.getElementById('sidebarToggleTab');
+    if (sidebarToggleTab) sidebarToggleTab.addEventListener('click', toggleSidebar);
+
+    // POI Accordion Header Collapse Handler
     const poiAccordion = document.getElementById('poiAccordion');
     const poiAccordionHeader = document.getElementById('poiAccordionHeader');
     if (poiAccordionHeader && poiAccordion) {
-        poiAccordionHeader.addEventListener('click', () => {
+        poiAccordionHeader.addEventListener('click', (e) => {
+            e.stopPropagation();
             poiAccordion.classList.toggle('collapsed');
         });
     }
@@ -406,6 +551,10 @@ export function setupSettingsModal() {
     });
 
     async function syncSettingsToUI() {
+        // 0. Display Mode
+        const cfgDisplayMode = document.getElementById('cfgDisplayMode');
+        if (cfgDisplayMode) cfgDisplayMode.value = state.displayMode || 'in-app';
+
         // 1. Radar Range
         const cfgRadarRange = document.getElementById('cfgRadarRange');
         if (cfgRadarRange) cfgRadarRange.value = String(state.radarRange || 150);
@@ -437,7 +586,25 @@ export function setupSettingsModal() {
             }
         }
 
-        // 6. Map Opacity
+        // 6. Overlay Controls & Hotkeys
+        const cfgMapOverlayShortcut = document.getElementById('cfgMapOverlayShortcut');
+        if (cfgMapOverlayShortcut) cfgMapOverlayShortcut.value = state.mapOverlayShortcut || 'M';
+
+        const headerMapKbd = document.getElementById('headerMapKbd');
+        if (headerMapKbd) headerMapKbd.textContent = state.mapOverlayShortcut || 'M';
+
+        const cfgOverlayShortcut = document.getElementById('cfgOverlayShortcut');
+        if (cfgOverlayShortcut) cfgOverlayShortcut.value = state.overlayShortcut || 'F9';
+
+        const cfgOverlayBtnText = document.getElementById('cfgOverlayBtnText');
+        if (cfgOverlayBtnText && window.electronAPI && typeof window.electronAPI.getRadarOverlayStatus === 'function') {
+            try {
+                const status = await window.electronAPI.getRadarOverlayStatus();
+                cfgOverlayBtnText.textContent = (status && status.isOpen) ? 'Close Overlay HUD' : 'Launch In-Game HUD';
+            } catch (e) {}
+        }
+
+        // 7. Map Opacity
         const cfgMapOpacity = document.getElementById('cfgMapOpacity');
         const cfgMapOpacityVal = document.getElementById('cfgMapOpacityVal');
         if (cfgMapOpacity) {
@@ -445,24 +612,185 @@ export function setupSettingsModal() {
             if (cfgMapOpacityVal) cfgMapOpacityVal.textContent = `${Math.round((state.mapOpacity || 0.9) * 100)}%`;
         }
 
-        // 7. Terrain Smoothing
+        // 8. Terrain Smoothing
         const cfgTerrainSmooth = document.getElementById('cfgTerrainSmooth');
         if (cfgTerrainSmooth) cfgTerrainSmooth.checked = state.terrainSmoothing !== false;
 
-        // 8. Terrain Blend
+        // 9. Terrain Blend
         const cfgTerrainBlend = document.getElementById('cfgTerrainBlend');
         if (cfgTerrainBlend) cfgTerrainBlend.checked = state.terrainEdgeBlend !== false;
 
-        // 9. Show Coordinates
+        // 10. Show Coordinates
         const cfgShowCoordinates = document.getElementById('cfgShowCoordinates');
         if (cfgShowCoordinates) cfgShowCoordinates.checked = state.showCoordinates === true;
 
-        // 10. Save Auto-Sync
+        // 11. Save Auto-Sync
         const cfgAutoSyncSave = document.getElementById('cfgAutoSyncSave');
         if (cfgAutoSyncSave) cfgAutoSyncSave.checked = state.autoSyncSave !== false;
 
         const cfgSyncInterval = document.getElementById('cfgSyncInterval');
         if (cfgSyncInterval) cfgSyncInterval.value = String(state.syncInterval || 5000);
+    }
+
+    // Attach Event Listeners to Settings Controls
+    const cfgDisplayMode = document.getElementById('cfgDisplayMode');
+    if (cfgDisplayMode) {
+        cfgDisplayMode.addEventListener('change', (e) => {
+            applyDisplayMode(e.target.value);
+        });
+    }
+
+    const cfgBtnToggleOverlay = document.getElementById('cfgBtnToggleOverlay');
+    const btnPopOutRadar = document.getElementById('btnPopOutRadar');
+
+    async function handleToggleOverlay() {
+        if (!window.electronAPI || typeof window.electronAPI.toggleRadarOverlay !== 'function') return;
+        const res = await window.electronAPI.toggleRadarOverlay();
+        const isOpen = res && res.isOpen;
+        const cfgOverlayBtnText = document.getElementById('cfgOverlayBtnText');
+        if (cfgOverlayBtnText) cfgOverlayBtnText.textContent = isOpen ? 'Close Overlay HUD' : 'Launch In-Game HUD';
+        if (btnPopOutRadar) btnPopOutRadar.classList.toggle('active', isOpen);
+        
+        const { showToast } = await import('../../ui/toasts.js');
+        if (isOpen) {
+            showToast("In-Game Radar Active", `Overlay floating over game. Press ${state.overlayShortcut || 'F9'} to Move/Resize.`, "success", 5000);
+            if (window.electronAPI.syncDataToOverlay) {
+                window.electronAPI.syncDataToOverlay({
+                    mapData: state.mapData,
+                    radarRange: state.radarRange,
+                    radarBlipScale: state.radarBlipScale,
+                    radarVerticalBand: state.radarVerticalBand,
+                    radarMode: state.radarMode
+                });
+            }
+        } else {
+            showToast("In-Game Radar Closed", "Overlay hidden.", "info", 3000);
+        }
+    }
+
+    if (cfgBtnToggleOverlay) cfgBtnToggleOverlay.addEventListener('click', handleToggleOverlay);
+    if (btnPopOutRadar) btnPopOutRadar.addEventListener('click', handleToggleOverlay);
+
+    // Map Overlay Keybind Recorder (M)
+    const cfgBtnRecordMapShortcut = document.getElementById('cfgBtnRecordMapShortcut');
+    const cfgMapOverlayShortcut = document.getElementById('cfgMapOverlayShortcut');
+    if (cfgBtnRecordMapShortcut && cfgMapOverlayShortcut) {
+        let isRecording = false;
+
+        function startRecordingMap() {
+            if (isRecording) return;
+            isRecording = true;
+            cfgMapOverlayShortcut.value = 'PRESS ANY KEY...';
+            cfgMapOverlayShortcut.style.borderColor = '#00e5ff';
+            cfgMapOverlayShortcut.style.boxShadow = '0 0 10px rgba(0, 229, 255, 0.5)';
+
+            const keyHandler = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
+
+                const parts = [];
+                if (e.ctrlKey) parts.push('CommandOrControl');
+                if (e.altKey) parts.push('Alt');
+                if (e.shiftKey) parts.push('Shift');
+
+                let keyName = e.key.toUpperCase();
+                if (e.code && e.code.startsWith('F') && !isNaN(e.code.slice(1))) {
+                    keyName = e.code;
+                } else if (e.code && e.code.startsWith('Key')) {
+                    keyName = e.code.replace('Key', '');
+                } else if (e.code && e.code.startsWith('Digit')) {
+                    keyName = e.code.replace('Digit', '');
+                }
+
+                parts.push(keyName);
+                const combo = parts.join('+');
+
+                state.mapOverlayShortcut = combo;
+                cfgMapOverlayShortcut.value = combo;
+                cfgMapOverlayShortcut.style.borderColor = '';
+                cfgMapOverlayShortcut.style.boxShadow = '';
+                isRecording = false;
+                window.removeEventListener('keydown', keyHandler, true);
+
+                const headerMapKbd = document.getElementById('headerMapKbd');
+                if (headerMapKbd) headerMapKbd.textContent = combo;
+
+                if (window.electronAPI && typeof window.electronAPI.updateMapOverlayShortcut === 'function') {
+                    await window.electronAPI.updateMapOverlayShortcut(combo);
+                }
+                saveSettings();
+
+                const { showToast } = await import('../../ui/toasts.js');
+                showToast("Map Hotkey Updated", `In-Game map summon keybind set to ${combo}`, "success", 4000);
+            };
+
+            window.addEventListener('keydown', keyHandler, true);
+        }
+
+        cfgBtnRecordMapShortcut.addEventListener('click', startRecordingMap);
+        cfgMapOverlayShortcut.addEventListener('click', startRecordingMap);
+    }
+
+    // Radar Edit Keybind Recorder (F9)
+    const cfgBtnRecordShortcut = document.getElementById('cfgBtnRecordShortcut');
+    const cfgOverlayShortcut = document.getElementById('cfgOverlayShortcut');
+    if (cfgBtnRecordShortcut && cfgOverlayShortcut) {
+        let isRecording = false;
+
+        function startRecording() {
+            if (isRecording) return;
+            isRecording = true;
+            cfgOverlayShortcut.value = 'PRESS ANY KEY...';
+            cfgOverlayShortcut.style.borderColor = '#38bdf8';
+            cfgOverlayShortcut.style.boxShadow = '0 0 10px rgba(56, 189, 248, 0.5)';
+
+            const keyHandler = async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Skip standalone modifier keys
+                if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return;
+
+                const parts = [];
+                if (e.ctrlKey) parts.push('CommandOrControl');
+                if (e.altKey) parts.push('Alt');
+                if (e.shiftKey) parts.push('Shift');
+
+                let keyName = e.key.toUpperCase();
+                if (e.code && e.code.startsWith('F') && !isNaN(e.code.slice(1))) {
+                    keyName = e.code; // F1 - F12
+                } else if (e.code && e.code.startsWith('Key')) {
+                    keyName = e.code.replace('Key', '');
+                } else if (e.code && e.code.startsWith('Digit')) {
+                    keyName = e.code.replace('Digit', '');
+                }
+
+                parts.push(keyName);
+                const combo = parts.join('+');
+
+                state.overlayShortcut = combo;
+                cfgOverlayShortcut.value = combo;
+                cfgOverlayShortcut.style.borderColor = '';
+                cfgOverlayShortcut.style.boxShadow = '';
+                isRecording = false;
+                window.removeEventListener('keydown', keyHandler, true);
+
+                if (window.electronAPI && typeof window.electronAPI.updateRadarOverlayShortcut === 'function') {
+                    await window.electronAPI.updateRadarOverlayShortcut(combo);
+                }
+                saveSettings();
+
+                const { showToast } = await import('../../ui/toasts.js');
+                showToast("Hotkey Updated", `Overlay keybind set to ${combo}`, "success", 4000);
+            };
+
+            window.addEventListener('keydown', keyHandler, true);
+        }
+
+        cfgBtnRecordShortcut.addEventListener('click', startRecording);
+        cfgOverlayShortcut.addEventListener('click', startRecording);
     }
 
     // Attach Event Listeners to Settings Controls

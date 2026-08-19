@@ -30,6 +30,13 @@ export function initCanvasEngine(canvas, radarCanvas) {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    if (window.ResizeObserver && canvas.parentElement) {
+        const ro = new ResizeObserver(() => {
+            resizeCanvas();
+        });
+        ro.observe(canvas.parentElement);
+    }
+
     // Subscribe to all state changes to trigger map redraws on-demand
     subscribe((type) => {
         needsMapRender = true;
@@ -40,21 +47,33 @@ export function initCanvasEngine(canvas, radarCanvas) {
 }
 
 export function resizeCanvas() {
-    if (!canvasEl) return;
+    if (!canvasEl || !canvasEl.parentElement) return;
     const parent = canvasEl.parentElement;
-    canvasEl.width = parent.clientWidth;
-    canvasEl.height = parent.clientHeight;
-    needsMapRender = true;
+    if (canvasEl.width !== parent.clientWidth || canvasEl.height !== parent.clientHeight) {
+        canvasEl.width = parent.clientWidth;
+        canvasEl.height = parent.clientHeight;
+        needsMapRender = true;
+    }
 }
 
 function renderLoop() {
     if (!isRunning) return;
 
+    // Continuously verify parent container dimensions to prevent any squishing during transitions
+    if (canvasEl && canvasEl.parentElement) {
+        const parent = canvasEl.parentElement;
+        if (canvasEl.width !== parent.clientWidth || canvasEl.height !== parent.clientHeight) {
+            canvasEl.width = parent.clientWidth;
+            canvasEl.height = parent.clientHeight;
+            needsMapRender = true;
+        }
+    }
+
     const w = canvasEl ? canvasEl.width : 0;
     const h = canvasEl ? canvasEl.height : 0;
 
     // 1. Render Main Map Canvas only when state is dirty / camera moved / entities updated
-    if (needsMapRender && ctx2d && canvasEl) {
+    if (needsMapRender && ctx2d && canvasEl && w > 0 && h > 0) {
         renderFrame(w, h);
         needsMapRender = false;
     }
@@ -63,7 +82,7 @@ function renderLoop() {
     if (radarCtx2d && radarCanvasEl) {
         const isRadarVisible = radarContainerEl ? !radarContainerEl.classList.contains('hidden') : state.livePlayer.online;
         if (isRadarVisible) {
-            renderRadar(radarCtx2d, radarCanvasEl, w, h);
+            renderRadar(radarCtx2d, radarCanvasEl, radarCanvasEl.width, radarCanvasEl.height);
         }
     }
 

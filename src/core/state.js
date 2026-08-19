@@ -44,7 +44,10 @@ export const state = {
     terrainSmoothing: true,
     terrainEdgeBlend: true,
 
-    // Proximity Radar Settings
+    // Proximity Radar & Display Modes
+    displayMode: 'in-app', // 'in-app', 'radar-in-game', 'all-in-game'
+    overlayShortcut: 'F9',
+    mapOverlayShortcut: 'M',
     radarRange: 150,
     radarVerticalBand: 20, // Vertical filter: ±20 meters (~80 blocks)
     radarBlipScale: 1.25, // Radar Blip Scale multiplier

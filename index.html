@@ -42,26 +42,31 @@
                 </button>
             </div>
 
+            <!-- Top Display Mode Selector (In App / Radar In Game / All In Game) -->
+            <div class="display-mode-selector" id="displayModeSelector" title="Select Display Mode & In-Game Overlay Integration">
+                <button class="mode-btn active" data-mode="in-app" title="In App Mode: Render everything inside standard desktop workstation window">
+                    <i class="fa-solid fa-desktop"></i> <span>In App</span>
+                </button>
+                <button class="mode-btn" data-mode="radar-in-game" title="Radar In Game Mode: Transparent proximity radar floats directly over Scrap Mechanic">
+                    <i class="fa-solid fa-satellite-dish"></i> <span>Radar In Game</span>
+                </button>
+                <button class="mode-btn" data-mode="all-in-game" title="All In Game Mode: Radar floats in-game & press [M] to summon full interactive tactical map over game">
+                    <i class="fa-solid fa-gamepad"></i> <span>All In Game <kbd class="mode-kbd" id="headerMapKbd">M</kbd></span>
+                </button>
+            </div>
+
             <!-- Header Controls & File Upload -->
             <div class="header-actions">
+                <button class="btn btn-tool" id="btnReturnToGame" style="display:none; background:rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color:#fca5a5;" title="Hide Map & Return Focus to Game (Esc or M)">
+                    <i class="fa-solid fa-gamepad"></i> <span>Return to Game [Esc]</span>
+                </button>
+
                 <button class="btn btn-tool" id="btnSquadModal" title="Multiplayer Squad Room & Co-op Live Coordinates">
                     <span class="squad-badge offline" id="squadStatusBadge"><i class="fa-solid fa-users"></i> Squad: Offline</span>
                 </button>
 
                 <button class="btn btn-tool" id="followPlayerBtn" title="Lock Camera and Follow In-Game Character">
                     <i class="fa-solid fa-crosshairs"></i> <span>Follow Player</span>
-                </button>
-
-                <button class="btn btn-tool" id="toggleCoordsBtn" title="Show or Hide Coordinates HUD">
-                    <i class="fa-solid fa-location-crosshairs"></i> <span>Coordinates</span>
-                </button>
-
-                <button class="btn btn-tool" id="rulerToolBtn" title="Toggle Distance Ruler Tool">
-                    <i class="fa-solid fa-ruler-combined"></i> <span>Measure</span>
-                </button>
-
-                <button class="btn btn-tool" id="exportBtn" title="Export High-Res Map Screenshot">
-                    <i class="fa-solid fa-camera"></i> <span>Snapshot</span>
                 </button>
 
                 <div class="file-upload-wrapper">
@@ -82,11 +87,29 @@
                 <button class="btn btn-icon" id="infoBtn" title="Help & Information">
                     <i class="fa-solid fa-circle-question"></i>
                 </button>
+
+                <!-- Custom Frameless Window Controls -->
+                <div class="window-controls" id="windowControls">
+                    <button class="btn-win-ctrl" id="btnWinMin" title="Minimize Window">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <button class="btn-win-ctrl" id="btnWinMax" title="Maximize / Restore Window">
+                        <i class="fa-regular fa-square"></i>
+                    </button>
+                    <button class="btn-win-ctrl btn-win-close" id="btnWinClose" title="Close Window">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
         <!-- Main Workbench Body: Sidebar + Chunky Industrial Tablet -->
-        <div class="tablet-wrapper">
+        <div class="tablet-wrapper" id="tabletWrapper">
+            <!-- Sidebar Floating Edge Toggle Tab -->
+            <button class="sidebar-toggle-tab" id="sidebarToggleTab" title="Toggle Filters Sidebar">
+                <i class="fa-solid fa-chevron-left" id="sidebarToggleTabIcon"></i>
+            </button>
+
             <!-- Left Tactical Control Panel -->
             <aside class="control-panel" id="controlPanel">
                 <div class="panel-corner-screw pcs-tl"></div>
@@ -108,7 +131,10 @@
                 <div class="panel-section">
                     <div class="section-header">
                         <h3><i class="fa-solid fa-layer-group"></i> Tactical Layers</h3>
-                        <button class="btn-text-action" id="toggleAllLayers">Toggle All</button>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <button class="btn-text-action" id="toggleCollapseFilters">Collapse All</button>
+                            <button class="btn-text-action" id="toggleAllLayers">Toggle All</button>
+                        </div>
                     </div>
 
                     <div class="layer-accordion-list">
@@ -128,11 +154,12 @@
                         </div>
 
                         <!-- POI Layer (Highlighted Gold Active Theme) -->
-                        <div class="layer-card active-poi">
+                        <div class="layer-card active-poi collapsible" id="cardPoi">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
                                     <i class="fa-solid fa-key layer-icon" style="color:var(--color-poi);"></i>
                                     <span class="layer-title" style="color:#fbbf24;">Points of Interest</span>
+                                    <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge badge-gold" id="countPOIs">20</span>
                                 <label class="mech-switch-wrap">
@@ -198,11 +225,12 @@
                         </div>
 
                         <!-- Creations & Vehicles Layer -->
-                        <div class="layer-card">
+                        <div class="layer-card collapsible" id="cardCreations">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
                                     <i class="fa-solid fa-truck-pickup layer-icon" style="color:var(--color-creation);"></i>
                                     <span class="layer-title">Creations & Vehicles</span>
+                                    <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge" id="countCreations">0</span>
                                 <label class="mech-switch-wrap">
@@ -221,11 +249,12 @@
                         </div>
 
                         <!-- Units & Bots Layer -->
-                        <div class="layer-card">
+                        <div class="layer-card collapsible" id="cardUnits">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
                                     <i class="fa-solid fa-robot layer-icon" style="color:var(--color-unit);"></i>
                                     <span class="layer-title">Bots, Enemies & Animals</span>
+                                    <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge" id="countUnits">0</span>
                                 <label class="mech-switch-wrap">
@@ -244,11 +273,12 @@
                         </div>
 
                         <!-- Harvestables & Resources Layer -->
-                        <div class="layer-card">
+                        <div class="layer-card collapsible" id="cardHarvestables">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
                                     <i class="fa-solid fa-gem layer-icon" style="color:var(--color-harvestable);"></i>
                                     <span class="layer-title">Resources & Harvestables</span>
+                                    <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge" id="countHarvestables">0</span>
                                 <label class="mech-switch-wrap">
@@ -483,9 +513,14 @@
                                 <span class="radar-title"><i class="fa-solid fa-satellite-dish"></i> PROX RADAR</span>
                                 <span class="radar-mode-badge player" id="radarCenterMode" title="Toggle between Player Center and Camera Center">SRC: PLAYER</span>
                             </div>
-                            <span class="radar-threat-badge normal" id="radarThreatBadge">
-                                <i class="fa-solid fa-shield-halved"></i> CLEAR [300m]
-                            </span>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <button class="radar-popout-btn" id="btnPopOutRadar" title="Pop out transparent In-Game Radar HUD on top of game (F9)">
+                                    <i class="fa-solid fa-up-right-from-square"></i> <span>HUD</span>
+                                </button>
+                                <span class="radar-threat-badge normal" id="radarThreatBadge">
+                                    <i class="fa-solid fa-shield-halved"></i> CLEAR [300m]
+                                </span>
+                            </div>
                         </div>
                         
                         <div class="radar-screen-bezel">
@@ -673,9 +708,47 @@
                     </div>
                 </div>
 
-                <!-- 2. Live Telemetry & Game Bridge -->
+                <!-- 2. Display Modes & In-Game Overlay Integration -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-microchip"></i> 2. Live Telemetry & Game Bridge</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-desktop"></i> 2. Display Modes & In-Game Overlay Integration</h3>
+                    <div class="settings-grid">
+                        <div class="settings-item">
+                            <label for="cfgDisplayMode">Active Display Mode</label>
+                            <select id="cfgDisplayMode" class="settings-select" style="margin-top:4px;">
+                                <option value="in-app" selected>In App (Standard Desktop Workstation)</option>
+                                <option value="radar-in-game">Radar In Game (HUD Floats Over Game)</option>
+                                <option value="all-in-game">All In Game (Radar + [M] Full Map Overlay)</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgMapOverlayShortcut">In-Game Map Summon Hotkey</label>
+                            <div style="display:flex; gap:6px; margin-top:4px;">
+                                <input type="text" id="cfgMapOverlayShortcut" value="M" readonly style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; text-align:center; border-radius:4px; padding:4px 8px; cursor:pointer;" title="Click Rebind, then press any key (e.g. M)">
+                                <button class="btn btn-tool" id="cfgBtnRecordMapShortcut" title="Click to record new keybind">Rebind</button>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgOverlayShortcut">Radar Edit / Reposition Hotkey</label>
+                            <div style="display:flex; gap:6px; margin-top:4px;">
+                                <input type="text" id="cfgOverlayShortcut" value="F9" readonly style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; text-align:center; border-radius:4px; padding:4px 8px; cursor:pointer;" title="Click Rebind, then press any key or combination">
+                                <button class="btn btn-tool" id="cfgBtnRecordShortcut" title="Click to record new keybind">Rebind</button>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <label>Quick Overlay Window Control</label>
+                            <button class="btn btn-tool" id="cfgBtnToggleOverlay" style="margin-top:4px; width:100%; justify-content:center;">
+                                <i class="fa-solid fa-satellite-dish"></i> <span id="cfgOverlayBtnText">Launch In-Game HUD</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:8px; line-height:1.4;">
+                        <i class="fa-solid fa-info-circle" style="color:#38bdf8;"></i> Scrap Mechanic must run in <strong>Borderless Windowed</strong> or <strong>Windowed</strong> mode. In <strong>All In Game</strong> mode, press your map hotkey (<kbd style="background:#1e293b; padding:1px 5px; border-radius:3px; color:#00e5ff;">M</kbd>) anytime in-game to summon the full interactive tactical map, and press <kbd style="background:#1e293b; padding:1px 5px; border-radius:3px; color:#fff;">Esc</kbd> or <kbd style="background:#1e293b; padding:1px 5px; border-radius:3px; color:#00e5ff;">M</kbd> to return to the game.
+                    </div>
+                </div>
+
+                <!-- 3. Live Telemetry & Game Bridge -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-microchip"></i> 3. Live Telemetry & Game Bridge</h3>
                     <div style="display:flex; flex-direction:column; gap:8px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                             <div>
@@ -759,9 +832,21 @@
                 <button class="modal-close" id="closeHelpModal" title="Close Guide"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <!-- Live GPS Tracking -->
+                <!-- 1. In-Game Display Modes & Live Overlays (v1.5.0) -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-satellite-dish"></i> 1. Live GPS & Player Tracking</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-gamepad" style="color:var(--sm-orange);"></i> 1. In-Game Overlays & Display Modes</h3>
+                    <p class="help-section-desc">Seamlessly play <em>Scrap Mechanic</em> with in-game tactical heads-up overlays without alt-tabbing (requires <strong>Borderless Windowed</strong> or <strong>Windowed</strong> mode):</p>
+                    <ul class="help-list">
+                        <li><i class="fa-solid fa-map-location-dot" style="color:#fbbf24;"></i> <div><strong>All In Game Mode [M]</strong>: Press <kbd class="kbd-key">M</kbd> anytime in-game to summon the full interactive tactical map over your game. Press <kbd class="kbd-key">Esc</kbd>, <kbd class="kbd-key">M</kbd>, or click <em>Return to Game</em> to dismiss the map and automatically restore game focus and 3D mouse look.</div></li>
+                        <li><i class="fa-solid fa-satellite-dish" style="color:#4ade80;"></i> <div><strong>Radar In Game Mode [F9]</strong>: Proximity radar floats unobtrusively over the game. Press <kbd class="kbd-key">F9</kbd> in-game to unlock the radar HUD for dragging and resizing.</div></li>
+                        <li><i class="fa-solid fa-crosshairs" style="color:#00e5ff;"></i> <div><strong>Game-Focus Protected Hotkeys</strong>: Shortcuts (<kbd class="kbd-key">M</kbd> / <kbd class="kbd-key">F9</kbd>) only trigger when <em>Scrap Mechanic</em> is the active window, preventing conflicts while typing in Discord, browser, or other apps.</div></li>
+                        <li><i class="fa-solid fa-layer-group" style="color:#38bdf8;"></i> <div><strong>Collapsible Sidebar & POI Waypoints</strong>: In-game mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs) with live distance and perimeter waypoints.</div></li>
+                    </ul>
+                </div>
+
+                <!-- 2. Live GPS Tracking -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-satellite-dish"></i> 2. Live GPS & Player Tracking</h3>
                     <p class="help-section-desc">When Scrap Mechanic is running, the app automatically hooks into the game process via a secure, read-only memory scanner at 60 FPS.</p>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-crosshairs"></i> <div><strong>Follow Player</strong>: Toggle camera lock to automatically follow your character's live coordinates and heading as you explore.</div></li>
@@ -769,9 +854,9 @@
                     </ul>
                 </div>
 
-                <!-- Tactical Proximity Radar & DLL Bridge -->
+                <!-- 3. Tactical Proximity Radar & DLL Bridge -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-radar" style="color:var(--sm-orange);"></i> 2. Tactical Proximity Radar & DLL Bridge</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-radar" style="color:var(--sm-orange);"></i> 3. Tactical Proximity Radar & DLL Bridge</h3>
                     <p class="help-section-desc">A 360° military scope in the bottom-right corner powered by the bundled <strong>Proxy DLL Bridge (<code>dinput8.dll</code>)</strong> for real-time threat detection.</p>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> <div><strong>Hostile Threat Arrows</strong>: Farmbots, Tapebots, Haybots, and Totebots render as pure red icons with clear directional altitude arrows (<strong>▲ Above</strong>, <strong>▼ Below</strong>, <strong>● Same Level</strong>).</div></li>

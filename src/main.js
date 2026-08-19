@@ -109,18 +109,83 @@ async function bootstrap() {
     setupRadar(elements.minimapCanvas);
     setupCameraControls(elements.canvas, elements.viewport, requestRender);
 
-    // 5. Initialize SQL Engine & Auto-sync save
+    // 5. Initialize Display Mode Selector in Header
+    const displayModeSelector = document.getElementById('displayModeSelector');
+    if (displayModeSelector) {
+        displayModeSelector.addEventListener('click', (e) => {
+            const btn = e.target.closest('.mode-btn');
+            if (!btn) return;
+            const mode = btn.dataset.mode;
+            import('./features/tools/settings.js').then(({ applyDisplayMode }) => {
+                applyDisplayMode(mode);
+            });
+        });
+    }
+
+    // 6. Window Controls (Frameless Title Bar)
+    const btnWinMin = document.getElementById('btnWinMin');
+    const btnWinMax = document.getElementById('btnWinMax');
+    const btnWinClose = document.getElementById('btnWinClose');
+
+    if (btnWinMin && window.electronAPI && typeof window.electronAPI.minimizeWindow === 'function') {
+        btnWinMin.addEventListener('click', () => window.electronAPI.minimizeWindow());
+    }
+    if (btnWinMax && window.electronAPI && typeof window.electronAPI.maximizeWindow === 'function') {
+        btnWinMax.addEventListener('click', async () => {
+            const res = await window.electronAPI.maximizeWindow();
+            const icon = btnWinMax.querySelector('i');
+            if (icon && res) {
+                icon.className = res.isMaximized ? 'fa-regular fa-window-restore' : 'fa-regular fa-square';
+            }
+        });
+    }
+    if (btnWinClose && window.electronAPI && typeof window.electronAPI.closeWindow === 'function') {
+        btnWinClose.addEventListener('click', () => window.electronAPI.closeWindow());
+    }
+
+    // 7. Return to Game Button & Global Keydown Listener for In-Game Map Overlay Dismissal (Escape or M)
+    const btnReturnToGame = document.getElementById('btnReturnToGame');
+    if (btnReturnToGame) {
+        btnReturnToGame.addEventListener('click', () => {
+            if (window.electronAPI && typeof window.electronAPI.hideMapOverlay === 'function') {
+                window.electronAPI.hideMapOverlay();
+            }
+        });
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (state.displayMode === 'all-in-game') {
+            const mapKey = (state.mapOverlayShortcut || 'M').toUpperCase();
+            const pressedKey = e.key.toUpperCase();
+            
+            const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+            const isTyping = activeTag === 'input' || activeTag === 'textarea';
+
+            if (e.key === 'Escape' || (!isTyping && pressedKey === mapKey)) {
+                if (window.electronAPI && typeof window.electronAPI.hideMapOverlay === 'function') {
+                    e.preventDefault();
+                    window.electronAPI.hideMapOverlay();
+                }
+            }
+        }
+    });
+
+    // 7. Initialize SQL Engine & Auto-sync save
     await initSqlEngine();
     await syncActiveSave(true);
 
-    // 6. Start Live Player Polling
+    // 8. Start Live Player Polling
     startLivePoller();
 
-    // 7. Subscribe to live player state to update badges & gadgets
+    // 9. Subscribe to live player state to update badges & gadgets
     subscribe((type, payload) => {
         if (type === 'live_player_update') {
             if (elements.radarContainer) {
-                elements.radarContainer.classList.remove('hidden');
+                if (state.displayMode === 'in-app') {
+                    elements.radarContainer.classList.remove('hidden');
+                } else {
+                    elements.radarContainer.classList.add('hidden');
+                }
             }
             if (elements.livePlayerBadge) {
                 elements.livePlayerBadge.className = 'live-player-badge online';
@@ -153,8 +218,60 @@ async function bootstrap() {
             if (elements.liveStatusText) {
                 elements.liveStatusText.textContent = 'LIVE: OFFLINE';
             }
+        } else if (type === 'display_mode_changed') {
+            if (elements.radarContainer) {
+                if (payload.mode === 'in-app') {
+                    elements.radarContainer.classList.toggle('hidden', !state.livePlayer.online);
+                } else {
+                    elements.radarContainer.classList.add('hidden');
+                }
+            }
+            if (btnReturnToGame) {
+                btnReturnToGame.style.display = payload.mode === 'all-in-game' ? 'inline-flex' : 'none';
+            }
+        }
+
+        // Forward save and settings updates to In-Game Radar Overlay
+        if (window.electronAPI && typeof window.electronAPI.syncDataToOverlay === 'function') {
+            if (type === 'save_loaded' || type === 'active_save_loaded' || type === 'subfilter_pois' || type === 'subfilter_units' || type === 'radar_range' || type === 'radar_mode') {
+                window.electronAPI.syncDataToOverlay({
+                    mapData: state.mapData,
+                    radarRange: state.radarRange,
+                    radarBlipScale: state.radarBlipScale,
+                    radarVerticalBand: state.radarVerticalBand,
+                    radarMode: state.radarMode
+                });
+            }
         }
     });
+
+    if (window.electronAPI && typeof window.electronAPI.onRadarOverlayModeChanged === 'function') {
+        window.electronAPI.onRadarOverlayModeChanged((data) => {
+            const btnPopOut = document.getElementById('btnPopOutRadar');
+            const cfgOverlayBtnText = document.getElementById('cfgOverlayBtnText');
+            const isOpen = data && data.isOpen !== false;
+            if (btnPopOut) btnPopOut.classList.toggle('active', isOpen);
+            if (cfgOverlayBtnText) cfgOverlayBtnText.textContent = isOpen ? 'Close Overlay HUD' : 'Launch In-Game HUD';
+        });
+    }
+
+    if (window.electronAPI && typeof window.electronAPI.onDisplayModeChanged === 'function') {
+        window.electronAPI.onDisplayModeChanged((data) => {
+            if (data && data.mode && data.mode !== state.displayMode) {
+                import('./features/tools/settings.js').then(({ applyDisplayMode }) => {
+                    applyDisplayMode(data.mode, true, false);
+                });
+            }
+        });
+    }
+
+    if (window.electronAPI && typeof window.electronAPI.onMapOverlaySummoned === 'function') {
+        window.electronAPI.onMapOverlaySummoned((data) => {
+            if (btnReturnToGame) {
+                btnReturnToGame.style.display = (data && data.isOpen) ? 'inline-flex' : 'none';
+            }
+        });
+    }
 
     console.log("[App] Initialization complete.");
 }

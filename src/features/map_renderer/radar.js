@@ -93,11 +93,11 @@ export function getRadarCenterWorldPos() {
     };
 }
 
-export function renderRadar(ctx, canvas, mainWidth, mainHeight) {
+export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     if (!ctx || !canvas) return;
 
-    const w = canvas.width;
-    const h = canvas.height;
+    const w = logicalWidth || canvas.width;
+    const h = logicalHeight || canvas.height;
     const centerX = w / 2;
     const centerY = h / 2;
     const radarRadius = Math.min(centerX, centerY) - 8;
@@ -114,11 +114,11 @@ export function renderRadar(ctx, canvas, mainWidth, mainHeight) {
     // In player mode, forward heading is locked straight UP (PI/2 on canvas)
     const playerHeading = (isPlayer && heading !== null) ? heading : Math.PI / 2;
 
-    // 1. Pure Pitch-Black Radar Screen Background
+    // 1. Sleek Semi-Transparent Holographic Glass Background
     ctx.save();
     ctx.beginPath();
     ctx.arc(centerX, centerY, radarRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = 'rgba(8, 12, 20, 0.85)';
     ctx.fill();
     ctx.clip(); // Keep all radar rendering inside the circular screen
 
@@ -195,7 +195,7 @@ export function renderRadar(ctx, canvas, mainWidth, mainHeight) {
 
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
-        ctx.arc(centerX, centerY, radarRadius, -a1, -a2, false);
+        ctx.arc(centerX, centerY, radarRadius, -a1, -a2, true);
         ctx.closePath();
         ctx.fillStyle = `rgba(34, 197, 94, ${alpha})`;
         ctx.fill();
@@ -426,30 +426,151 @@ export function renderRadar(ctx, canvas, mainWidth, mainHeight) {
     // C. Points of Interest & Facilities
     if (state.mapData && state.mapData.pois && (state.radarFilters ? state.radarFilters.pois !== false : true)) {
         for (const poi of state.mapData.pois) {
-            const p = worldToRadarScreen(poi.x, poi.y);
-            if (!p) continue;
+            const name = (poi.name || '').toLowerCase();
+            const cat = (poi.category || '').toLowerCase();
+
+            // Respect POI Sub-Filters
+            if (state.subFilters && state.subFilters.pois) {
+                if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
+                if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
+                if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
+                if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
+                if ((name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') && !state.subFilters.pois.chemOil) continue;
+                if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
+            }
+
+            // Determine POI Category Color & Label
+            let poiColor = poi.color || '#f59e0b';
+            let shortLabel = poi.name || 'POI';
+            if (name.includes('mechanic')) {
+                poiColor = '#38bdf8';
+                shortLabel = 'Mechanic';
+            } else if (name.includes('trader') || name.includes('hideout')) {
+                poiColor = '#a855f7';
+                shortLabel = 'Trader';
+            } else if (name.includes('packing')) {
+                poiColor = '#4ade80';
+                shortLabel = name.includes('veg') ? 'Packing (Veg)' : (name.includes('fruit') ? 'Packing (Fruit)' : 'Packing');
+            } else if (name.includes('growlab')) {
+                poiColor = '#f59e0b';
+                shortLabel = 'Growlab';
+            } else if (name.includes('chemical') || cat === 'chemical') {
+                poiColor = '#06b6d4';
+                shortLabel = 'Chemical';
+            } else if (name.includes('oil') || cat === 'oil') {
+                poiColor = '#06b6d4';
+                shortLabel = 'Oil Lake';
+            } else if (name.includes('capsule') || name.includes('landmark')) {
+                poiColor = '#fbbf24';
+            }
+
+            const dx = poi.x - cx;
+            const dy = poi.y - cy;
+            const dist = Math.hypot(dx, dy);
+            const worldAngle = Math.atan2(dy, dx);
+            const screenAngle = (worldAngle - playerHeading + Math.PI / 2 + Math.PI * 4) % (Math.PI * 2);
+
+            const isInside = dist <= range;
+            const isNearPerimeter = !isInside && dist <= Math.max(range * 3.5, 450);
+
+            if (!isInside && !isNearPerimeter) continue;
 
             poiCount++;
 
-            // Draw POI Diamond Blip
-            ctx.save();
-            ctx.translate(p.bx, p.by);
-            ctx.rotate(Math.PI / 4);
-            ctx.fillStyle = poi.color || '#f59e0b';
-            ctx.globalAlpha = p.decay;
-            ctx.shadowColor = poi.color || '#f59e0b';
-            ctx.shadowBlur = 6;
-            ctx.fillRect(-3, -3, 6, 6);
-            ctx.restore();
-            ctx.globalAlpha = 1.0;
+            const sweepDelta = ((sweepAngle - screenAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+            const isJustSwept = sweepDelta < 0.25;
+            const decay = Math.max(0.45, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.55);
 
-            lastRadarEntities.push({
-                screenX: p.bx,
-                screenY: p.by,
-                entity: poi,
-                type: 'poi',
-                dist: p.dist
-            });
+            if (isInside) {
+                // Render In-Range POI Diamond Badge & Text Label
+                const normDist = (dist / range) * radarRadius;
+                const bx = centerX + Math.cos(screenAngle) * normDist;
+                const by = centerY - Math.sin(screenAngle) * normDist;
+
+                ctx.save();
+                ctx.translate(bx, by);
+
+                if (isJustSwept) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 10, 0, Math.PI * 2);
+                    ctx.strokeStyle = poiColor;
+                    ctx.lineWidth = 1.4;
+                    ctx.stroke();
+                }
+
+                ctx.rotate(Math.PI / 4);
+                ctx.fillStyle = poiColor;
+                ctx.globalAlpha = decay;
+                ctx.shadowColor = poiColor;
+                ctx.shadowBlur = isJustSwept ? 12 : 5;
+                ctx.fillRect(-3.5, -3.5, 7, 7);
+                ctx.restore();
+
+                // High-visibility Tactical Text Label
+                ctx.save();
+                ctx.globalAlpha = decay;
+                ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#000000';
+                ctx.shadowBlur = 4;
+                ctx.fillText(shortLabel, bx, by - 6);
+                ctx.fillStyle = poiColor;
+                ctx.fillText(`${Math.round(dist)}m`, bx, by + 10);
+                ctx.restore();
+
+                lastRadarEntities.push({
+                    screenX: bx,
+                    screenY: by,
+                    entity: poi,
+                    type: 'poi',
+                    dist: dist
+                });
+            } else if (isNearPerimeter) {
+                // Render Perimeter Directional Pointer on Outer Ring
+                const edgeRadius = radarRadius - 6;
+                const bx = centerX + Math.cos(screenAngle) * edgeRadius;
+                const by = centerY - Math.sin(screenAngle) * edgeRadius;
+
+                ctx.save();
+                ctx.translate(bx, by);
+                ctx.rotate(-screenAngle + Math.PI / 2);
+
+                // Small outward-pointing triangle
+                ctx.beginPath();
+                ctx.moveTo(0, -4);
+                ctx.lineTo(-3, 3);
+                ctx.lineTo(3, 3);
+                ctx.closePath();
+                ctx.fillStyle = poiColor;
+                ctx.globalAlpha = decay * 0.85;
+                ctx.shadowColor = poiColor;
+                ctx.shadowBlur = 6;
+                ctx.fill();
+                ctx.restore();
+
+                // Compact distance label on perimeter
+                ctx.save();
+                ctx.globalAlpha = decay * 0.9;
+                ctx.font = 'bold 6.5px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = poiColor;
+                ctx.shadowColor = '#000000';
+                ctx.shadowBlur = 3;
+                const labelRadius = radarRadius - 14;
+                const lx = centerX + Math.cos(screenAngle) * labelRadius;
+                const ly = centerY - Math.sin(screenAngle) * labelRadius;
+                ctx.fillText(`${Math.round(dist)}m`, lx, ly);
+                ctx.restore();
+
+                lastRadarEntities.push({
+                    screenX: bx,
+                    screenY: by,
+                    entity: poi,
+                    type: 'poi',
+                    dist: dist
+                });
+            }
         }
     }
 
