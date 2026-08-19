@@ -76,7 +76,15 @@ export async function applyDisplayMode(mode, silent = false, notifyElectron = tr
 
     // 5. Send to Electron Process
     if (notifyElectron && window.electronAPI && typeof window.electronAPI.setDisplayMode === 'function') {
-        await window.electronAPI.setDisplayMode(mode);
+        const res = await window.electronAPI.setDisplayMode(mode);
+        if (res && res.mode && res.mode !== mode) {
+            mode = res.mode;
+            state.displayMode = mode;
+            modeBtns.forEach(b => {
+                b.classList.toggle('active', b.dataset.mode === mode);
+            });
+            if (cfgDisplayMode) cfgDisplayMode.value = mode;
+        }
     }
 
     saveSettings();

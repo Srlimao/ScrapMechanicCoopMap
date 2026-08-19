@@ -530,6 +530,13 @@ ipcMain.handle('set-display-mode', async (event, mode) => {
         return { success: false, mode: activeDisplayMode };
     }
 
+    // If game is not running, do not enter in-game modes; default back to 'in-app'
+    const isGameRunning = Boolean(memoryReader && (memoryReader.isProcessOpen() || memoryReader.findScrapProcess()));
+    if (mode !== 'in-app' && !isGameRunning) {
+        console.log(`[Electron] Scrap Mechanic is not running. Defaulting '${mode}' back to 'in-app'.`);
+        mode = 'in-app';
+    }
+
     // Guard against redundant sets
     if (mode === activeDisplayMode) {
         return { success: true, mode: activeDisplayMode };
@@ -698,8 +705,33 @@ ipcMain.handle('is-window-maximized', () => {
     return { isMaximized: Boolean(mainWindow && !mainWindow.isDestroyed() && mainWindow.isMaximized()) };
 });
 
+let hadGameRunning = false;
+let gameExitCheckCount = 0;
+let gameLifecycleInterval = null;
+
+function startGameLifecycleMonitor() {
+    if (gameLifecycleInterval) clearInterval(gameLifecycleInterval);
+    gameLifecycleInterval = setInterval(() => {
+        const isGameRunning = Boolean(memoryReader && (memoryReader.isProcessOpen() || memoryReader.findScrapProcess()));
+        if (isGameRunning) {
+            hadGameRunning = true;
+            gameExitCheckCount = 0;
+        } else if (hadGameRunning) {
+            // Game was running previously and is now closed
+            gameExitCheckCount++;
+            if (gameExitCheckCount >= 2) {
+                console.log('[Electron] Scrap Mechanic process has terminated. Auto-closing Tactical Map...');
+                if (gameLifecycleInterval) clearInterval(gameLifecycleInterval);
+                if (memoryReader) memoryReader.stop();
+                app.quit();
+            }
+        }
+    }, 1000);
+}
+
 app.whenReady().then(() => {
     memoryReader.start(30);
+    startGameLifecycleMonitor();
     refreshGlobalShortcuts();
     createWindow();
 
@@ -712,6 +744,7 @@ app.on('will-quit', () => {
     try {
         globalShortcut.unregisterAll();
     } catch (e) {}
+    if (gameLifecycleInterval) clearInterval(gameLifecycleInterval);
     if (memoryReader) memoryReader.stop();
 });
 
