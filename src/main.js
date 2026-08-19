@@ -1,6 +1,6 @@
 // Scrap Mechanic Tactical Map Viewer - Main Entry Point
 import { state, subscribe } from './core/state.js';
-import { initCanvasEngine } from './features/map_renderer/canvas_engine.js';
+import { initCanvasEngine, requestRender } from './features/map_renderer/canvas_engine.js';
 import { setupCameraControls, resetCameraView } from './features/map_renderer/camera.js';
 import { startLivePoller } from './features/live_tracker/live_poller.js';
 import { initSqlEngine } from './features/save_loader/sqlite_decoder.js';
@@ -107,7 +107,7 @@ async function bootstrap() {
     // 4. Initialize Canvas Engine, Radar & Camera
     initCanvasEngine(elements.canvas, elements.minimapCanvas);
     setupRadar(elements.minimapCanvas);
-    setupCameraControls(elements.canvas, elements.viewport, () => {});
+    setupCameraControls(elements.canvas, elements.viewport, requestRender);
 
     // 5. Initialize SQL Engine & Auto-sync save
     await initSqlEngine();

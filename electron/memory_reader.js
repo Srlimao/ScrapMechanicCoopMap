@@ -16,6 +16,10 @@ let CreateToolhelp32Snapshot = null;
 let Process32FirstW = null;
 let Process32NextW = null;
 let PROCESSENTRY32W = null;
+let OpenFileMappingA = null;
+let MapViewOfFile = null;
+let UnmapViewOfFile = null;
+let GetExitCodeProcess = null;
 
 try {
     k32 = koffi.load('kernel32.dll');
@@ -44,6 +48,7 @@ try {
     OpenFileMappingA = k32.func('void* OpenFileMappingA(uint32 dwDesiredAccess, bool bInheritHandle, str lpName)');
     MapViewOfFile = k32.func('void* MapViewOfFile(void* hFileMappingObject, uint32 dwDesiredAccess, uint32 dwFileOffsetHigh, uint32 dwFileOffsetLow, size_t dwNumberOfBytesToMap)');
     UnmapViewOfFile = k32.func('bool UnmapViewOfFile(void* lpBaseAddress)');
+    GetExitCodeProcess = k32.func('bool GetExitCodeProcess(void* hProcess, _Out_ uint32* lpExitCode)');
 } catch (e) {
     console.warn("[NodeMemoryReader] Win32 C-FFI load error:", e.message);
 }
@@ -81,6 +86,8 @@ class NodeMemoryReader {
         this.tickCounter = 0;
         this.interval = null;
         this.lastScanTime = 0;
+        this.failedReads = 0;
+        this.staleCounter = 0;
     }
 
     cleanupSharedMemory() {
@@ -94,90 +101,30 @@ class NodeMemoryReader {
         }
     }
 
-    readSharedMemory() {
-        if (!OpenFileMappingA || !MapViewOfFile) return false;
-
-        // 1. Verify that ScrapMechanic.exe is running
-        const proc = this.findScrapProcess();
-        if (!proc) {
-            this.cleanupSharedMemory();
-            this.state.online = false;
-            this.state.process_pid = null;
-            return false;
-        }
-        this.pid = proc.pid;
-        this.state.process_pid = proc.pid;
-
+    isProcessOpen() {
+        if (!this.hProcess) return false;
+        if (!GetExitCodeProcess) return true;
         try {
-            if (!this.hMapFile || this.hMapFile === INVALID_HANDLE_VALUE) {
-                this.hMapFile = OpenFileMappingA(FILE_MAP_READ, false, "SM_TacticalRadar_Data");
-                if (!this.hMapFile || this.hMapFile === INVALID_HANDLE_VALUE) return false;
-            }
-
-            if (!this.pBuf) {
-                this.pBuf = MapViewOfFile(this.hMapFile, FILE_MAP_READ, 0, 0, 1024 * 1024);
-                if (!this.pBuf) {
-                    this.cleanupSharedMemory();
-                    return false;
-                }
-            }
-
-            // Read header: magic(4), version(4), sequence(4), dataLength(4), timestamp(8) = 24 bytes
-            const headerBuf = koffi.decode(this.pBuf, 'uint8', 24);
-            const view = new DataView(headerBuf.buffer, headerBuf.byteOffset, 24);
-            const magic = view.getUint32(0, true);
-            const sequence = view.getUint32(8, true);
-            const dataLength = view.getUint32(12, true);
-
-            // Stale check: if sequence hasn't changed in >3 seconds, game might be paused or exiting
-            if (sequence === this.lastSequence) {
-                this.staleCounter = (this.staleCounter || 0) + 1;
-                if (this.staleCounter > 15) { // ~3 seconds at 200ms
-                    this.state.online = false;
-                }
-            } else {
-                this.staleCounter = 0;
-                this.lastSequence = sequence;
-            }
-
-            if (magic === 0x534D5244 && dataLength > 0 && dataLength < 1024 * 1000) {
-                const rawBytes = koffi.decode(koffi.address(this.pBuf) + 24n, 'uint8', dataLength);
-                const decoder = new TextDecoder('utf-8');
-                const jsonStr = decoder.decode(rawBytes);
-
-                const parsed = JSON.parse(jsonStr);
-                if (parsed) {
-                    this.latestBots = parsed.bots || [];
-                    this.latestCreations = parsed.creations || [];
-                    this.latestStats = parsed.stats || { botCount: this.latestBots.length, creationCount: this.latestCreations.length };
-
-                    if (!this.state.online && parsed.online && parsed.player) {
-                        this.state.online = true;
-                        this.state.x = parsed.player.x || 0;
-                        this.state.y = parsed.player.y || 0;
-                        this.state.z = parsed.player.z || 0;
-                        this.state.dirX = parsed.player.dirX || 0;
-                        this.state.dirY = parsed.player.dirY || 1;
-                        this.state.dirZ = parsed.player.dirZ || 0;
-                        this.state.source = "dll_proxy_fallback";
-                    }
-                    return true;
-                }
+            const code = [0];
+            if (GetExitCodeProcess(this.hProcess, code)) {
+                return code[0] === 259; // STILL_ACTIVE
             }
         } catch (e) {}
         return false;
     }
 
-    isProcessOpen() {
-        if (!this.hProcess) return false;
-        const code = [0];
-        if (GetExitCodeProcess && GetExitCodeProcess(this.hProcess, code)) {
-            return code[0] === 259;
-        }
-        return true;
-    }
-
     findScrapProcess() {
+        if (this.isProcessOpen()) {
+            return { hProcess: this.hProcess, baseAddr: this.baseAddr, pid: this.pid };
+        }
+
+        const now = Date.now();
+        // Crucial optimization: Throttle expensive full-system process scanning to once every 1500ms
+        if (now - this.lastScanTime < 1500) {
+            return null;
+        }
+        this.lastScanTime = now;
+
         if (!CreateToolhelp32Snapshot || !Process32FirstW || !Process32NextW) return null;
 
         const hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -223,10 +170,90 @@ class NodeMemoryReader {
         return null;
     }
 
+    readSharedMemory() {
+        if (!OpenFileMappingA || !MapViewOfFile) return false;
+
+        try {
+            if (!this.hMapFile || this.hMapFile === INVALID_HANDLE_VALUE) {
+                this.hMapFile = OpenFileMappingA(FILE_MAP_READ, false, "SM_TacticalRadar_Data");
+                if (!this.hMapFile || this.hMapFile === INVALID_HANDLE_VALUE) return false;
+            }
+
+            if (!this.pBuf) {
+                this.pBuf = MapViewOfFile(this.hMapFile, FILE_MAP_READ, 0, 0, 1024 * 1024);
+                if (!this.pBuf) {
+                    this.cleanupSharedMemory();
+                    return false;
+                }
+            }
+
+            // Read header: magic(4), version(4), sequence(4), dataLength(4), timestamp(8) = 24 bytes
+            const headerBuf = koffi.decode(this.pBuf, 'uint8', 24);
+            const view = new DataView(headerBuf.buffer, headerBuf.byteOffset, 24);
+            const magic = view.getUint32(0, true);
+            const sequence = view.getUint32(8, true);
+            const dataLength = view.getUint32(12, true);
+
+            // Stale check
+            if (sequence === this.lastSequence) {
+                this.staleCounter = (this.staleCounter || 0) + 1;
+                if (this.staleCounter > 15) {
+                    this.state.online = false;
+                }
+            } else {
+                this.staleCounter = 0;
+                this.lastSequence = sequence;
+            }
+
+            if (magic === 0x534D5244 && dataLength > 0 && dataLength < 1024 * 1000) {
+                const rawBytes = koffi.decode(koffi.address(this.pBuf) + 24n, 'uint8', dataLength);
+                const decoder = new TextDecoder('utf-8');
+                const jsonStr = decoder.decode(rawBytes);
+
+                const parsed = JSON.parse(jsonStr);
+                if (parsed) {
+                    this.latestBots = parsed.bots || [];
+                    this.latestCreations = parsed.creations || [];
+                    this.latestStats = parsed.stats || { botCount: this.latestBots.length, creationCount: this.latestCreations.length };
+
+                    if (!this.state.online && parsed.online && parsed.player) {
+                        this.state.online = true;
+                        this.state.x = parsed.player.x || 0;
+                        this.state.y = parsed.player.y || 0;
+                        this.state.z = parsed.player.z || 0;
+                        this.state.dirX = parsed.player.dirX || 0;
+                        this.state.dirY = parsed.player.dirY || 1;
+                        this.state.dirZ = parsed.player.dirZ || 0;
+                        this.state.source = "dll_proxy_fallback";
+                    }
+                    return true;
+                }
+            }
+        } catch (e) {}
+        return false;
+    }
+
     tick() {
+        // 1. Verify process health or throttle scan
+        if (!this.isProcessOpen()) {
+            const found = this.findScrapProcess();
+            if (!found) {
+                this.state.online = false;
+                this.state.process_pid = null;
+                this.cleanupSharedMemory();
+                return;
+            }
+            this.hProcess = found.hProcess;
+            this.baseAddr = found.baseAddr;
+            this.pid = found.pid;
+            this.state.process_pid = found.pid;
+            console.log(`[NodeMemoryReader] DETECTED Scrap Mechanic (PID: ${this.pid}, Base: 0x${this.baseAddr.toString(16)})`);
+        }
+
+        // 2. Read shared memory telemetry from proxy DLL if present
         this.readSharedMemory();
 
-        if (!OpenProcess || !ReadProcessMemory) {
+        if (!OpenProcess || !ReadProcessMemory || !this.hProcess) {
             this.state.bots = this.latestBots || [];
             this.state.creations = this.latestCreations || [];
             this.state.stats = this.latestStats || { botCount: this.state.bots.length, creationCount: this.state.creations.length };
@@ -234,20 +261,6 @@ class NodeMemoryReader {
         }
 
         try {
-            if (!this.hProcess) {
-                const found = this.findScrapProcess();
-                if (!found) {
-                    this.state.online = false;
-                    this.state.process_pid = null;
-                    return;
-                }
-                this.hProcess = found.hProcess;
-                this.baseAddr = found.baseAddr;
-                this.pid = found.pid;
-                this.state.process_pid = found.pid;
-                console.log(`[NodeMemoryReader] DETECTED Scrap Mechanic (PID: ${this.pid}, Base: 0x${this.baseAddr.toString(16)})`);
-            }
-
             const ptrBuf = new Uint8Array(8);
             const bytesRead = [0];
             let coordsRead = false;
@@ -317,7 +330,6 @@ class NodeMemoryReader {
             }
 
             if (!coordsRead) {
-                // If direct memory reading hasn't hooked, use DLL fallback if available
                 if (!this.state.online) {
                     if (++this.failedReads > 10) {
                         if (this.hProcess) CloseHandle(this.hProcess);
@@ -329,7 +341,6 @@ class NodeMemoryReader {
                 this.failedReads = 0;
             }
 
-            // Always attach the latest entity stream from DLL Shared Memory
             this.state.bots = this.latestBots || [];
             this.state.creations = this.latestCreations || [];
             this.state.stats = this.latestStats || { botCount: this.state.bots.length, creationCount: this.state.creations.length };
@@ -344,10 +355,10 @@ class NodeMemoryReader {
         }
     }
 
-    start(hz = 20) {
+    start(hz = 30) {
         if (this.interval) clearInterval(this.interval);
         this.interval = setInterval(() => this.tick(), 1000 / hz);
-        console.log(`[NodeMemoryReader] Ultra-fast Win32 Toolhelp memory reader started (${hz} Hz).`);
+        console.log(`[NodeMemoryReader] Win32 Toolhelp memory reader started (${hz} Hz).`);
     }
 
     stop() {
@@ -359,6 +370,7 @@ class NodeMemoryReader {
             CloseHandle(this.hProcess);
             this.hProcess = null;
         }
+        this.cleanupSharedMemory();
     }
 }
 

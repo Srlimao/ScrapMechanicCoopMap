@@ -2,20 +2,33 @@
 import { state, notifyStateChange } from '../../core/state.js';
 import { calculateDistance } from '../../core/coords.js';
 
-let pollInterval = null;
+let pollTimer = null;
+let isPolling = false;
 let lastLogState = null;
 
 export function startLivePoller() {
-    if (pollInterval) clearInterval(pollInterval);
-    console.log("[LiveTracker] Poller started (33 Hz responsive loop).");
-    pollInterval = setInterval(fetchLivePlayerState, 30);
+    if (pollTimer) clearTimeout(pollTimer);
+    isPolling = true;
+    console.log("[LiveTracker] Adaptive poller started (1 Hz idle / 33 Hz active).");
+    scheduleNextPoll(0);
 }
 
 export function stopLivePoller() {
-    if (pollInterval) {
-        clearInterval(pollInterval);
-        pollInterval = null;
+    isPolling = false;
+    if (pollTimer) {
+        clearTimeout(pollTimer);
+        pollTimer = null;
     }
+}
+
+function scheduleNextPoll(delayMs) {
+    if (!isPolling) return;
+    if (pollTimer) clearTimeout(pollTimer);
+    pollTimer = setTimeout(async () => {
+        await fetchLivePlayerState();
+        const nextDelay = state.livePlayer.online ? 30 : 1000;
+        scheduleNextPoll(nextDelay);
+    }, delayMs);
 }
 
 export async function fetchLivePlayerState() {

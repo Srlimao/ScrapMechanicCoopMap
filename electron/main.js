@@ -257,7 +257,7 @@ ipcMain.handle('generate-terrain', async (event, seed) => {
 });
 
 app.whenReady().then(() => {
-    memoryReader.start(60);
+    memoryReader.start(30);
     createWindow();
 
     app.on('activate', () => {
