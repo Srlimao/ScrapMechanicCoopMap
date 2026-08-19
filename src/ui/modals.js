@@ -33,6 +33,10 @@ export function setupModals(elements) {
             if (squadModal && squadModal.classList.contains('open')) {
                 squadModal.classList.remove('open');
             }
+            const settingsModal = document.getElementById('settingsModal');
+            if (settingsModal && settingsModal.classList.contains('open')) {
+                settingsModal.classList.remove('open');
+            }
         }
     });
 }

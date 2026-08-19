@@ -7,8 +7,8 @@ let lastLogState = null;
 
 export function startLivePoller() {
     if (pollInterval) clearInterval(pollInterval);
-    console.log("[LiveTracker] Poller started (10 Hz).");
-    pollInterval = setInterval(fetchLivePlayerState, 100);
+    console.log("[LiveTracker] Poller started (33 Hz responsive loop).");
+    pollInterval = setInterval(fetchLivePlayerState, 30);
 }
 
 export function stopLivePoller() {
@@ -70,6 +70,10 @@ export async function fetchLivePlayerState() {
                 lastLogState = "online";
             }
 
+            state.livePlayer.bots = Array.isArray(data.bots) ? data.bots : [];
+            state.livePlayer.creations = Array.isArray(data.creations) ? data.creations : [];
+            state.livePlayer.stats = data.stats || { botCount: state.livePlayer.bots.length, creationCount: state.livePlayer.creations.length };
+
             notifyStateChange('live_player_update', state.livePlayer);
             return;
         }
@@ -111,6 +115,9 @@ export async function fetchLivePlayerState() {
         state.livePlayer.tick = data.tick || 0;
         state.livePlayer.age = data.age || 0;
         state.livePlayer.angle = Math.atan2(data.dirY || 1, data.dirX || 0);
+        state.livePlayer.bots = Array.isArray(data.bots) ? data.bots : [];
+        state.livePlayer.creations = Array.isArray(data.creations) ? data.creations : [];
+        state.livePlayer.stats = data.stats || { botCount: state.livePlayer.bots.length, creationCount: state.livePlayer.creations.length };
 
         notifyStateChange('live_player_update', state.livePlayer);
     } else {

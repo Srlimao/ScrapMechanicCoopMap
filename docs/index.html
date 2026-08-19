@@ -61,25 +61,25 @@
 
         <!-- Hero Section -->
         <header class="hero">
-            <div class="badge-pill"><i class="fa-solid fa-satellite-dish"></i> v1.2.0 • REAL-TIME MEMORY TRACKING + SQUAD RELAY</div>
-            <h1 class="hero-title">Live GPS & Multiplayer Squad Radar for <span class="highlight">Scrap Mechanic</span></h1>
-            <p class="hero-subtitle">Track your in-game character live, pinpoint teammate coordinates across the map, and locate warehouses, oil nodes, and hostile bots in real time with zero Cheat Engine hassle.</p>
+            <div class="badge-pill"><i class="fa-solid fa-satellite-dish"></i> v1.3.0 • TACTICAL PROXIMITY RADAR + PROXY DLL BRIDGE + SQUAD RELAY</div>
+            <h1 class="hero-title">Live GPS, Tactical Proximity Radar & Squad Co-op for <span class="highlight">Scrap Mechanic</span></h1>
+            <p class="hero-subtitle">Track your in-game character live at 60 FPS, scan nearby hostile bots with directional altitude arrows on a military 360° radar scope, and locate teammate beacons across your Survival world in real time.</p>
 
             <div class="hero-cta-group">
                 <a href="https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe" class="btn-download-hero">
                     <i class="fa-brands fa-windows" style="font-size:26px;"></i>
                     <div class="btn-subtext">
                         <span>Download Free for Windows</span>
-                        <span>Scrap-Mechanic-Tactical-Map.exe (v1.2.0)</span>
+                        <span>Scrap-Mechanic-Tactical-Map.exe (v1.3.0)</span>
                     </div>
                 </a>
             </div>
 
             <!-- Safety Badges -->
             <div class="safety-row">
-                <span class="safety-tag"><i class="fa-solid fa-shield-halved"></i> Read-Only Memory Hook</span>
-                <span class="safety-tag"><i class="fa-solid fa-lock"></i> Zero File Overwrites</span>
-                <span class="safety-tag"><i class="fa-solid fa-bolt"></i> No Port Forwarding Required</span>
+                <span class="safety-tag"><i class="fa-solid fa-shield-halved"></i> Non-Invasive Proxy DLL</span>
+                <span class="safety-tag"><i class="fa-solid fa-crosshairs"></i> 360° Proximity Radar</span>
+                <span class="safety-tag"><i class="fa-solid fa-bolt"></i> 60 FPS Live GPS Stream</span>
                 <span class="safety-tag"><i class="fa-solid fa-code"></i> 100% Open Source</span>
             </div>
 
@@ -88,7 +88,7 @@
                 <div class="mock-screen">
                     <div class="demo-live-badge">
                         <span class="demo-pulse"></span>
-                        <span>LIVE TRACKER ACTIVE: 60 FPS STREAM</span>
+                        <span>TACTICAL PROXIMITY RADAR ACTIVE: LIVE THREAT SCOPE</span>
                     </div>
                     <canvas id="demoRadarCanvas"></canvas>
                 </div>
@@ -97,23 +97,23 @@
 
         <!-- How Squad Relay Works Section -->
         <section class="steps-section" id="how-it-works">
-            <div class="section-tag">CO-OP MULTIPLAYER RELAY</div>
-            <h2 class="section-heading">How Squad Live Tracking Works</h2>
+            <div class="section-tag">FAST ONBOARDING</div>
+            <h2 class="section-heading">How the Tactical Radar & GPS Works</h2>
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-num">1</div>
-                    <h3>Launch & Start Game</h3>
-                    <p>Open Scrap Mechanic and launch the Tactical Map app. The built-in memory reader automatically connects to your live game session in milliseconds.</p>
+                    <h3>Launch Game & App</h3>
+                    <p>Start Scrap Mechanic and open the Tactical Map. If the radar bridge is not installed, click <strong>"Install Radar"</strong> for a 1-click automatic setup and game restart.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-num">2</div>
-                    <h3>Create or Join Room Code</h3>
-                    <p>Click Squad Rooms, pick a beacon color, and share a 6-character room code. No port forwarding, no Hamachi, and no complicated setup required.</p>
+                    <h3>Proximity Radar & Threat Scope</h3>
+                    <p>The bottom-right radar sweeps your surroundings in 360°, alerting you to approaching Farmbots, Tapebots, Haybots, and Totebots with clear altitude arrows.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-num">3</div>
-                    <h3>Coordinate in Real Time</h3>
-                    <p>Watch teammate markers glide across the terrain, ping tactical waypoints with a double-click, and explore the redwoods without ever getting lost.</p>
+                    <h3>Multiplayer Squad Co-op</h3>
+                    <p>Join or host a 6-character room code to see teammates glide across the interactive map in real time with zero port forwarding required.</p>
                 </div>
             </div>
         </section>
@@ -124,32 +124,32 @@
             <h2 class="section-heading" style="text-align:center;">Engineered for Survival Pioneers</h2>
             <div class="features-grid">
                 <div class="feat-card">
-                    <div class="feat-icon"><i class="fa-solid fa-crosshairs"></i></div>
-                    <h3>Real-Time Character & Vehicle GPS</h3>
-                    <p>Streams character coordinates, speed (m/s), and facing compass orientation directly onto high-resolution terrain tiles with camera auto-follow.</p>
+                    <div class="feat-icon"><i class="fa-solid fa-satellite-dish" style="color:var(--sm-orange);"></i></div>
+                    <h3>360° Tactical Proximity Radar</h3>
+                    <p>Military-grade circular scope with rotating phosphor sweep, customizable range (50m–500m), altitude filtering, and player or camera center modes.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="feat-icon"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i></div>
+                    <h3>Hostile Bot Altitude Detection</h3>
+                    <p>Farmbots, Tapebots, Haybots, and Totebots render in high-contrast red with directional arrows: <strong>▲ Above</strong>, <strong>▼ Below</strong>, or <strong>● Level</strong>.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa-solid fa-plug" style="color:#38bdf8;"></i></div>
+                    <h3>Zero-Friction Proxy DLL Bridge</h3>
+                    <p>Bundled <code>dinput8.dll</code> proxies DirectX input to safely read live entities, vehicle creations, and player orientation via the game's Lua runtime.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon"><i class="fa-solid fa-users" style="color:#c084fc;"></i></div>
                     <h3>Cloud Multiplayer Squad Relay</h3>
-                    <p>Low-latency GCP cloud room sync broadcasts teammate live positions, customizable beacon colors, and tactical alerts across multiplayer worlds.</p>
+                    <p>Low-latency cloud room sync broadcasts teammate live positions, customizable beacon colors, and tactical alerts across multiplayer worlds.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon"><i class="fa-solid fa-map-pin"></i></div>
+                    <div class="feat-icon"><i class="fa-solid fa-map-pin" style="color:#fbbf24;"></i></div>
                     <h3>Points of Interest & Mission Filters</h3>
                     <p>Instant markers for 4-floor Warehouses, Mechanic Stations, Fruit Packing Stations, Vegetable Packing Stations, and Trader Hideouts.</p>
                 </div>
                 <div class="feat-card">
-                    <div class="feat-icon"><i class="fa-solid fa-robot"></i></div>
-                    <h3>Hostile Bot & Resource Radar</h3>
-                    <p>Scan and filter Boss Farmbots, Haybots, Tapebots, Totebots, Wocs, Oil Ponds, Cotton nodes, and underwater mineral crystal deposits.</p>
-                </div>
-                <div class="feat-card">
-                    <div class="feat-icon"><i class="fa-solid fa-ruler-combined"></i></div>
-                    <h3>Tactical Distance & Travel Ruler</h3>
-                    <p>Click two points anywhere on the map to calculate exact direct distance in meters, construction grid blocks, and estimated sprint travel time.</p>
-                </div>
-                <div class="feat-card">
-                    <div class="feat-icon"><i class="fa-solid fa-database"></i></div>
+                    <div class="feat-icon"><i class="fa-solid fa-database" style="color:#4ade80;"></i></div>
                     <h3>Client-Side SQLite Save Decoder</h3>
                     <p>Drag and drop your Survival save database (.db) to parse creations, shapes, and world seed in milliseconds using private local WebAssembly.</p>
                 </div>
@@ -162,8 +162,12 @@
             <h2 class="section-heading" style="text-align:center;">Frequently Asked Questions</h2>
             <div class="faq-list">
                 <details class="faq-item" open>
-                    <summary>Is this safe? Will I get banned in Scrap Mechanic?</summary>
-                    <p><strong>100% Safe.</strong> The app uses standard, passive Windows read-only memory inspection (<code>ReadProcessMemory</code>) to read player X/Y coordinates. It never injects code into the game engine, never alters game files, and Scrap Mechanic has no anti-cheat bans for external coordinate readers.</p>
+                    <summary>How does the Radar Proxy DLL (dinput8.dll) work? Is it safe?</summary>
+                    <p><strong>100% Safe.</strong> The bundled <code>dinput8.dll</code> is a standard proxy wrapper that sits alongside <code>ScrapMechanic.exe</code> in your game folder. It simply executes a lightweight telemetry probe in the game's official Lua environment every 500ms to report entity coordinates. It does not modify game files, does not touch original executable code, and Scrap Mechanic has no VAC bans.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>What if the app cannot find my Scrap Mechanic install path?</summary>
+                    <p>If your game is installed on a secondary SSD or custom drive, open <strong>Settings (⚙️)</strong> in the top header and click <strong>Browse...</strong> to select your <code>Scrap Mechanic/Release</code> folder directly.</p>
                 </details>
                 <details class="faq-item">
                     <summary>Why does Windows SmartScreen show an "Unknown Publisher" prompt?</summary>

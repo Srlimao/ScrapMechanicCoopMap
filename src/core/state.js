@@ -41,6 +41,21 @@ export const state = {
     mouseScreenPos: { x: 0, y: 0 },
     mapOpacity: 0.90,
     showCoordinates: false,
+    terrainSmoothing: true,
+    terrainEdgeBlend: true,
+
+    // Proximity Radar Settings
+    radarRange: 150,
+    radarVerticalBand: 20, // Vertical filter: ±20 meters (~80 blocks)
+    radarBlipScale: 1.25, // Radar Blip Scale multiplier
+    radarMode: 'player', // 'player' or 'camera'
+    radarFilters: {
+        enemies: true,
+        vehicles: true,
+        pois: true,
+        squad: true,
+        harvestables: false
+    },
 
     // Interactive Tool States
     selectedEntity: null,

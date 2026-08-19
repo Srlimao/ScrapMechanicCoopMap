@@ -21,7 +21,20 @@ Featuring **zero-mod live memory character tracking**, **instant cloud squad roo
 
 ## ✨ Features
 
-### 🛰️ 1. Zero-Mod Real-Time Player Tracking
+### 📡 1. Tactical Proximity Radar & Proxy DLL Bridge
+- **360° Military Proximity Scope**: Live circular radar in the bottom-right corner with phosphor sweep beam, dynamic range settings (50m to 500m), and customizable blip scale.
+- **Directional Altitude Threats**: Farmbots, Tapebots, Haybots, and Totebots render as pure red threat blips with crisp altitude arrows:
+  - 🔺 **▲ Red Arrow Up**: Hostile bot is above the player ($> 2.5\text{m}$).
+  - 🔻 **▼ Red Arrow Down**: Hostile bot is below the player ($< -2.5\text{m}$).
+  - 🔴 **● Red Circle**: Hostile bot is on the same level ($\pm 2.5\text{m}$).
+- **Passive Helpers & Wildlife Separation**: Seedbots, Wocs, Glowbugs, Caged Farmers, and Traders render in soft green (`#4ade80`) and are excluded from danger alerts.
+- **Dynamic Vehicle Detection**: Automatically tracks vehicles and creations with $\ge 50$ blocks, displaying altitude chevrons and distance.
+- **Zero-Friction Proxy DLL Bridge (`dinput8.dll`)**: Bundled DirectX proxy DLL hooks into the game's internal Lua runtime to stream live bot entities and player orientation at 20 Hz without altering executable code.
+- **1-Click Radar Install & Game Restart**: Built-in 1-click DLL installation and Steam game relauncher with custom folder browsing fallback.
+
+---
+
+### 🛰️ 2. Zero-Mod Real-Time Player Tracking
 - **Ultra-Fast Memory Hook**: Native Win32 C-FFI memory reader connecting directly to `ScrapMechanic.exe` in **0.18 ms** at **20 Hz**.
 - **Zero Game Modifications**: Operates completely externally via Windows memory pointers—no mods, Lua injection, or custom game files required.
 - **Dynamic Orientation & Breadcrumbs**: Displays live world coordinates $(X, Y, Z)$, heading cone, movement speed, and historical breadcrumb trails.
@@ -30,7 +43,7 @@ Featuring **zero-mod live memory character tracking**, **instant cloud squad roo
 
 ---
 
-### 👥 2. Multiplayer Squad Rooms & Live Co-op Relay
+### 👥 3. Multiplayer Squad Rooms & Live Co-op Relay
 - **Cloud Squad Rooms**: Create or join multiplayer rooms with 5-character codes (e.g. `#SQ-9421`).
 - **⚡ Instant 30ms Map Sync (Zero Generation for Friends)**:
   - When the Host creates a room, the app automatically uploads the active **12,288 world cells** (~78 KB compressed) to the cloud relay.

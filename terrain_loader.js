@@ -260,58 +260,87 @@
         return { manifest: g_atlasManifest, image: g_atlasImage };
     }
 
-    async function renderTerrainFromSaveDB(db) {
-        console.log("[TerrainLoader] Parsing terrain cell data from save DB...");
-        const terrainData = parseTerrainCellData(db);
-        const { manifest, image } = await ensureAtlasLoaded();
+    // 4. High-Fidelity Edge Blending & Seam Smoothing Filter
+    function applyTileSeamBlending(ctx, width, height, cellPixels = 16, options = {}) {
+        const strength = options.strength !== undefined ? options.strength : 0.85;
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const data = imgData.data;
 
-        const minCellX = -64, maxCellX = 63;
-        const minCellY = -48, maxCellY = 47;
-        const cellPixels = manifest.cellPixels || 16;
-        const totalW = (maxCellX - minCellX + 1) * cellPixels; // 2048 px
-        const totalH = (maxCellY - minCellY + 1) * cellPixels; // 1536 px
+        // Pass 1: Horizontal Seams (feather across vertical border x = col * cellPixels)
+        const cols = Math.floor(width / cellPixels);
+        for (let col = 1; col < cols; col++) {
+            const bx = col * cellPixels;
+            for (let y = 0; y < height; y++) {
+                const rowOff = y * width * 4;
+                const idxL1 = rowOff + (bx - 1) * 4;
+                const idxR1 = rowOff + bx * 4;
 
-        const canvas = document.createElement('canvas');
-        canvas.width = totalW;
-        canvas.height = totalH;
-        const ctx = canvas.getContext('2d', { alpha: false });
-        ctx.fillStyle = '#09161c';
-        ctx.fillRect(0, 0, totalW, totalH);
-        ctx.imageSmoothingEnabled = false;
+                const dr = Math.abs(data[idxL1] - data[idxR1]);
+                const dg = Math.abs(data[idxL1 + 1] - data[idxR1 + 1]);
+                const db = Math.abs(data[idxL1 + 2] - data[idxR1 + 2]);
+                if (dr + dg + db < 6) continue; // Nearly identical colors, skip
 
-        let rendered = 0;
-        for (let cell of terrainData.cells) {
-            if (cell.x < minCellX || cell.x > maxCellX || cell.y < minCellY || cell.y > maxCellY) continue;
+                const idxL2 = rowOff + (bx - 2) * 4;
+                const idxR2 = rowOff + (bx + 1) * 4;
 
-            const h = fnv1a(cell.uuid);
-            const tileInfo = manifest.tiles[h];
-            if (!tileInfo) continue;
+                for (let c = 0; c < 3; c++) {
+                    const cL2 = data[idxL2 + c];
+                    const cL1 = data[idxL1 + c];
+                    const cR1 = data[idxR1 + c];
+                    const cR2 = data[idxR2 + c];
 
-            const subIdx = cell.yOffset * tileInfo.cellsX + cell.xOffset;
-            const atlasIdx = tileInfo.start + subIdx * manifest.rotations + cell.rotation;
-
-            const sx = (atlasIdx % manifest.columns) * cellPixels;
-            const sy = Math.floor(atlasIdx / manifest.columns) * cellPixels;
-
-            const dx = (cell.x - minCellX) * cellPixels;
-            const dy = (maxCellY - cell.y) * cellPixels;
-
-            ctx.drawImage(image, sx, sy, cellPixels, cellPixels, dx, dy, cellPixels, cellPixels);
-            rendered++;
+                    data[idxL1 + c] = Math.round(cL1 * (1 - 0.40 * strength) + cR1 * (0.40 * strength));
+                    data[idxR1 + c] = Math.round(cR1 * (1 - 0.40 * strength) + cL1 * (0.40 * strength));
+                    data[idxL2 + c] = Math.round(cL2 * (1 - 0.18 * strength) + cR1 * (0.18 * strength));
+                    data[idxR2 + c] = Math.round(cR2 * (1 - 0.18 * strength) + cL1 * (0.18 * strength));
+                }
+            }
         }
 
-        console.log(`[TerrainLoader] Rendered ${rendered} terrain cells directly from save!`);
-        return {
-            canvas,
-            dataUrl: canvas.toDataURL('image/png'),
-            seed: terrainData.seed,
-            cells: terrainData.cells,
-            saveVersion: terrainData.saveVersion,
-            renderedCells: rendered
-        };
+        // Pass 2: Vertical Seams (feather across horizontal border y = row * cellPixels)
+        const rows = Math.floor(height / cellPixels);
+        for (let row = 1; row < rows; row++) {
+            const by = row * cellPixels;
+            for (let x = 0; x < width; x++) {
+                const idxT1 = ((by - 1) * width + x) * 4;
+                const idxB1 = (by * width + x) * 4;
+
+                const dr = Math.abs(data[idxT1] - data[idxB1]);
+                const dg = Math.abs(data[idxT1 + 1] - data[idxB1 + 1]);
+                const db = Math.abs(data[idxT1 + 2] - data[idxB1 + 2]);
+                if (dr + dg + db < 6) continue;
+
+                const idxT2 = ((by - 2) * width + x) * 4;
+                const idxB2 = ((by + 1) * width + x) * 4;
+
+                for (let c = 0; c < 3; c++) {
+                    const cT2 = data[idxT2 + c];
+                    const cT1 = data[idxT1 + c];
+                    const cB1 = data[idxB1 + c];
+                    const cB2 = data[idxB2 + c];
+
+                    data[idxT1 + c] = Math.round(cT1 * (1 - 0.40 * strength) + cB1 * (0.40 * strength));
+                    data[idxB1 + c] = Math.round(cB1 * (1 - 0.40 * strength) + cT1 * (0.40 * strength));
+                    data[idxT2 + c] = Math.round(cT2 * (1 - 0.18 * strength) + cB1 * (0.18 * strength));
+                    data[idxB2 + c] = Math.round(cB2 * (1 - 0.18 * strength) + cT1 * (0.18 * strength));
+                }
+            }
+        }
+
+        ctx.putImageData(imgData, 0, 0);
     }
 
-    async function renderTerrainFromCells(cells, seed = 0) {
+    let g_lastRenderedData = null;
+
+    async function renderTerrainFromSaveDB(db, options = {}) {
+        console.log("[TerrainLoader] Parsing terrain cell data from save DB...");
+        const terrainData = parseTerrainCellData(db);
+        const res = await renderTerrainFromCells(terrainData.cells, terrainData.seed, options);
+        res.saveVersion = terrainData.saveVersion;
+        return res;
+    }
+
+    async function renderTerrainFromCells(cells, seed = 0, options = {}) {
         const { manifest, image } = await ensureAtlasLoaded();
         const minCellX = -64, maxCellX = 63;
         const minCellY = -48, maxCellY = 47;
@@ -355,19 +384,39 @@
             rendered++;
         }
 
+        // Apply seamless edge blending if enabled
+        const shouldBlend = options.blendEdges !== undefined
+            ? options.blendEdges
+            : (typeof window !== 'undefined' && window.state && window.state.terrainEdgeBlend !== undefined ? window.state.terrainEdgeBlend : true);
+
+        if (shouldBlend) {
+            applyTileSeamBlending(ctx, totalW, totalH, cellPixels, options);
+        }
+
+        g_lastRenderedData = { cells, seed };
+
         return {
             canvas,
             dataUrl: canvas.toDataURL('image/png'),
             seed: seed,
+            cells: cells,
             renderedCells: rendered
         };
+    }
+
+    async function reRenderCurrentTerrain(options = {}) {
+        if (!g_lastRenderedData || !g_lastRenderedData.cells) return null;
+        return renderTerrainFromCells(g_lastRenderedData.cells, g_lastRenderedData.seed, options);
     }
 
     global.TerrainLoader = {
         parseTerrainCellData,
         ensureAtlasLoaded,
+        applyTileSeamBlending,
         renderTerrainFromSaveDB,
-        renderTerrainFromCells
+        renderTerrainFromCells,
+        reRenderCurrentTerrain,
+        getLastRenderedData: () => g_lastRenderedData
     };
 
 })(typeof window !== 'undefined' ? window : (typeof global !== 'undefined' ? global : this));

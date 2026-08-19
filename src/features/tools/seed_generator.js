@@ -84,11 +84,13 @@ export async function generateMapFromSeed(seed, statusEl = null) {
 
         if (result && result.cells && window.TerrainLoader) {
             showLoadingOverlay('STITCHING CELL ATLAS...', `Stitching official tiles for seed ${seed}...`);
-            const res = await window.TerrainLoader.renderTerrainFromCells(result.cells, seed);
+            const res = await window.TerrainLoader.renderTerrainFromCells(result.cells, seed, {
+                blendEdges: state.terrainEdgeBlend !== false
+            });
             if (res && res.dataUrl) {
                 setTerrainImageSource(res.dataUrl, seed);
                 sessionStorage.setItem('sm_cached_terrain_' + seed, res.dataUrl);
-                updateSeedUI(seed, res.renderedCells || 12288, statusEl);
+                updateSeedUI(seed, res.renderedCells || 12288, statusEl, result.cells);
                 hideLoadingOverlay();
                 showToast("Map Generated Successfully!", `Rendered 12,288 cells for seed ${seed}.`, "success", 5000);
                 return;
@@ -98,7 +100,7 @@ export async function generateMapFromSeed(seed, statusEl = null) {
         if (result && result.image) {
             const imgUrl = `${result.image}?t=${Date.now()}`;
             setTerrainImageSource(imgUrl, seed);
-            updateSeedUI(seed, 12288, statusEl);
+            updateSeedUI(seed, 12288, statusEl, result.cells || null);
             hideLoadingOverlay();
             showToast("Map Generated Successfully!", `Loaded generated terrain for seed ${seed}.`, "success", 5000);
             return;
@@ -115,7 +117,7 @@ export async function generateMapFromSeed(seed, statusEl = null) {
     }
 }
 
-function updateSeedUI(seed, cellCount, statusEl) {
+function updateSeedUI(seed, cellCount, statusEl, cells = null) {
     const metaSeed = document.getElementById('metaSeed');
     if (metaSeed) metaSeed.textContent = seed;
 
@@ -127,9 +129,10 @@ function updateSeedUI(seed, cellCount, statusEl) {
     }
 
     if (!state.mapData) {
-        state.mapData = { gameInfo: { seed }, pois: [], schematics: [], creations: [], units: [], harvestables: [], portals: [] };
+        state.mapData = { gameInfo: { seed }, pois: [], schematics: [], creations: [], units: [], harvestables: [], portals: [], terrainCells: cells };
     } else {
         state.mapData.gameInfo.seed = seed;
+        if (cells) state.mapData.terrainCells = cells;
     }
 
     notifyStateChange('terrain_generated', { seed, cellCount });

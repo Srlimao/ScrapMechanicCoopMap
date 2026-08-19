@@ -32,7 +32,10 @@ export function renderTerrainLayer(ctx, width, height) {
 
     ctx.save();
     ctx.globalAlpha = state.mapOpacity;
-    ctx.imageSmoothingEnabled = state.zoom < 0.5; // Crisper pixels when zoomed in
+    ctx.imageSmoothingEnabled = state.terrainSmoothing !== false;
+    if (ctx.imageSmoothingEnabled) {
+        ctx.imageSmoothingQuality = 'high';
+    }
 
     ctx.drawImage(
         terrainImage,

@@ -9,6 +9,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
     retryLivePlayer: () => ipcRenderer.invoke('retry-live-player'),
     generateTerrain: (seed) => ipcRenderer.invoke('generate-terrain', seed),
     getGameDirectory: () => ipcRenderer.invoke('get-game-directory'),
+    selectGameDirectory: () => ipcRenderer.invoke('select-game-directory'),
+    checkRadarInstalled: () => ipcRenderer.invoke('check-radar-installed'),
+    installRadarFiles: () => ipcRenderer.invoke('install-radar-files'),
+    restartGame: () => ipcRenderer.invoke('restart-game'),
     onActiveSaveUpdated: (callback) => {
         const handler = (event, data) => callback(data);
         ipcRenderer.on('active-save-updated', handler);

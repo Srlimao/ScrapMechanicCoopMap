@@ -11,11 +11,12 @@ import { setupBookmarks } from './features/tools/bookmarks.js';
 import { setupSearch } from './features/tools/search.js';
 import { setupRulerTool } from './features/tools/ruler.js';
 import { setupScreenshotExporter } from './features/tools/screenshot.js';
-import { loadSettings, setupLayerControls } from './features/tools/settings.js';
+import { loadSettings, setupLayerControls, setupSettingsModal } from './features/tools/settings.js';
 import { setupSeedGeneratorControls } from './features/tools/seed_generator.js';
 import { setupSquadControls } from './features/squad/squad_ui.js';
 import { initToastContainer } from './ui/toasts.js';
 import { setupModals } from './ui/modals.js';
+import { setupRadar } from './features/map_renderer/radar.js';
 
 async function bootstrap() {
     console.log("[App] Bootstrapping Scrap Mechanic Tactical Map Viewer...");
@@ -63,6 +64,7 @@ async function bootstrap() {
         btnClearCache: document.getElementById('btnClearCache'),
         seedGenStatus: document.getElementById('seedGenStatus'),
         compassNeedle: document.getElementById('compassNeedle'),
+        radarContainer: document.getElementById('radarModuleContainer'),
         hudGameTime: document.getElementById('hudGameTime'),
         hudGameDays: document.getElementById('hudGameDays')
     };
@@ -71,6 +73,7 @@ async function bootstrap() {
     initToastContainer();
     loadSettings();
     setupLayerControls(elements);
+    setupSettingsModal();
     setupModals(elements);
     setupBookmarks(elements);
     setupSearch(elements);
@@ -101,8 +104,9 @@ async function bootstrap() {
         });
     }
 
-    // 4. Initialize Canvas Engine & Camera
+    // 4. Initialize Canvas Engine, Radar & Camera
     initCanvasEngine(elements.canvas, elements.minimapCanvas);
+    setupRadar(elements.minimapCanvas);
     setupCameraControls(elements.canvas, elements.viewport, () => {});
 
     // 5. Initialize SQL Engine & Auto-sync save
@@ -115,6 +119,9 @@ async function bootstrap() {
     // 7. Subscribe to live player state to update badges & gadgets
     subscribe((type, payload) => {
         if (type === 'live_player_update') {
+            if (elements.radarContainer) {
+                elements.radarContainer.classList.remove('hidden');
+            }
             if (elements.livePlayerBadge) {
                 elements.livePlayerBadge.className = 'live-player-badge online';
             }
@@ -137,6 +144,9 @@ async function bootstrap() {
                 elements.hudGameDays.textContent = `${day}`;
             }
         } else if (type === 'live_player_offline') {
+            if (elements.radarContainer) {
+                elements.radarContainer.classList.add('hidden');
+            }
             if (elements.livePlayerBadge) {
                 elements.livePlayerBadge.className = 'live-player-badge offline';
             }

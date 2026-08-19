@@ -5,20 +5,20 @@ import { renderGridLayer } from './layer_grid.js';
 import { renderEntitiesLayer } from './layer_entities.js';
 import { renderPlayerTrail } from '../live_tracker/player_trail.js';
 import { renderSquadLayer } from '../squad/layer_squad.js';
-import { renderMinimap } from './minimap.js';
+import { renderRadar } from './radar.js';
 import { renderRulerLayer } from '../tools/ruler.js';
 
 let isRunning = false;
 let canvasEl = null;
 let ctx2d = null;
-let minimapCanvasEl = null;
-let minimapCtx2d = null;
+let radarCanvasEl = null;
+let radarCtx2d = null;
 
-export function initCanvasEngine(canvas, minimapCanvas) {
+export function initCanvasEngine(canvas, radarCanvas) {
     canvasEl = canvas;
     ctx2d = canvas.getContext('2d');
-    minimapCanvasEl = minimapCanvas;
-    minimapCtx2d = minimapCanvas ? minimapCanvas.getContext('2d') : null;
+    radarCanvasEl = radarCanvas;
+    radarCtx2d = radarCanvas ? radarCanvas.getContext('2d') : null;
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
@@ -69,8 +69,8 @@ export function renderFrame() {
     // 7. Measurement Ruler Tool
     renderRulerLayer(ctx2d, w, h);
 
-    // 8. Minimap HUD
-    if (minimapCtx2d && minimapCanvasEl) {
-        renderMinimap(minimapCtx2d, minimapCanvasEl, w, h);
+    // 8. Tactical Proximity Radar HUD
+    if (radarCtx2d && radarCanvasEl) {
+        renderRadar(radarCtx2d, radarCanvasEl, w, h);
     }
 }

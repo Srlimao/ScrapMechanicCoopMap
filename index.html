@@ -75,6 +75,10 @@
                     <i class="fa-solid fa-arrows-to-dot"></i>
                 </button>
 
+                <button class="btn btn-icon" id="settingsBtn" title="Tactical Settings & Configuration">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+
                 <button class="btn btn-icon" id="infoBtn" title="Help & Information">
                     <i class="fa-solid fa-circle-question"></i>
                 </button>
@@ -120,27 +124,6 @@
                                     <input type="checkbox" id="layerLivePlayer" checked>
                                     <span class="mech-switch"></span>
                                 </label>
-                            </div>
-                        </div>
-
-                        <!-- Terrain Map Background Image Layer -->
-                        <div class="layer-card">
-                            <div class="layer-card-header">
-                                <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-map layer-icon" style="color:var(--color-harvestable);"></i>
-                                    <span class="layer-title">In-Game Terrain Map</span>
-                                </div>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerMapImage" checked>
-                                    <span class="mech-switch green-theme-switch"></span>
-                                </label>
-                            </div>
-                            <div class="layer-sub-options">
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-size:10px; color:var(--text-dim);">Opacity:</span>
-                                    <input type="range" id="mapOpacitySlider" min="10" max="100" value="90" style="flex:1;">
-                                    <span id="mapOpacityVal" style="font-size:10px; font-family:'JetBrains Mono', monospace; color:var(--sm-orange);">90%</span>
-                                </div>
                             </div>
                         </div>
 
@@ -493,14 +476,47 @@
                         </div>
                     </div>
 
-                    <!-- Attached CRT Radar Display Module at Bottom-Right -->
-                    <div class="hardware-radar-module" id="minimapContainer">
+                    <!-- Attached Tactical Proximity Radar Module at Bottom-Right -->
+                    <div class="hardware-radar-module hidden" id="radarModuleContainer">
                         <div class="radar-module-header">
-                            <span class="radar-title"><i class="fa-solid fa-radar"></i> RADAR</span>
+                            <div class="radar-title-wrap">
+                                <span class="radar-title"><i class="fa-solid fa-satellite-dish"></i> PROX RADAR</span>
+                                <span class="radar-mode-badge player" id="radarCenterMode" title="Toggle between Player Center and Camera Center">SRC: PLAYER</span>
+                            </div>
+                            <span class="radar-threat-badge normal" id="radarThreatBadge">
+                                <i class="fa-solid fa-shield-halved"></i> CLEAR [300m]
+                            </span>
                         </div>
+                        
                         <div class="radar-screen-bezel">
-                            <canvas id="minimapCanvas" width="146" height="120"></canvas>
-                            <div class="radar-grid-overlay"></div>
+                            <canvas id="minimapCanvas" width="360" height="360"></canvas>
+                            <div class="radar-install-overlay hidden" id="radarInstallOverlay">
+                                <div class="radar-install-icon"><i class="fa-solid fa-microchip"></i></div>
+                                <div class="radar-install-title">TACTICAL RADAR</div>
+                                <div class="radar-install-desc" id="radarInstallDesc">Install the radar telemetry proxy to track live bots & creations in real-time.</div>
+                                <button class="radar-install-btn" id="btnInstallRadar">
+                                    <i class="fa-solid fa-download"></i> INSTALL RADAR
+                                </button>
+                                <button class="radar-browse-btn" id="btnBrowseGameDir" title="Select custom game directory">
+                                    <i class="fa-solid fa-folder-open"></i> Browse Game Folder...
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tactical Range Controls & Quick Filters -->
+                        <div class="radar-module-footer">
+                            <div class="radar-range-selector" id="radarRangeSelector">
+                                <button class="radar-range-btn" data-range="50">50m</button>
+                                <button class="radar-range-btn" data-range="100">100m</button>
+                                <button class="radar-range-btn active" data-range="150">150m</button>
+                                <button class="radar-range-btn" data-range="300">300m</button>
+                            </div>
+                            <div class="radar-toggle-actions">
+                                <button class="radar-icon-btn active" id="btnRadarEnemies" title="Toggle Enemy Bot Blips"><i class="fa-solid fa-skull"></i></button>
+                                <button class="radar-icon-btn active" id="btnRadarVehicles" title="Toggle Vehicle/Creation Blips"><i class="fa-solid fa-car"></i></button>
+                                <button class="radar-icon-btn active" id="btnRadarPOIs" title="Toggle POI Blips"><i class="fa-solid fa-location-dot"></i></button>
+                                <button class="radar-icon-btn" id="btnRadarCenterToggle" title="Toggle Focus: Player vs Camera"><i class="fa-solid fa-crosshairs"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -595,6 +611,146 @@
         </div>
     </div>
 
+    <!-- Tactical Configuration / Settings Modal -->
+    <div class="modal-backdrop" id="settingsModal">
+        <div class="modal modal-settings">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-gear" style="color:var(--sm-orange)"></i> Tactical Settings & Configuration</h2>
+                <button class="modal-close" id="closeSettingsModal" title="Close Settings"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <!-- 1. Proximity Radar Configuration -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-satellite-dish"></i> 1. Tactical Proximity Radar</h3>
+                    <div class="settings-grid">
+                        <div class="settings-item">
+                            <label for="cfgRadarRange">Default Scope Range</label>
+                            <select id="cfgRadarRange" class="settings-select">
+                                <option value="50">50 Meters (Close CQB)</option>
+                                <option value="100">100 Meters</option>
+                                <option value="150" selected>150 Meters (Default)</option>
+                                <option value="300">300 Meters (Long Range)</option>
+                                <option value="500">500 Meters (Maximum)</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgRadarVerticalBand">Vertical Altitude Filter (Z-Axis)</label>
+                            <select id="cfgRadarVerticalBand" class="settings-select">
+                                <option value="10">±10 Meters (~40 Blocks - Single Floor)</option>
+                                <option value="20" selected>±20 Meters (~80 Blocks - Default)</option>
+                                <option value="35">±35 Meters (~140 Blocks - Multi-Story)</option>
+                                <option value="50">±50 Meters (~200 Blocks - Mountain/Valley)</option>
+                                <option value="9999">Unlimited (No Vertical Cutoff)</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgRadarCreationMin">Creation Filter Threshold</label>
+                            <select id="cfgRadarCreationMin" class="settings-select">
+                                <option value="1">All Dynamic Objects (No Filter)</option>
+                                <option value="20">≥ 20 Blocks (Small Parts)</option>
+                                <option value="50" selected>≥ 50 Blocks (Default Vehicles)</option>
+                                <option value="100">≥ 100 Blocks (Medium Vehicles)</option>
+                                <option value="250">≥ 250 Blocks (Large Bases/Rigs)</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgRadarCenterMode">Radar Center Reference</label>
+                            <select id="cfgRadarCenterMode" class="settings-select">
+                                <option value="player" selected>Player Centered (Rotating FWD Heading)</option>
+                                <option value="camera">Map Camera Centered (Fixed North)</option>
+                            </select>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgRadarBlipScale">Radar Blip Icon Size</label>
+                            <select id="cfgRadarBlipScale" class="settings-select">
+                                <option value="0.85">Small (0.85x)</option>
+                                <option value="1.0">Standard (1.0x)</option>
+                                <option value="1.25" selected>Medium / High Visibility (1.25x - Default)</option>
+                                <option value="1.5">Large (1.5x)</option>
+                                <option value="1.8">Extra Large (1.8x)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Live Telemetry & Game Bridge -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-microchip"></i> 2. Live Telemetry & Game Bridge</h3>
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:#fff;">Game Installation Path</div>
+                                <div style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono', monospace;" id="cfgGamePathDisplay">Auto-detecting...</div>
+                            </div>
+                            <div style="display:flex; gap:6px;">
+                                <button class="btn btn-tool" id="cfgBtnBrowseGame"><i class="fa-solid fa-folder-open"></i> Browse...</button>
+                                <button class="btn btn-tool" id="cfgBtnReinstallRadar"><i class="fa-solid fa-download"></i> Reinstall Radar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Visual & Map Rendering -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-map"></i> 3. Visual & Map Rendering</h3>
+                    <div class="settings-grid">
+                        <div class="settings-item">
+                            <label for="cfgMapOpacity">Terrain Map Opacity</label>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <input type="range" id="cfgMapOpacity" min="0.2" max="1.0" step="0.05" value="0.9" style="flex:1;">
+                                <span id="cfgMapOpacityVal" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:#38bdf8; min-width:35px;">90%</span>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgTerrainSmooth">Terrain HD Smoothing</label>
+                            <label class="mech-switch-wrap" style="margin-top:4px;">
+                                <input type="checkbox" id="cfgTerrainSmooth" checked>
+                                <span class="mech-switch"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgTerrainBlend">Terrain Edge Blending</label>
+                            <label class="mech-switch-wrap" style="margin-top:4px;">
+                                <input type="checkbox" id="cfgTerrainBlend" checked>
+                                <span class="mech-switch"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgShowCoordinates">Coordinates Overlay HUD</label>
+                            <label class="mech-switch-wrap" style="margin-top:4px;">
+                                <input type="checkbox" id="cfgShowCoordinates">
+                                <span class="mech-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Save Sync & Polling -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-arrows-rotate"></i> 4. Save File Real-Time Sync</h3>
+                    <div class="settings-grid">
+                        <div class="settings-item">
+                            <label for="cfgAutoSyncSave">Auto-Sync Active Survival Save</label>
+                            <label class="mech-switch-wrap" style="margin-top:4px;">
+                                <input type="checkbox" id="cfgAutoSyncSave" checked>
+                                <span class="mech-switch"></span>
+                            </label>
+                        </div>
+                        <div class="settings-item">
+                            <label for="cfgSyncInterval">Save Polling Frequency</label>
+                            <select id="cfgSyncInterval" class="settings-select">
+                                <option value="3000">3 Seconds (Fast)</option>
+                                <option value="5000" selected>5 Seconds (Default)</option>
+                                <option value="10000">10 Seconds</option>
+                                <option value="30000">30 Seconds</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Help / Tactical Guide Modal -->
     <div class="modal-backdrop" id="helpModal">
         <div class="modal modal-help">
@@ -613,9 +769,21 @@
                     </ul>
                 </div>
 
+                <!-- Tactical Proximity Radar & DLL Bridge -->
+                <div class="help-section">
+                    <h3 class="help-section-title"><i class="fa-solid fa-radar" style="color:var(--sm-orange);"></i> 2. Tactical Proximity Radar & DLL Bridge</h3>
+                    <p class="help-section-desc">A 360° military scope in the bottom-right corner powered by the bundled <strong>Proxy DLL Bridge (<code>dinput8.dll</code>)</strong> for real-time threat detection.</p>
+                    <ul class="help-list">
+                        <li><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> <div><strong>Hostile Threat Arrows</strong>: Farmbots, Tapebots, Haybots, and Totebots render as pure red icons with clear directional altitude arrows (<strong>▲ Above</strong>, <strong>▼ Below</strong>, <strong>● Same Level</strong>).</div></li>
+                        <li><i class="fa-solid fa-seedling" style="color:#4ade80;"></i> <div><strong>Passive & Wildlife Filtering</strong>: Seedbots, Caged Farmers, Traders, Wocs, and Glowbugs appear as soft green dots and never trigger danger alerts.</div></li>
+                        <li><i class="fa-solid fa-car" style="color:#00e5ff;"></i> <div><strong>Creations & Vehicles</strong>: Dynamic vehicles with 50+ blocks are tracked with distance and altitude chevrons.</div></li>
+                        <li><i class="fa-solid fa-plug" style="color:var(--sm-orange);"></i> <div><strong>1-Click Radar Install & Restart</strong>: If the DLL is missing, click <em>"Install Radar"</em> and <em>"Restart Game"</em> in the radar footer or browse your custom game folder under <strong>Settings (⚙️)</strong>.</div></li>
+                    </ul>
+                </div>
+
                 <!-- Loading Save Files -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-folder-open"></i> 2. Loading Your World Save</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-folder-open"></i> 3. Loading Your World Save</h3>
                     <p class="help-section-desc">Click <strong style="color:#fff;">Select Save</strong> in the top header or drag & drop your <code>.db</code> save file anywhere onto the window.</p>
                     <code class="code-block">%AppData%\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
                     <p class="help-section-desc">Loading a save parses all 12,288 world cells, Point-of-Interests, Warehouses, Trader hideouts, Oil nodes, player chests, and built vehicles.</p>
@@ -623,7 +791,7 @@
 
                 <!-- Multiplayer Squad Radar -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-users"></i> 3. Multiplayer Co-op Squad Radar</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-users"></i> 4. Multiplayer Co-op Squad Radar</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-wifi"></i> <div><strong>Host / Join Room</strong>: Click the <strong>Squad</strong> button in the header. Create a 6-character room or enter an existing code to link up with friends.</div></li>
                         <li><i class="fa-solid fa-location-dot"></i> <div><strong>Teammate Beacons</strong>: Teammates stream their live coordinates and heading arrows with custom chosen beacon colors in real time.</div></li>
@@ -633,7 +801,7 @@
 
                 <!-- Tactical Workbench Tools -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-toolbox"></i> 4. Tactical Tools & Features</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-toolbox"></i> 5. Tactical Tools & Features</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-magnifying-glass"></i> <div><strong>Inspector Panel</strong>: Click any landmark, vehicle, chest, trader, or robot on the map to inspect coordinates, contents, and health in the slide-out inspector.</div></li>
                         <li><i class="fa-solid fa-ruler-combined"></i> <div><strong>Measure Tool</strong>: Click <strong>Measure</strong> then pick any two points on the map to measure exact distance in blocks and meters.</div></li>
@@ -645,7 +813,7 @@
 
                 <!-- Controls & Shortcuts -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-keyboard"></i> 5. Navigation & Shortcuts</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-keyboard"></i> 6. Navigation & Shortcuts</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-hand-pointer"></i> <div><span class="kbd-key">Left Click + Drag</span> — Pan the tactical map.</div></li>
                         <li><i class="fa-solid fa-arrows-up-down"></i> <div><span class="kbd-key">Mouse Wheel</span> — Smooth zoom in and out.</div></li>

@@ -376,6 +376,69 @@ def get_terrain_cells_for_seed(seed):
 
     return cells_data
 
+def apply_seam_blending_pil(img, cell_px=16, strength=0.85):
+    w, h = img.size
+    pixels = bytearray(img.tobytes())
+
+    # Pass 1: Horizontal seams (feather across vertical border x)
+    cols = w // cell_px
+    for col in range(1, cols):
+        bx = col * cell_px
+        for y in range(h):
+            row_off = y * w * 4
+            idx_l1 = row_off + (bx - 1) * 4
+            idx_r1 = row_off + bx * 4
+
+            dr = abs(pixels[idx_l1] - pixels[idx_r1])
+            dg = abs(pixels[idx_l1 + 1] - pixels[idx_r1 + 1])
+            db = abs(pixels[idx_l1 + 2] - pixels[idx_r1 + 2])
+            if dr + dg + db < 6:
+                continue
+
+            idx_l2 = row_off + (bx - 2) * 4
+            idx_r2 = row_off + (bx + 1) * 4
+
+            for c in range(3):
+                cl2 = pixels[idx_l2 + c]
+                cl1 = pixels[idx_l1 + c]
+                cr1 = pixels[idx_r1 + c]
+                cr2 = pixels[idx_r2 + c]
+
+                pixels[idx_l1 + c] = int(round(cl1 * (1 - 0.40 * strength) + cr1 * (0.40 * strength)))
+                pixels[idx_r1 + c] = int(round(cr1 * (1 - 0.40 * strength) + cl1 * (0.40 * strength)))
+                pixels[idx_l2 + c] = int(round(cl2 * (1 - 0.18 * strength) + cr1 * (0.18 * strength)))
+                pixels[idx_r2 + c] = int(round(cr2 * (1 - 0.18 * strength) + cl1 * (0.18 * strength)))
+
+    # Pass 2: Vertical seams (feather across horizontal border y)
+    rows = h // cell_px
+    for row in range(1, rows):
+        by = row * cell_px
+        for x in range(w):
+            idx_t1 = ((by - 1) * w + x) * 4
+            idx_b1 = (by * w + x) * 4
+
+            dr = abs(pixels[idx_t1] - pixels[idx_b1])
+            dg = abs(pixels[idx_t1 + 1] - pixels[idx_b1 + 1])
+            db = abs(pixels[idx_t1 + 2] - pixels[idx_b1 + 2])
+            if dr + dg + db < 6:
+                continue
+
+            idx_t2 = ((by - 2) * w + x) * 4
+            idx_b2 = ((by + 1) * w + x) * 4
+
+            for c in range(3):
+                ct2 = pixels[idx_t2 + c]
+                ct1 = pixels[idx_t1 + c]
+                cb1 = pixels[idx_b1 + c]
+                cb2 = pixels[idx_b2 + c]
+
+                pixels[idx_t1 + c] = int(round(ct1 * (1 - 0.40 * strength) + cb1 * (0.40 * strength)))
+                pixels[idx_b1 + c] = int(round(cb1 * (1 - 0.40 * strength) + ct1 * (0.40 * strength)))
+                pixels[idx_t2 + c] = int(round(ct2 * (1 - 0.18 * strength) + cb1 * (0.18 * strength)))
+                pixels[idx_b2 + c] = int(round(cb2 * (1 - 0.18 * strength) + ct1 * (0.18 * strength)))
+
+    return Image.frombytes(img.mode, img.size, bytes(pixels))
+
 def generate_terrain_for_seed(seed):
     output_filename = f"terrain_seed_{seed}.png"
     output_path = os.path.join(CACHE_DIR, output_filename)
@@ -428,8 +491,9 @@ def generate_terrain_for_seed(seed):
             img.paste(tile_crop, (dx, dy))
             pasted += 1
 
+        img = apply_seam_blending_pil(img, CELL_PX, 0.85)
         img.save(output_path, "PNG")
-        print(f"[TerrainBuilder] Stitched {pasted}/{len(cells_data)} cells via official atlas. Saved {output_filename} in {time.time()-t0:.2f}s!", flush=True)
+        print(f"[TerrainBuilder] Stitched & Blended {pasted}/{len(cells_data)} cells via official atlas. Saved {output_filename} in {time.time()-t0:.2f}s!", flush=True)
         return output_filename
     else:
         print("[TerrainBuilder] Atlas unavailable, saved null.", flush=True)

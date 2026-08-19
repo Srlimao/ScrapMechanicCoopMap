@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { getSurvivalSaves, snapshotActiveSave, findGameDirectory } = require('./game_scanner');
+const { getSurvivalSaves, snapshotActiveSave, findGameDirectory, setCustomGameDirectory, checkRadarInstalled, installRadarFiles, restartGame } = require('./game_scanner');
 const { NodeMemoryReader } = require('./memory_reader');
 
 let mainWindow = null;
@@ -132,6 +132,28 @@ ipcMain.handle('read-active-save', async (event, saveName) => {
 });
 
 ipcMain.handle('get-game-directory', async () => findGameDirectory());
+ipcMain.handle('select-game-directory', async () => {
+    const { dialog } = require('electron');
+    const res = await dialog.showOpenDialog(mainWindow, {
+        title: 'Select Scrap Mechanic Installation Directory',
+        properties: ['openDirectory']
+    });
+    if (res.canceled || !res.filePaths || !res.filePaths.length) {
+        return { canceled: true };
+    }
+    const selected = res.filePaths[0];
+    const validated = setCustomGameDirectory(selected);
+    if (!validated) {
+        return { 
+            success: false, 
+            error: 'Selected directory does not contain ScrapMechanic.exe or Release/ScrapMechanic.exe. Please select the main "Scrap Mechanic" game folder.' 
+        };
+    }
+    return { success: true, gameDir: validated };
+});
+ipcMain.handle('check-radar-installed', async () => checkRadarInstalled());
+ipcMain.handle('install-radar-files', async () => installRadarFiles());
+ipcMain.handle('restart-game', async () => restartGame());
 
 ipcMain.handle('fetch-live-player', async () => {
     if (memoryReader && memoryReader.state.online) {
@@ -235,7 +257,7 @@ ipcMain.handle('generate-terrain', async (event, seed) => {
 });
 
 app.whenReady().then(() => {
-    memoryReader.start(20);
+    memoryReader.start(60);
     createWindow();
 
     app.on('activate', () => {

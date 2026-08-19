@@ -444,7 +444,9 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
     let terrainRendered = false;
     if (window.TerrainLoader) {
         try {
-            const res = await window.TerrainLoader.renderTerrainFromSaveDB(db);
+            const res = await window.TerrainLoader.renderTerrainFromSaveDB(db, {
+                blendEdges: state.terrainEdgeBlend !== false
+            });
             if (res && res.dataUrl) {
                 setTerrainImageSource(res.dataUrl, gameInfo.seed);
                 terrainRendered = true;
