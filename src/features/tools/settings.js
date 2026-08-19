@@ -135,6 +135,11 @@ export function loadSettings() {
                 applyDisplayMode(state.displayMode, true);
             }
         }
+
+        const coordsBtn = document.getElementById('toggleCoordsBtn');
+        if (coordsBtn) coordsBtn.classList.toggle('active', state.showCoordinates === true);
+        const coordsHud = document.getElementById('coordsHud') || document.getElementById('coordsHUD');
+        if (coordsHud) coordsHud.classList.toggle('hidden', state.showCoordinates !== true);
     } catch (e) {
         console.warn("Failed to load settings:", e);
     }
@@ -935,7 +940,7 @@ export function setupSettingsModal() {
             state.showCoordinates = e.target.checked;
             const coordsBtn = document.getElementById('toggleCoordsBtn');
             if (coordsBtn) coordsBtn.classList.toggle('active', e.target.checked);
-            const hud = document.getElementById('coordsHUD');
+            const hud = document.getElementById('coordsHud') || document.getElementById('coordsHUD');
             if (hud) hud.classList.toggle('hidden', !e.target.checked);
             saveSettings();
             notifyStateChange('coords_toggle', state.showCoordinates);

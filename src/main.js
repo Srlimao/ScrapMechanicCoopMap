@@ -66,7 +66,13 @@ async function bootstrap() {
         compassNeedle: document.getElementById('compassNeedle'),
         radarContainer: document.getElementById('radarModuleContainer'),
         hudGameTime: document.getElementById('hudGameTime'),
-        hudGameDays: document.getElementById('hudGameDays')
+        hudGameDays: document.getElementById('hudGameDays'),
+        bmPlayer: document.getElementById('bmPlayer'),
+        bmMechanic: document.getElementById('bmMechanic'),
+        bmTrader: document.getElementById('bmTrader'),
+        bmPacking: document.getElementById('bmPacking'),
+        bmCreations: document.getElementById('bmCreations'),
+        bmBosses: document.getElementById('bmBosses')
     };
 
     // 2. Initialize UI, Settings & Controls
@@ -85,12 +91,25 @@ async function bootstrap() {
     setupSeedGeneratorControls(elements);
     setupSquadControls();
 
-    // 3. Setup Reset & Follow camera buttons
+    // 3. Setup Reset, Follow, and Coordinates toggle buttons
     if (elements.resetViewBtn) elements.resetViewBtn.addEventListener('click', resetCameraView);
     if (elements.followPlayerBtn) {
         elements.followPlayerBtn.addEventListener('click', () => {
             state.followPlayer = !state.followPlayer;
             elements.followPlayerBtn.classList.toggle('active', state.followPlayer);
+        });
+    }
+    if (elements.toggleCoordsBtn) {
+        elements.toggleCoordsBtn.addEventListener('click', () => {
+            state.showCoordinates = !state.showCoordinates;
+            elements.toggleCoordsBtn.classList.toggle('active', state.showCoordinates);
+            const hud = document.getElementById('coordsHud') || document.getElementById('coordsHUD');
+            if (hud) hud.classList.toggle('hidden', !state.showCoordinates);
+            const cfgShow = document.getElementById('cfgShowCoordinates');
+            if (cfgShow) cfgShow.checked = state.showCoordinates;
+            import('./features/tools/settings.js').then(({ saveSettings }) => {
+                saveSettings();
+            });
         });
     }
 

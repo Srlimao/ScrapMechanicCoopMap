@@ -10,7 +10,10 @@
     "electron": "electron .",
     "electron:dev": "concurrently \"vite\" \"wait-on tcp:5173 && electron .\"",
     "dist": "vite build && electron-builder",
-    "dist:portable": "vite build && electron-builder --win portable"
+    "dist:portable": "vite build && electron-builder --win portable",
+    "test:e2e": "npx tsx ../test-harness/runners/mock-e2e.ts",
+    "test:live": "npx tsx ../test-harness/runners/live-runner.ts",
+    "test": "npm run test:e2e"
   },
   "keywords": [
     "scrap-mechanic",

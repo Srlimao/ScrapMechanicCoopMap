@@ -65,6 +65,19 @@
                     <span class="squad-badge offline" id="squadStatusBadge"><i class="fa-solid fa-users"></i> Squad: Offline</span>
                 </button>
 
+                <!-- Dedicated Map Tools Action Dock -->
+                <div class="map-tools-dock">
+                    <button class="btn btn-tool" id="rulerToolBtn" title="Distance Measure Tool (Ruler) - Measure distance between two points">
+                        <i class="fa-solid fa-ruler-combined"></i> <span>Measure</span>
+                    </button>
+                    <button class="btn btn-tool" id="exportBtn" title="Capture & Export High-Res PNG Map Snapshot">
+                        <i class="fa-solid fa-camera"></i> <span>Snapshot</span>
+                    </button>
+                    <button class="btn btn-icon" id="toggleCoordsBtn" title="Toggle Coordinates HUD Overlay (World / Cell / Zoom)">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                    </button>
+                </div>
+
                 <button class="btn btn-tool" id="followPlayerBtn" title="Lock Camera and Follow In-Game Character">
                     <i class="fa-solid fa-crosshairs"></i> <span>Follow Player</span>
                 </button>
@@ -395,6 +408,28 @@
                                     <span class="clock-stat-label">DIAS</span>
                                     <span class="clock-stat-val" id="hudGameDays">131</span>
                                 </div>
+                            </div>
+
+                            <!-- Quick Jump Bookmarks Bar -->
+                            <div class="quick-bookmarks-bar" id="quickBookmarksBar">
+                                <button class="bm-btn bm-player" id="bmPlayer" title="Jump to Live Player Position">
+                                    <i class="fa-solid fa-person-walking" style="color:#00e5ff;"></i> <span>Player</span>
+                                </button>
+                                <button class="bm-btn bm-mechanic" id="bmMechanic" title="Jump to Primary Mechanic Station Base (-1856, -1664)">
+                                    <i class="fa-solid fa-wrench" style="color:#38bdf8;"></i> <span>Mechanic</span>
+                                </button>
+                                <button class="bm-btn bm-trader" id="bmTrader" title="Jump to Farmer Trader Hideout (-1024, -1024)">
+                                    <i class="fa-solid fa-store" style="color:#c084fc;"></i> <span>Trader</span>
+                                </button>
+                                <button class="bm-btn bm-packing" id="bmPacking" title="Jump to Vegetable/Fruit Packing Station (-1088, -1472)">
+                                    <i class="fa-solid fa-box" style="color:#4ade80;"></i> <span>Packing</span>
+                                </button>
+                                <button class="bm-btn bm-creations" id="bmCreations" title="Jump to Largest Built Vehicle / Creation">
+                                    <i class="fa-solid fa-truck-pickup" style="color:#fbbf24;"></i> <span>Vehicles</span>
+                                </button>
+                                <button class="bm-btn bm-bosses" id="bmBosses" title="Jump to Farmbot Boss Threats">
+                                    <i class="fa-solid fa-skull" style="color:#f87171;"></i> <span>Bosses</span>
+                                </button>
                             </div>
 
                             <!-- Live Tracking Status Banner -->
@@ -763,9 +798,9 @@
                     </div>
                 </div>
 
-                <!-- 3. Visual & Map Rendering -->
+                <!-- 4. Visual & Map Rendering -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-map"></i> 3. Visual & Map Rendering</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-map"></i> 4. Visual & Map Rendering</h3>
                     <div class="settings-grid">
                         <div class="settings-item">
                             <label for="cfgMapOpacity">Terrain Map Opacity</label>
@@ -798,9 +833,9 @@
                     </div>
                 </div>
 
-                <!-- 4. Save Sync & Polling -->
+                <!-- 5. Save Sync & Polling -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-arrows-rotate"></i> 4. Save File Real-Time Sync</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-arrows-rotate"></i> 5. Save File Real-Time Sync</h3>
                     <div class="settings-grid">
                         <div class="settings-item">
                             <label for="cfgAutoSyncSave">Auto-Sync Active Survival Save</label>
@@ -866,17 +901,17 @@
                     </ul>
                 </div>
 
-                <!-- Loading Save Files -->
+                <!-- 4. Loading Your World Save -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-folder-open"></i> 3. Loading Your World Save</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-folder-open"></i> 4. Loading Your World Save</h3>
                     <p class="help-section-desc">Click <strong style="color:#fff;">Select Save</strong> in the top header or drag & drop your <code>.db</code> save file anywhere onto the window.</p>
                     <code class="code-block">%AppData%\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
                     <p class="help-section-desc">Loading a save parses all 12,288 world cells, Point-of-Interests, Warehouses, Trader hideouts, Oil nodes, player chests, and built vehicles.</p>
                 </div>
 
-                <!-- Multiplayer Squad Radar -->
+                <!-- 5. Multiplayer Squad Radar -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-users"></i> 4. Multiplayer Co-op Squad Radar</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-users"></i> 5. Multiplayer Co-op Squad Radar</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-wifi"></i> <div><strong>Host / Join Room</strong>: Click the <strong>Squad</strong> button in the header. Create a 6-character room or enter an existing code to link up with friends.</div></li>
                         <li><i class="fa-solid fa-location-dot"></i> <div><strong>Teammate Beacons</strong>: Teammates stream their live coordinates and heading arrows with custom chosen beacon colors in real time.</div></li>
@@ -884,9 +919,9 @@
                     </ul>
                 </div>
 
-                <!-- Tactical Workbench Tools -->
+                <!-- 6. Tactical Tools & Features -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-toolbox"></i> 5. Tactical Tools & Features</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-toolbox"></i> 6. Tactical Tools & Features</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-magnifying-glass"></i> <div><strong>Inspector Panel</strong>: Click any landmark, vehicle, chest, trader, or robot on the map to inspect coordinates, contents, and health in the slide-out inspector.</div></li>
                         <li><i class="fa-solid fa-ruler-combined"></i> <div><strong>Measure Tool</strong>: Click <strong>Measure</strong> then pick any two points on the map to measure exact distance in blocks and meters.</div></li>
@@ -896,9 +931,9 @@
                     </ul>
                 </div>
 
-                <!-- Controls & Shortcuts -->
+                <!-- 7. Navigation & Shortcuts -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-keyboard"></i> 6. Navigation & Shortcuts</h3>
+                    <h3 class="help-section-title"><i class="fa-solid fa-keyboard"></i> 7. Navigation & Shortcuts</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-hand-pointer"></i> <div><span class="kbd-key">Left Click + Drag</span> — Pan the tactical map.</div></li>
                         <li><i class="fa-solid fa-arrows-up-down"></i> <div><span class="kbd-key">Mouse Wheel</span> — Smooth zoom in and out.</div></li>
