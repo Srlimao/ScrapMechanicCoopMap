@@ -21,9 +21,10 @@ Featuring **in-game full-screen map overlays**, **floating proximity radar HUD**
 
 ## ✨ Features
 
-### 🎮 1. In-Game Full Map Overlay & Floating Radar HUD (v1.5.0)
+### 🎮 1. In-Game Full Map Overlay & Floating Radar HUD (v1.5.1)
 - **`All In Game` Mode ([M])**: Press <kbd>M</kbd> anytime while playing *Scrap Mechanic* to summon the full interactive tactical workbench directly over your game screen. Press <kbd>Esc</kbd>, <kbd>M</kbd>, or click *Return to Game* to dismiss the map and automatically restore game focus and 3D mouse look with zero desktop cursor interruptions.
 - **Floating Proximity Radar HUD ([F9])**: Proximity radar floats seamlessly over the game. Press <kbd>F9</kbd> in-game to unlock, drag, and resize the HUD.
+- **Auto-Close Game Lifecycle**: Opening the app when no game is running automatically defaults to In-App desktop mode. When the game exits, the app automatically closes cleanly.
 - **Game-Focus Protected Hotkeys**: Shortcuts (<kbd>M</kbd> / <kbd>F9</kbd>) only trigger while *Scrap Mechanic* is the active foreground window, preventing conflicts while typing in Discord, browser, or other apps.
 - **Collapsible Sidebar & POI Waypoints**: In-game overlay mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs, Oil Lakes) with live distance and perimeter waypoints.
 
