@@ -19,24 +19,24 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: linear-gradient(180deg, #2a313f 0%, #1c202a 100%);
-    border: 1.5px solid #475569;
+    background: linear-gradient(180deg, var(--sm-cast-iron-light) 0%, var(--sm-cast-iron) 100%);
+    border: 1.5px solid var(--sm-slate-border);
     border-radius: var(--radius-sm);
     padding: 5px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
 
 .clock-icon-badge {
     width: 20px;
     height: 20px;
     border-radius: 4px;
-    background: #0f172a;
+    background: var(--sm-cast-iron-dark);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--sm-orange);
     font-size: 11px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--sm-slate-border);
 }
 
 .clock-stat-item {
@@ -56,7 +56,7 @@
 
 .clock-stat-val {
     color: #ffffff;
-    background: #0d1017;
+    background: var(--sm-cast-iron-dark);
     padding: 2px 6px;
     border-radius: 3px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -68,19 +68,19 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(180deg, #182622 0%, #101c18 100%);
-    border: 1.5px solid #10b981;
+    background: linear-gradient(180deg, #0d1f19 0%, #071410 100%);
+    border: 1.5px solid var(--sm-botany-green);
     border-radius: var(--radius-sm);
     padding: 4px 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 10px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), 0 0 10px rgba(16, 185, 129, 0.25);
 }
 
 .live-status-bar-pill {
     width: 6px;
     height: 18px;
     border-radius: 3px;
-    background: #10b981;
-    box-shadow: 0 0 8px #10b981;
+    background: var(--sm-botany-green);
+    box-shadow: 0 0 8px var(--sm-botany-green);
     animation: livePulse 2s infinite;
 }
 
@@ -107,7 +107,7 @@
 
 @keyframes livePulse {
     0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; box-shadow: 0 0 14px #10b981; }
+    50% { opacity: 1; box-shadow: 0 0 14px var(--sm-botany-green); }
 }
 
 /* Floating Hover Tooltip */
@@ -372,14 +372,25 @@
     left: 50%;
     transform: translateX(-50%);
     z-index: 40;
-    background: rgba(15, 23, 42, 0.92);
+    background: rgba(19, 23, 32, 0.94);
     backdrop-filter: blur(8px);
-    border: 1.5px solid var(--sm-orange);
+    border: 1.5px solid var(--sm-orange-dark);
     border-radius: var(--radius-sm);
-    padding: 8px 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(255, 122, 0, 0.3);
-    min-width: 280px;
+    padding: 10px 14px 8px 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 14px rgba(255, 122, 0, 0.35);
+    min-width: 290px;
     animation: slideDownFade 0.2s ease-out;
+    overflow: hidden;
+}
+
+.ruler-hud::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--hazard-stripe-orange);
 }
 
 @keyframes slideDownFade {

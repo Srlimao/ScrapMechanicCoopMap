@@ -3,31 +3,54 @@
 :root {
     /* Safety Orange Industrial Palette */
     --sm-orange: #ff7a00;
-    --sm-orange-bright: #ff8e1a;
-    --sm-orange-dark: #d95a00;
-    --sm-orange-deep: #b34700;
+    --sm-orange-bright: #ff941a;
+    --sm-orange-dark: #ea580c;
+    --sm-orange-deep: #c2410c;
     --sm-orange-glow: rgba(255, 122, 0, 0.45);
+    --sm-orange-subtle: rgba(255, 122, 0, 0.12);
+
+    /* Dark Machine Slate & Cast Iron Panels */
+    --sm-cast-iron-dark: #0f1218;
+    --sm-cast-iron: #131720;
+    --sm-cast-iron-light: #1a202c;
+    --sm-slate-panel: #242c3d;
+    --sm-slate-border: #384458;
+    --sm-panel-inset: inset 0 2px 4px rgba(0, 0, 0, 0.8), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
 
     /* Tactical Tablet Metallic & Dark-Slate Chassis */
-    --sm-frame-orange: #f47306;
-    --sm-frame-orange-border: #c95900;
-    --sm-bezel-metal-light: #c8d0db;
-    --sm-bezel-metal-mid: #9ba8b8;
-    --sm-bezel-metal-dark: #6e7c8e;
-    --sm-bezel-shadow: rgba(0, 0, 0, 0.45);
+    --sm-frame-orange: #ff7a00;
+    --sm-frame-orange-border: #c2410c;
+    --sm-bezel-metal-light: #cbd5e1;
+    --sm-bezel-metal-mid: #94a3b8;
+    --sm-bezel-metal-dark: #475569;
+    --sm-bezel-shadow: rgba(0, 0, 0, 0.55);
+
+    /* Warning Hazard Caution Stripes */
+    --hazard-stripe-caution: repeating-linear-gradient(-45deg, #f59e0b 0, #f59e0b 10px, #131720 10px, #131720 20px);
+    --hazard-stripe-orange: repeating-linear-gradient(-45deg, #ff7a00 0, #ff7a00 10px, #131720 10px, #131720 20px);
+    --hazard-stripe-danger: repeating-linear-gradient(-45deg, #ef4444 0, #ef4444 10px, #131720 10px, #131720 20px);
+
+    /* Brass, Copper & Wrench Workshop Accents */
+    --sm-brass: #f59e0b;
+    --sm-copper: #d97706;
+    --sm-bronze: #b45309;
+
+    /* Survival Botany Green */
+    --sm-botany-green: #10b981;
+    --sm-botany-dark: #059669;
 
     /* Surface & Background Panels */
-    --bg-workbench: #12151c;
-    --bg-panel: #222630;
-    --bg-panel-darker: #1a1d26;
-    --bg-panel-border: rgba(255, 255, 255, 0.08);
-    --bg-panel-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+    --bg-workbench: #0f1218;
+    --bg-panel: #1a202c;
+    --bg-panel-darker: #131720;
+    --bg-panel-border: #384458;
+    --bg-panel-shadow: 0 16px 36px rgba(0, 0, 0, 0.75);
 
     /* Card & List Elements */
-    --bg-card: #2c3240;
-    --bg-card-hover: #363d4e;
-    --bg-card-active: #3e4658;
-    --bg-card-poi-active: #383125;
+    --bg-card: #202634;
+    --bg-card-hover: #293142;
+    --bg-card-active: #313b4f;
+    --bg-card-poi-active: #332817;
     --border-card: rgba(255, 255, 255, 0.08);
     --border-card-poi: #d97706;
 
@@ -36,9 +59,9 @@
     --text-main: #f1f5f9;
     --text-muted: #cbd5e1;
     --text-dim: #94a3b8;
-    --text-orange: #ff8e1a;
+    --text-orange: #ff941a;
     --text-cyan: #38bdf8;
-    --text-green: #4ade80;
+    --text-green: #10b981;
     --text-gold: #fbbf24;
     --text-red: #f87171;
 
@@ -48,7 +71,7 @@
     --color-creation: #00e5ff;
     --color-unit: #ef4444;
     --color-harvestable: #10b981;
-    --color-portal: #a855f7;
+    --color-portal: #c084fc;
     --color-player: #00e5ff;
 
     /* Radii */
@@ -61,7 +84,7 @@
 
     /* Screws & Bolts */
     --screw-size: 14px;
-    --screw-head: radial-gradient(circle, #e2e8f0 30%, #94a3b8 70%, #475569 100%);
+    --screw-head: radial-gradient(circle, #f1f5f9 25%, #94a3b8 65%, #334155 100%);
 }
 
 * {
@@ -129,3 +152,43 @@ body, html {
     transform: translateY(-50%) rotate(45deg);
     box-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
 }
+
+/* Stamped Metal Badge Plate */
+.stamped-metal-badge {
+    background: linear-gradient(180deg, #333c4d 0%, #1e2430 100%);
+    border: 1px solid #4a5568;
+    border-radius: var(--radius-xs);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 2px 4px rgba(0, 0, 0, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+}
+
+/* Warning Hazard Stripe Borders */
+.hazard-trim-bottom {
+    position: relative;
+}
+.hazard-trim-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--hazard-stripe-caution);
+    opacity: 0.9;
+}
+
+.hazard-trim-left {
+    border-left: 3.5px solid #f59e0b !important;
+}
+
+/* Inset Cast Iron Bevel Panel */
+.panel-inset-beveled {
+    background: var(--sm-cast-iron);
+    box-shadow: var(--sm-panel-inset);
+    border: 1px solid var(--sm-slate-border);
+    border-radius: var(--radius-sm);
+}
+

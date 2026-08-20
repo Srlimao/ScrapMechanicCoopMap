@@ -2,10 +2,10 @@
 
 .control-panel {
     width: 320px;
-    background: linear-gradient(180deg, #242934 0%, #1a1d26 100%);
-    border: 2px solid #3b4252;
+    background: linear-gradient(180deg, var(--sm-cast-iron-light) 0%, var(--sm-cast-iron) 100%);
+    border: 2px solid var(--sm-slate-border);
     border-radius: var(--radius-lg);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -43,7 +43,7 @@
     z-index: 45;
     width: 22px;
     height: 52px;
-    background: linear-gradient(180deg, #2a3140 0%, #1a1e28 100%);
+    background: linear-gradient(180deg, #242c3d 0%, #161c28 100%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-left: none;
     border-radius: 0 6px 6px 0;
@@ -52,16 +52,16 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.6);
     transition: all 0.2s ease, left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
 }
 
 .sidebar-toggle-tab:hover {
-    background: linear-gradient(180deg, #364154 0%, #222938 100%);
-    color: #00e5ff;
+    background: linear-gradient(180deg, #2f3a50 0%, #1d2535 100%);
+    color: var(--sm-orange);
     width: 26px;
-    box-shadow: 0 0 12px rgba(0, 229, 255, 0.4);
+    box-shadow: 0 0 12px rgba(255, 122, 0, 0.4);
 }
 
 .sidebar-toggle-tab i {
@@ -81,15 +81,16 @@
     width: 6px;
 }
 .control-panel::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 3px;
 }
 .control-panel::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: #384458;
     border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 .control-panel::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: var(--sm-orange);
 }
 
 /* Corner Screws on Sidebar */
@@ -98,9 +99,9 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: radial-gradient(circle, #cbd5e1 30%, #64748b 100%);
-    border: 1px solid #1e293b;
-    box-shadow: inset 0 1px 1px #fff, 0 1px 2px #000;
+    background: radial-gradient(circle, #f1f5f9 20%, #94a3b8 60%, #334155 100%);
+    border: 1px solid #0f1218;
+    box-shadow: inset 0 1px 1px #fff, 0 1px 3px #000;
 }
 .pcs-tl { top: 6px; left: 6px; }
 .pcs-tr { top: 6px; right: 6px; }
@@ -325,26 +326,26 @@
 
 .layer-card {
     background: var(--bg-card);
-    border: 1px solid var(--border-card);
+    border: 1px solid var(--sm-slate-border);
     border-radius: var(--radius-sm);
     padding: 8px 10px;
     display: flex;
     flex-direction: column;
     gap: 6px;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .layer-card:hover {
     background: var(--bg-card-hover);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.18);
 }
 
 /* Active Highlighted Layer Card (Like POI in reference) */
 .layer-card.active-poi {
-    background: linear-gradient(135deg, #3d3424 0%, #2f2719 100%);
-    border: 1.5px solid #f59e0b;
-    box-shadow: 0 0 12px rgba(245, 158, 11, 0.25), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, #332817 0%, #221a0d 100%);
+    border: 1.5px solid var(--sm-brass);
+    box-shadow: 0 0 14px rgba(245, 158, 11, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.15);
 }
 
 .layer-card-header {
@@ -403,11 +404,12 @@
 
 /* Sub-Missions / POI Group Accordion */
 .sub-missions-card {
-    background: #252a35;
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    background: var(--sm-cast-iron-dark);
+    border: 1px solid rgba(245, 158, 11, 0.35);
     border-radius: var(--radius-sm);
     overflow: hidden;
     margin-top: 6px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .sub-missions-header {
@@ -415,7 +417,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 6px 10px;
-    background: rgba(245, 158, 11, 0.12);
+    background: rgba(245, 158, 11, 0.14);
     font-size: 10.5px;
     font-weight: 800;
     color: #fbbf24;
@@ -424,10 +426,11 @@
     cursor: pointer;
     user-select: none;
     transition: background 0.15s;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.2);
 }
 
 .sub-missions-header:hover {
-    background: rgba(245, 158, 11, 0.22);
+    background: rgba(245, 158, 11, 0.24);
 }
 
 .sub-missions-header .caret-icon {
@@ -483,16 +486,18 @@
     flex-direction: column;
     gap: 2px;
     padding: 6px 8px;
-    background: #1a1d26;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--sm-cast-iron);
+    border: 1px solid var(--sm-slate-border);
     border-radius: var(--radius-xs);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .meta-label {
-    font-size: 9.5px;
+    font-size: 9px;
     color: var(--text-dim);
     font-family: 'JetBrains Mono', monospace;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .meta-value {
