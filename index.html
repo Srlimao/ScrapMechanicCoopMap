@@ -466,13 +466,62 @@
                         <main class="map-viewport" id="mapViewport">
                             <canvas id="mapCanvas"></canvas>
 
-                            <!-- Map Processing Spinner Overlay -->
+                            <!-- Multi-Stage Industrial Save Loading & Atlas Stitching HUD -->
                             <div class="map-loading-overlay" id="mapLoadingOverlay" style="display:none;">
-                                <div class="loading-spinner-box">
-                                    <div class="spinner-ring"></div>
-                                    <div class="loading-text-wrap">
-                                        <div class="loading-title" id="loadingTitle">PROCESSING WORLD SAVE...</div>
-                                        <div class="loading-subtitle" id="loadingSubtitle">Decompressing LZ4 bitstream & stitching atlas cells</div>
+                                <div class="loading-industrial-card">
+                                    <div class="loading-card-hazard-rim"></div>
+                                    <div class="loading-header">
+                                        <div class="loading-title-wrap">
+                                            <div class="spinner-ring" id="loadingSpinner"></div>
+                                            <div>
+                                                <div class="loading-title" id="loadingTitle">PROCESSING WORLD SAVE...</div>
+                                                <div class="loading-subtitle" id="loadingSubtitle">Decompressing LZ4 bitstream & stitching atlas cells</div>
+                                            </div>
+                                        </div>
+                                        <div class="loading-save-badge stamped-metal-badge" id="loadingSaveName">SURVIVAL SAVE</div>
+                                    </div>
+
+                                    <!-- 4-Stage Diagnostic Pipeline -->
+                                    <div class="loading-stages-track">
+                                        <div class="loading-stage-item active" id="loadingStage1">
+                                            <div class="loading-stage-bullet"><i class="fa-solid fa-database"></i></div>
+                                            <div class="loading-stage-content">
+                                                <span class="loading-stage-num">STAGE 01</span>
+                                                <span class="loading-stage-name">SQLite Save Header</span>
+                                            </div>
+                                        </div>
+                                        <div class="loading-stage-item" id="loadingStage2">
+                                            <div class="loading-stage-bullet"><i class="fa-solid fa-file-zipper"></i></div>
+                                            <div class="loading-stage-content">
+                                                <span class="loading-stage-num">STAGE 02</span>
+                                                <span class="loading-stage-name">LZ4 Bitstream Decode</span>
+                                            </div>
+                                        </div>
+                                        <div class="loading-stage-item" id="loadingStage3">
+                                            <div class="loading-stage-bullet"><i class="fa-solid fa-map-location-dot"></i></div>
+                                            <div class="loading-stage-content">
+                                                <span class="loading-stage-num">STAGE 03</span>
+                                                <span class="loading-stage-name">Atlas Cell Stitching</span>
+                                            </div>
+                                        </div>
+                                        <div class="loading-stage-item" id="loadingStage4">
+                                            <div class="loading-stage-bullet"><i class="fa-solid fa-microchip"></i></div>
+                                            <div class="loading-stage-content">
+                                                <span class="loading-stage-num">STAGE 04</span>
+                                                <span class="loading-stage-name">Entity Spatial Indexing</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Industrial Striped Progress Bar -->
+                                    <div class="loading-progress-section">
+                                        <div class="loading-progress-info">
+                                            <span class="loading-counter-text monospace" id="loadingCounter">Initializing diagnostic pipeline...</span>
+                                            <span class="loading-percent-text monospace" id="loadingProgressPercent">0%</span>
+                                        </div>
+                                        <div class="striped-progress-track">
+                                            <div class="striped-progress-fill" id="loadingProgressBar" style="width: 0%;"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

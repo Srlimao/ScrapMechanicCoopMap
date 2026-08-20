@@ -2,7 +2,7 @@
 import { state, notifyStateChange } from '../../core/state.js';
 import { DEFAULT_SURVIVAL_POIS, CELL_SIZE, MAP_MIN_X, MAP_MAX_X, MAP_MIN_Y, MAP_MAX_Y } from '../../core/constants.js';
 import { showToast } from '../../ui/toasts.js';
-import { showLoadingOverlay, hideLoadingOverlay } from '../../ui/modals.js';
+import { showLoadingOverlay, updateLoadingStage, hideLoadingOverlay } from '../../ui/modals.js';
 import { setTerrainImageSource } from '../map_renderer/layer_terrain.js';
 import { jumpToLocation } from '../map_renderer/camera.js';
 
@@ -64,15 +64,12 @@ function safeDecode(val) {
 
 export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAutoSync = false) {
     if (!isAutoSync) {
-        showLoadingOverlay('INITIALIZING SQLITE WASM...', `Decoding ${filename}...`);
+        showLoadingOverlay('STAGE 01: SQLITE HEADER', `Verifying SQLite database structure for ${filename}...`, 1, 15);
     }
     const SQL = await initSqlEngine();
     if (!SQL) throw new Error("SQL.js WASM engine not loaded.");
     const uuidMap = await loadAssetUuidMap();
 
-    if (!isAutoSync) {
-        showLoadingOverlay('PARSING SAVE ENTITIES...', 'Extracting RigidBodies, Units, Harvestables, and POIs...');
-    }
     const Uints = new Uint8Array(arrayBuffer);
     const db = new SQL.Database(Uints);
 
@@ -85,6 +82,10 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
             gameInfo = { version: row[0], flags: row[1], seed: row[2], gametick: row[3] };
         }
     } catch (e) {}
+
+    if (!isAutoSync) {
+        updateLoadingStage(2, 40, 'Decompressing Lua bitstreams & shapes...', 'Parsing RigidBodies, Containers & Units', 'STAGE 02: LZ4 DECOMPRESS', filename);
+    }
 
     // 2. RigidBody Creations
     const creations = [];
@@ -440,7 +441,9 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
     });
 
     // 6. Terrain Atlas Stitching
-    showLoadingOverlay('STITCHING TERRAIN ATLAS...', `Rendering world map for seed ${gameInfo.seed || 'N/A'}...`);
+    if (!isAutoSync) {
+        updateLoadingStage(3, 70, 'Stitching 12,288 world cells...', `Rendering procedural atlas for seed ${gameInfo.seed || 'N/A'}`, 'STAGE 03: ATLAS STITCHING', filename);
+    }
     let terrainRendered = false;
     if (window.TerrainLoader) {
         try {
@@ -458,6 +461,10 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
     }
 
     db.close();
+
+    if (!isAutoSync) {
+        updateLoadingStage(4, 95, `Indexed ${creations.length} creations, ${units.length} bots, ${pois.length} POIs`, 'Registering spatial coordinates', 'STAGE 04: SPATIAL INDEX', filename);
+    }
 
     state.mapData = {
         gameInfo, pois, schematics, creations, units, harvestables, portals: [],

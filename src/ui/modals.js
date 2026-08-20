@@ -41,25 +41,55 @@ export function setupModals(elements) {
     });
 }
 
-export function showLoadingOverlay(title = 'PROCESSING MAP...', subtitle = 'Please wait...') {
+export function showLoadingOverlay(title = 'PROCESSING MAP...', subtitle = 'Please wait...', stage = 1, percent = 0) {
     const overlay = document.getElementById('mapLoadingOverlay');
-    const titleEl = document.getElementById('loadingTitle');
-    const subEl = document.getElementById('loadingSubtitle');
-
-    if (titleEl) titleEl.textContent = title;
-    if (subEl) subEl.textContent = subtitle;
+    updateLoadingStage(stage, percent, 'Initializing diagnostic pipeline...', subtitle, title);
     if (overlay) {
         overlay.style.display = 'flex';
         overlay.style.opacity = '1';
     }
 }
 
+export function updateLoadingStage(stage = 1, percent = 0, counter = '', subtitle = '', title = '', saveName = '') {
+    const titleEl = document.getElementById('loadingTitle');
+    const subEl = document.getElementById('loadingSubtitle');
+    const barEl = document.getElementById('loadingProgressBar');
+    const percentEl = document.getElementById('loadingProgressPercent');
+    const counterEl = document.getElementById('loadingCounter');
+    const saveNameEl = document.getElementById('loadingSaveName');
+
+    if (title && titleEl) titleEl.textContent = title;
+    if (subtitle && subEl) subEl.textContent = subtitle;
+    if (counter && counterEl) counterEl.textContent = counter;
+    if (saveName && saveNameEl) saveNameEl.textContent = saveName.toUpperCase();
+
+    const clampedPercent = Math.min(100, Math.max(0, Math.round(percent)));
+    if (barEl) barEl.style.width = `${clampedPercent}%`;
+    if (percentEl) percentEl.textContent = `${clampedPercent}%`;
+
+    // Update 4 stage bullet items
+    for (let i = 1; i <= 4; i++) {
+        const item = document.getElementById(`loadingStage${i}`);
+        if (!item) continue;
+        if (i < stage) {
+            item.className = 'loading-stage-item completed';
+        } else if (i === stage) {
+            item.className = 'loading-stage-item active';
+        } else {
+            item.className = 'loading-stage-item';
+        }
+    }
+}
+
 export function hideLoadingOverlay() {
     const overlay = document.getElementById('mapLoadingOverlay');
     if (overlay) {
-        overlay.style.opacity = '0';
+        updateLoadingStage(4, 100, 'Processing complete', 'Atlas ready');
         setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 250);
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 250);
+        }, 150);
     }
 }

@@ -2,7 +2,7 @@
 import { state, notifyStateChange } from '../../core/state.js';
 import { setTerrainImageSource } from '../map_renderer/layer_terrain.js';
 import { showToast } from '../../ui/toasts.js';
-import { showLoadingOverlay, hideLoadingOverlay } from '../../ui/modals.js';
+import { showLoadingOverlay, updateLoadingStage, hideLoadingOverlay } from '../../ui/modals.js';
 
 export function setupSeedGeneratorControls(elements) {
     const seedInput = document.getElementById('seedInput');
@@ -52,7 +52,7 @@ export function setupSeedGeneratorControls(elements) {
 export async function generateMapFromSeed(seed, statusEl = null) {
     console.log(`[SeedGen] Generating terrain for seed: ${seed}`);
     if (statusEl) statusEl.textContent = `Generating seed ${seed}...`;
-    showLoadingOverlay('GENERATING PROCEDURAL TERRAIN...', `Computing 12,288 world cells for seed ${seed}...`);
+    showLoadingOverlay('STAGE 01: SEED VERIFICATION', `Computing 12,288 world cells for seed ${seed}...`, 1, 20);
 
     const cachedUrl = sessionStorage.getItem('sm_cached_terrain_' + seed);
     if (cachedUrl) {
@@ -66,6 +66,8 @@ export async function generateMapFromSeed(seed, statusEl = null) {
 
     try {
         let result = null;
+
+        updateLoadingStage(2, 45, `Querying procedural pipeline for seed ${seed}...`, 'Synthesizing tile layout matrix', 'STAGE 02: MATRIX SYNTHESIS', `SEED ${seed}`);
 
         // 1. Electron IPC Call
         if (window.electronAPI && typeof window.electronAPI.generateTerrain === 'function') {
@@ -83,11 +85,12 @@ export async function generateMapFromSeed(seed, statusEl = null) {
         }
 
         if (result && result.cells && window.TerrainLoader) {
-            showLoadingOverlay('STITCHING CELL ATLAS...', `Stitching official tiles for seed ${seed}...`);
+            updateLoadingStage(3, 75, 'Stitching 12,288 official atlas cells...', `Blending tile boundaries for seed ${seed}`, 'STAGE 03: ATLAS STITCHING', `SEED ${seed}`);
             const res = await window.TerrainLoader.renderTerrainFromCells(result.cells, seed, {
                 blendEdges: state.terrainEdgeBlend !== false
             });
             if (res && res.dataUrl) {
+                updateLoadingStage(4, 95, `Rendered ${res.renderedCells || 12288} cells`, 'Finalizing texture composite', 'STAGE 04: TEXTURE COMPOSITE', `SEED ${seed}`);
                 setTerrainImageSource(res.dataUrl, seed);
                 sessionStorage.setItem('sm_cached_terrain_' + seed, res.dataUrl);
                 updateSeedUI(seed, res.renderedCells || 12288, statusEl, result.cells);
