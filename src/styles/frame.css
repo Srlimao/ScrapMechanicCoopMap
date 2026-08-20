@@ -1,157 +1,58 @@
-/* Physical Scrap Mechanic Tactical Tablet Frame, Bezel & Hardware Accents */
+/* Scrap Mechanic Clean Survival Map Frame & Bezel */
 
 .tablet-wrapper {
     flex: 1;
     display: flex;
     position: relative;
-    padding: 14px 20px 18px 20px;
+    padding: 4px 6px 6px 6px;
     overflow: hidden;
-    gap: 16px;
+    gap: 8px;
     align-items: stretch;
 }
 
-/* Outer Safety-Orange Industrial Tablet Housing */
+/* Utilitarian Scrap Mechanic Map Housing */
 .tablet-outer-frame {
     flex: 1;
     display: flex;
     position: relative;
-    background: linear-gradient(180deg, #ff8c1a 0%, #ea580c 45%, #c2410c 100%);
-    border: 3.5px solid #9a3412;
-    border-radius: var(--radius-xl);
-    padding: 16px 18px;
-    box-shadow: 
-        0 24px 60px rgba(0, 0, 0, 0.85),
-        inset 0 2px 4px rgba(255, 255, 255, 0.45),
-        inset 0 -5px 10px rgba(0, 0, 0, 0.55);
+    background: #11141c;
+    border: 1.5px solid #2d3748;
+    border-radius: var(--radius-md);
+    padding: 2px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
     min-height: 0;
 }
 
-/* Rugged Industrial Corner Shock Bumpers */
+/* Subtle Corner Trim Accents */
 .tablet-bumper {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    background: linear-gradient(135deg, #262e3d 0%, #11151c 100%);
-    border: 2px solid #0f1218;
-    z-index: 30;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    pointer-events: none;
+    display: none;
 }
 
-.bumper-tl {
-    top: -2px;
-    left: -2px;
-    border-radius: 20px 4px 12px 4px;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.bumper-tr {
-    top: -2px;
-    right: -2px;
-    border-radius: 4px 20px 4px 12px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.bumper-bl {
-    bottom: -2px;
-    left: -2px;
-    border-radius: 4px 12px 4px 20px;
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.bumper-br {
-    bottom: -2px;
-    right: -2px;
-    border-radius: 12px 4px 20px 4px;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Embossed Side Tactile Grip Ridges */
+/* Tactile Grips & Hazard Rims */
 .tablet-grip {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 6px;
-    height: 120px;
-    background: repeating-linear-gradient(
-        180deg,
-        #11151c 0px,
-        #11151c 4px,
-        #2d3748 4px,
-        #2d3748 8px
-    );
-    border: 1px solid #0f1218;
-    border-radius: 3px;
-    z-index: 25;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5);
-    pointer-events: none;
+    display: none;
 }
 
-.grip-left { left: 4px; }
-.grip-right { right: 4px; }
-
-/* Hazard Caution Warning Rims */
 .tablet-hazard-rim {
-    position: absolute;
-    left: 40px;
-    right: 40px;
-    height: 3px;
-    background: var(--hazard-stripe-orange);
-    opacity: 0.85;
-    z-index: 25;
-    pointer-events: none;
-    border-radius: 2px;
+    display: none;
 }
 
-.rim-top { top: 4px; }
-.rim-bottom { bottom: 4px; }
-
-/* Machined Metal Screen Bezel (Brushed Gunmetal finish) */
+/* Minimalist Inner Screen Bezel */
 .tablet-inner-bezel {
     flex: 1;
     display: flex;
     position: relative;
-    background: linear-gradient(145deg, #cbd5e1 0%, #94a3b8 35%, #475569 100%);
-    border: 2.5px solid #334155;
-    border-radius: var(--radius-lg);
-    padding: 14px;
-    box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.6),
-        inset 0 2px 3px rgba(255, 255, 255, 0.75),
-        inset 0 -3px 6px rgba(0, 0, 0, 0.6);
+    background: #090c12;
+    border: 1px solid #1a202c;
+    border-radius: var(--radius-sm);
+    padding: 0;
     min-height: 0;
 }
 
-/* Corner Bezel Socket Screws */
+/* Bezel Screws */
 .bezel-screw {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #f8fafc 20%, #94a3b8 60%, #1e293b 100%);
-    border: 1.5px solid #0f172a;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9), 0 2px 5px rgba(0, 0, 0, 0.7);
-    z-index: 25;
+    display: none;
 }
-.bezel-screw::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    right: 20%;
-    height: 2px;
-    background: #0f172a;
-    transform: translateY(-50%) rotate(45deg);
-    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
-}
-.screw-tl { top: 6px; left: 6px; }
-.screw-tr { top: 6px; right: 6px; }
-.screw-bl { bottom: 6px; left: 6px; }
-.screw-br { bottom: 6px; right: 6px; }
 
 /* Inset Screen Surface */
 .tablet-screen {
@@ -159,11 +60,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #0b0e14;
-    border-radius: var(--radius-md);
+    background: #090c12;
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    box-shadow: inset 0 4px 20px rgba(0, 0, 0, 0.95);
-    border: 2px solid #242c3d;
     min-height: 0;
 }
 
@@ -173,8 +72,8 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 45%;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 60%, transparent 100%);
+    height: 30%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
     pointer-events: none;
     z-index: 32;
 }
@@ -197,14 +96,7 @@
 
 /* Top Optical Sensor Turret Module */
 .tablet-optic-turret {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 40;
+    display: none;
 }
 
 .turret-housing {
