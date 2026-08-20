@@ -20,25 +20,23 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(17, 20, 28, 0.88);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-main);
     border-radius: var(--radius-xs);
     padding: 3px 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .clock-icon-badge {
     width: 18px;
     height: 18px;
-    border-radius: 3px;
-    background: #0f1218;
+    border-radius: 2px;
+    background: #14171a;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--sm-orange);
     font-size: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-subtle);
 }
 
 .clock-stat-item {
@@ -58,10 +56,10 @@
 
 .clock-stat-val {
     color: #ffffff;
-    background: #0f1218;
+    background: #14171a;
     padding: 1px 5px;
-    border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 2px;
+    border: 1px solid var(--border-subtle);
 }
 
 /* In-Screen Live Tracking Status Banner */
@@ -70,12 +68,10 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: rgba(7, 20, 16, 0.88);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(16, 185, 129, 0.4);
+    background: var(--bg-panel);
+    border: 1px solid var(--sm-botany-green);
     border-radius: var(--radius-xs);
     padding: 3px 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .live-status-bar-pill {
@@ -83,7 +79,6 @@
     height: 14px;
     border-radius: 2px;
     background: var(--sm-botany-green);
-    box-shadow: 0 0 6px var(--sm-botany-green);
     animation: livePulse 2s infinite;
 }
 
@@ -188,14 +183,12 @@
     align-items: center;
     gap: 4px;
     padding: 3px 7px;
-    background: rgba(17, 20, 28, 0.88);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-main);
     border-radius: var(--radius-xs);
     font-size: 10.5px;
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-muted);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .coord-label {
@@ -212,18 +205,16 @@
     align-items: center;
     gap: 8px;
     z-index: 30;
-    background: rgba(17, 20, 28, 0.88);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-main);
     border-radius: var(--radius-xs);
     padding: 3px 8px;
 }
 
 .scale-bar {
     width: 48px;
-    height: 2.5px;
+    height: 2px;
     background: var(--sm-orange);
-    box-shadow: 0 0 3px var(--sm-orange);
 }
 
 .scale-text {

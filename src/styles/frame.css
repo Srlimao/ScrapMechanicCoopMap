@@ -1,37 +1,34 @@
-/* Scrap Mechanic Iconic Industrial Tablet Chassis & Bezel */
+/* Scrap Mechanic Clean Slate Map Frame & Viewport */
 
 .tablet-wrapper {
     flex: 1;
     display: flex;
     position: relative;
-    padding: 8px 12px 10px 12px;
+    padding: 6px 8px 8px 8px;
     overflow: hidden;
-    gap: 10px;
+    gap: 8px;
     align-items: stretch;
 }
 
-/* Iconic Safety-Orange Scrap Mechanic Chassis */
+/* Clean Solid Dark Gray Frame */
 .tablet-outer-frame {
     flex: 1;
     display: flex;
     position: relative;
-    background: linear-gradient(180deg, #ff8c1a 0%, #ea580c 45%, #c2410c 100%);
-    border: 2.5px solid #9a3412;
-    border-radius: var(--radius-lg);
-    padding: 6px 8px;
-    box-shadow: 
-        0 14px 35px rgba(0, 0, 0, 0.75),
-        inset 0 2px 3px rgba(255, 255, 255, 0.4),
-        inset 0 -3px 6px rgba(0, 0, 0, 0.5);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-main);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+    box-shadow: none;
     min-height: 0;
 }
 
-/* Subtle Corner Trim Accents */
+/* Subtle Corner Trim Accents (Hidden for Clean Slate) */
 .tablet-bumper {
     display: none;
 }
 
-/* Tactile Grips & Hazard Rims */
+/* Tactile Grips & Hazard Rims (Hidden for Clean Slate) */
 .tablet-grip {
     display: none;
 }
@@ -40,51 +37,23 @@
     display: none;
 }
 
-/* Machined Cast-Iron Inner Screen Bezel */
+/* Clean Inner Screen Bezel */
 .tablet-inner-bezel {
     flex: 1;
     display: flex;
     position: relative;
-    background: linear-gradient(145deg, #1e2430 0%, #131720 100%);
-    border: 1.5px solid #334155;
-    border-radius: var(--radius-md);
-    padding: 4px;
-    box-shadow: 
-        0 4px 10px rgba(0, 0, 0, 0.5),
-        inset 0 2px 4px rgba(0, 0, 0, 0.8),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    background: var(--bg-workbench);
+    border: none;
+    border-radius: var(--radius-xs);
+    padding: 0;
+    box-shadow: none;
     min-height: 0;
 }
 
-/* Corner Hex Socket Screws */
+/* Corner Hex Socket Screws (Hidden for Clean Slate) */
 .bezel-screw {
-    display: block;
-    position: absolute;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: radial-gradient(circle, #e2e8f0 20%, #64748b 65%, #1e293b 100%);
-    border: 1px solid #0f172a;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 1px 3px rgba(0, 0, 0, 0.6);
-    z-index: 25;
+    display: none;
 }
-
-.bezel-screw::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    right: 20%;
-    height: 1.5px;
-    background: #0f172a;
-    transform: translateY(-50%) rotate(45deg);
-    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
-}
-
-.screw-tl { top: 2px; left: 2px; }
-.screw-tr { top: 2px; right: 2px; }
-.screw-bl { bottom: 2px; left: 2px; }
-.screw-br { bottom: 2px; right: 2px; }
 
 /* Inset Screen Surface */
 .tablet-screen {
@@ -92,38 +61,20 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #090c12;
-    border-radius: var(--radius-sm);
+    background: #14171a;
+    border-radius: var(--radius-xs);
     overflow: hidden;
     min-height: 0;
 }
 
 /* Glass Glare Specular Reflection Overlay */
 .screen-glass-glare {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 30%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 32;
+    display: none;
 }
 
 /* Subtle Tactical LCD / CRT Scanline Texture */
 .screen-scanlines {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.08) 0px,
-        rgba(0, 0, 0, 0.08) 1px,
-        transparent 1px,
-        transparent 2px
-    );
-    pointer-events: none;
-    z-index: 31;
-    opacity: 0.8;
+    display: none;
 }
 
 /* Top Optical Sensor Turret Module */
