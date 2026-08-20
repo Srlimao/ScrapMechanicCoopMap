@@ -1,55 +1,55 @@
-/* Scrap Mechanic Tactical Map - Clean Slate Utilitarian Base Design System */
+/* Scrap Mechanic Tactical Map - Barebones Default HTML Layout Styling */
 
 :root {
-    /* Core Safety Orange & Neutral Dark Gray Palette */
+    /* Safety Orange Accent */
     --sm-orange: #ff7a00;
-    --sm-orange-hover: #ff8c1a;
-    --sm-orange-active: #e06900;
-    --sm-orange-subtle: rgba(255, 122, 0, 0.12);
+    --sm-orange-hover: #e06900;
+    --sm-orange-active: #c2410c;
+    --sm-orange-subtle: rgba(255, 122, 0, 0.1);
 
-    /* Solid Dark Gray Panels & Surfaces */
-    --bg-workbench: #14171a;
-    --bg-panel: #1a1d21;
-    --bg-panel-darker: #16181b;
-    --bg-panel-header: #20242a;
-    --bg-panel-border: #374151;
-    --border-main: #374151;
-    --border-subtle: #2b303a;
+    /* Barebones Clean Light/Neutral Palette */
+    --bg-workbench: #f8fafc;
+    --bg-panel: #ffffff;
+    --bg-panel-darker: #f1f5f9;
+    --bg-panel-header: #ffffff;
+    --bg-panel-border: #cbd5e1;
+    --border-main: #cbd5e1;
+    --border-subtle: #e2e8f0;
 
     /* Card & Control Elements */
-    --bg-card: #22262c;
-    --bg-card-hover: #292e36;
-    --bg-card-active: #313742;
-    --bg-card-poi-active: #2e261b;
-    --border-card: #374151;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-card-active: #e2e8f0;
+    --bg-card-poi-active: #fff7ed;
+    --border-card: #e2e8f0;
     --border-card-poi: #ff7a00;
 
-    /* Text Colors */
-    --text-bright: #ffffff;
-    --text-main: #f3f4f6;
-    --text-muted: #d1d5db;
-    --text-dim: #9ca3af;
-    --text-orange: #ff7a00;
-    --text-cyan: #38bdf8;
-    --text-green: #10b981;
-    --text-gold: #f59e0b;
-    --text-red: #ef4444;
+    /* High-Contrast Black & Slate Typography */
+    --text-bright: #000000;
+    --text-main: #000000;
+    --text-muted: #334155;
+    --text-dim: #64748b;
+    --text-orange: #ea580c;
+    --text-cyan: #0284c7;
+    --text-green: #16a34a;
+    --text-gold: #d97706;
+    --text-red: #dc2626;
 
     /* Category Colors */
-    --color-poi: #f59e0b;
-    --color-schematic: #38bdf8;
-    --color-creation: #00e5ff;
-    --color-unit: #ef4444;
-    --color-harvestable: #10b981;
-    --color-portal: #a855f7;
-    --color-player: #00e5ff;
+    --color-poi: #d97706;
+    --color-schematic: #0284c7;
+    --color-creation: #0891b2;
+    --color-unit: #dc2626;
+    --color-harvestable: #16a34a;
+    --color-portal: #9333ea;
+    --color-player: #0284c7;
 
-    /* Crisp Rectangular Radii */
+    /* Crisp Standard Radii */
     --radius-xs: 2px;
-    --radius-sm: 3px;
-    --radius-md: 4px;
-    --radius-lg: 6px;
-    --radius-xl: 8px;
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --radius-xl: 14px;
     --radius-full: 9999px;
 }
 
@@ -57,7 +57,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -70,22 +70,20 @@ body, html {
     user-select: none;
 }
 
-/* Custom Scrollbars for Industrial Panels */
+/* Standard Clean Scrollbars */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
+    background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-    background: #475569;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #cbd5e1;
+    border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--sm-orange);
+    background: #94a3b8;
 }
 
 .monospace,

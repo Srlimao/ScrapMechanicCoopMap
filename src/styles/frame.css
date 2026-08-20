@@ -1,34 +1,34 @@
-/* Scrap Mechanic Clean Slate Map Frame & Viewport */
+/* Scrap Mechanic Iconic Tablet Frame & Map Viewport */
 
 .tablet-wrapper {
     flex: 1;
     display: flex;
     position: relative;
-    padding: 6px 8px 8px 8px;
+    padding: 10px 12px 10px 12px;
     overflow: hidden;
-    gap: 8px;
+    gap: 10px;
     align-items: stretch;
 }
 
-/* Clean Solid Dark Gray Frame */
+/* Iconic Safety-Orange Scrap Mechanic Chassis */
 .tablet-outer-frame {
     flex: 1;
     display: flex;
     position: relative;
-    background: var(--bg-panel);
-    border: 1px solid var(--border-main);
-    border-radius: var(--radius-sm);
-    padding: 2px;
-    box-shadow: none;
+    background: linear-gradient(180deg, #ff8c1a 0%, #ea580c 45%, #c2410c 100%);
+    border: 2.5px solid #9a3412;
+    border-radius: var(--radius-lg);
+    padding: 6px 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     min-height: 0;
 }
 
-/* Subtle Corner Trim Accents (Hidden for Clean Slate) */
+/* Subtle Corner Trim Accents (Hidden) */
 .tablet-bumper {
     display: none;
 }
 
-/* Tactile Grips & Hazard Rims (Hidden for Clean Slate) */
+/* Tactile Grips & Hazard Rims (Hidden) */
 .tablet-grip {
     display: none;
 }
@@ -37,23 +37,47 @@
     display: none;
 }
 
-/* Clean Inner Screen Bezel */
+/* Machined Cast-Iron Inner Screen Bezel */
 .tablet-inner-bezel {
     flex: 1;
     display: flex;
     position: relative;
-    background: var(--bg-workbench);
-    border: none;
-    border-radius: var(--radius-xs);
-    padding: 0;
-    box-shadow: none;
+    background: linear-gradient(145deg, #1e2430 0%, #131720 100%);
+    border: 1.5px solid #334155;
+    border-radius: var(--radius-md);
+    padding: 4px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
     min-height: 0;
 }
 
-/* Corner Hex Socket Screws (Hidden for Clean Slate) */
+/* Corner Hex Socket Screws */
 .bezel-screw {
-    display: none;
+    display: block;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #e2e8f0 20%, #64748b 65%, #1e293b 100%);
+    border: 1px solid #0f172a;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 1px 2px rgba(0, 0, 0, 0.6);
+    z-index: 25;
 }
+
+.bezel-screw::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    right: 20%;
+    height: 1.5px;
+    background: #0f172a;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.screw-tl { top: 2px; left: 2px; }
+.screw-tr { top: 2px; right: 2px; }
+.screw-bl { bottom: 2px; left: 2px; }
+.screw-br { bottom: 2px; right: 2px; }
 
 /* Inset Screen Surface */
 .tablet-screen {
@@ -61,7 +85,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #14171a;
+    background: #0b0e14;
     border-radius: var(--radius-xs);
     overflow: hidden;
     min-height: 0;
@@ -79,58 +103,44 @@
 
 /* Top Optical Sensor Turret Module */
 .tablet-optic-turret {
-    display: none;
+    display: flex;
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 40;
 }
 
 .turret-housing {
-    width: 130px;
-    height: 42px;
-    background: linear-gradient(180deg, #d97706 0%, #b45309 55%, #78350f 100%);
-    border: 2px solid #451a03;
-    border-radius: 14px 14px 6px 6px;
+    width: 90px;
+    height: 22px;
+    background: linear-gradient(180deg, #d97706 0%, #b45309 60%, #78350f 100%);
+    border: 1.5px solid #451a03;
+    border-radius: 6px 6px 3px 3px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7), inset 0 2px 3px rgba(255, 255, 255, 0.5);
-    gap: 12px;
-    padding: 0 12px;
+    gap: 6px;
+    padding: 0 8px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
 }
 
 .turret-lens-dome {
-    width: 32px;
-    height: 32px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #4ade80 0%, #10b981 35%, #059669 70%, #022c22 100%);
-    border: 2px solid #1c1917;
-    box-shadow: 
-        0 0 16px #10b981,
-        inset 0 2px 4px rgba(255, 255, 255, 0.85),
-        inset 0 -2px 6px rgba(0, 0, 0, 0.85);
+    background: radial-gradient(circle at 35% 35%, #4ade80 0%, #10b981 40%, #059669 75%, #022c22 100%);
+    border: 1px solid #1c1917;
+    box-shadow: 0 0 6px #10b981;
     position: relative;
-    animation: turretPulse 2.5s infinite ease-in-out;
-}
-
-.turret-lens-dome::after {
-    content: '';
-    position: absolute;
-    top: 6px;
-    left: 8px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
 }
 
 .turret-sensor-slit {
-    width: 22px;
-    height: 14px;
+    width: 10px;
+    height: 6px;
     background: #0f172a;
     border: 1px solid #334155;
-    border-radius: 3px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
-    position: relative;
+    border-radius: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
