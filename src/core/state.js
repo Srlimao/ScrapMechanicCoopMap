@@ -66,6 +66,7 @@ export const state = {
     searchResults: [],
     rulerMode: false,
     rulerPoints: [],
+    customBookmarks: [],
 
     // Tactical Layers Visibility
     layers: {

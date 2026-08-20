@@ -72,29 +72,61 @@ export function setupCameraControls(canvas, viewport, requestRender) {
     });
 }
 
-export function jumpToLocation(worldX, worldY, targetZoom = null) {
-    state.cameraX = worldX;
-    state.cameraY = worldY;
-    if (targetZoom !== null) state.zoom = targetZoom;
+let activeAnimationId = null;
+
+export function jumpToLocation(worldX, worldY, targetZoom = null, durationMs = 380) {
+    if (activeAnimationId) {
+        cancelAnimationFrame(activeAnimationId);
+        activeAnimationId = null;
+    }
+
+    const startX = state.cameraX;
+    const startY = state.cameraY;
+    const startZoom = state.zoom;
+    const endZoom = targetZoom !== null ? targetZoom : startZoom;
+    const startTime = performance.now();
+
     state.followPlayer = false;
-    notifyStateChange('camera_jump', { x: worldX, y: worldY });
+
+    // Ease-out cubic formula
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    function step(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / durationMs);
+        const ease = easeOutCubic(progress);
+
+        state.cameraX = startX + (worldX - startX) * ease;
+        state.cameraY = startY + (worldY - startY) * ease;
+        state.zoom = startZoom + (endZoom - startZoom) * ease;
+
+        notifyStateChange('camera_pan', { x: state.cameraX, y: state.cameraY, zoom: state.zoom });
+
+        if (progress < 1) {
+            activeAnimationId = requestAnimationFrame(step);
+        } else {
+            activeAnimationId = null;
+            state.cameraX = worldX;
+            state.cameraY = worldY;
+            state.zoom = endZoom;
+            notifyStateChange('camera_jump', { x: worldX, y: worldY, zoom: endZoom });
+        }
+    }
+
+    activeAnimationId = requestAnimationFrame(step);
 }
 
-export function resetCameraView(canvas = null) {
+export function resetCameraView(canvas = null, durationMs = 400) {
     const c = canvas || mainCanvas || document.getElementById('mapCanvas');
-    state.cameraX = 0;
-    state.cameraY = 0;
+    let targetZoom = 0.12;
 
     if (c && c.width && c.height) {
-        // Fit terrain neatly inside canvas viewport with 40px margin
         const pad = 40;
         const fitX = (c.width - pad) / (MAP_MAX_X - MAP_MIN_X);
         const fitY = (c.height - pad) / (MAP_MAX_Y - MAP_MIN_Y);
-        state.zoom = Math.max(0.08, Math.min(fitX, fitY, 0.25));
-    } else {
-        state.zoom = 0.12;
+        targetZoom = Math.max(0.08, Math.min(fitX, fitY, 0.25));
     }
 
-    state.followPlayer = false;
+    jumpToLocation(0, 0, targetZoom, durationMs);
     notifyStateChange('camera_reset', null);
 }

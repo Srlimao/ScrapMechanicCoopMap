@@ -44,7 +44,12 @@ export function renderEntitiesLayer(ctx, width, height) {
         renderSchematics(ctx, data.schematics, width, height);
     }
 
-    // 7. Render Selected Point Pulsating Ring
+    // 7. Render Custom User Waypoints & Bookmarks
+    if (state.customBookmarks && state.customBookmarks.length > 0) {
+        renderCustomWaypoints(ctx, state.customBookmarks, width, height);
+    }
+
+    // 8. Render Selected Point Pulsating Ring
     renderSelectedEntityRing(ctx, width, height);
 }
 
@@ -407,3 +412,49 @@ function renderSelectedEntityRing(ctx, width, height) {
 
     ctx.restore();
 }
+
+function renderCustomWaypoints(ctx, waypoints, width, height) {
+    ctx.save();
+    for (const wp of waypoints) {
+        const isHovered = state.hoveredEntity === wp;
+        const isSelected = state.selectedEntity === wp;
+
+        const p = worldToScreen(wp.x, wp.y, width, height);
+        if (p.x < -50 || p.x > width + 50 || p.y < -50 || p.y > height + 50) continue;
+
+        const radius = isSelected ? 11 : (isHovered ? 9 : 7);
+        const color = wp.color || '#00e5ff';
+
+        // Glow halo
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius + 4, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? 'rgba(0, 229, 255, 0.45)' : 'rgba(0, 0, 0, 0.55)';
+        ctx.fill();
+
+        // Diamond pin marker
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y - radius);
+        ctx.lineTo(p.x + radius, p.y);
+        ctx.lineTo(p.x, p.y + radius);
+        ctx.lineTo(p.x - radius, p.y);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Inner center core
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, radius * 0.35, 0, Math.PI * 2);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+
+        drawSmartLabel(ctx, wp.name || 'Custom Waypoint', p.x, p.y, radius, {
+            font: '700 11px "Outfit", sans-serif',
+            color: color
+        });
+    }
+    ctx.restore();
+}
+

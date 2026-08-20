@@ -322,6 +322,13 @@
     transform: translateY(0);
 }
 
+.bm-btn.active-pulse {
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.7), inset 0 0 6px rgba(255, 255, 255, 0.4);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
 .bm-btn.bm-player:hover {
     color: #00e5ff;
     border-color: rgba(0, 229, 255, 0.5);

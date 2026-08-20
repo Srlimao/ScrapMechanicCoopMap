@@ -60,9 +60,12 @@ export function openInspector(entity) {
                 <div class="prop-label">Block / Shape Count</div>
                 <div class="prop-value monospace">${entity.blocks} blocks</div>
             </div>` : ''}
-            <div style="margin-top: 16px;">
-                <button class="btn btn-primary" id="btnJumpToEntity" style="width: 100%;">
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+                <button class="btn btn-primary" id="btnJumpToEntity" style="width: 100%; justify-content: center;">
                     <i class="fa-solid fa-crosshairs"></i> Jump to Coordinates
+                </button>
+                <button class="btn btn-tool" id="btnPinEntityWaypoint" style="width: 100%; justify-content: center; border-color: rgba(0, 229, 255, 0.4); color: #38bdf8;">
+                    <i class="fa-solid fa-bookmark"></i> Pin Waypoint Shortcut
                 </button>
             </div>
         `;
@@ -70,7 +73,21 @@ export function openInspector(entity) {
         const jumpBtn = document.getElementById('btnJumpToEntity');
         if (jumpBtn) {
             jumpBtn.addEventListener('click', () => {
-                jumpToLocation(entity.x, entity.y, 0.25);
+                jumpToLocation(entity.x, entity.y, 0.25, 400);
+            });
+        }
+
+        const pinBtn = document.getElementById('btnPinEntityWaypoint');
+        if (pinBtn) {
+            pinBtn.addEventListener('click', () => {
+                import('../tools/bookmarks.js').then(({ addCustomWaypoint }) => {
+                    addCustomWaypoint(
+                        entity.name || (entity.id ? `Creation #${entity.id}` : 'Custom Point'),
+                        entity.x,
+                        entity.y,
+                        { icon: entity.icon || 'fa-location-dot', color: entity.color || '#00e5ff' }
+                    );
+                });
             });
         }
     }
