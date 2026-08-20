@@ -9,8 +9,6 @@ import { setupInspectorSidebar } from './features/inspector/sidebar.js';
 import { setupHoverTooltip } from './features/inspector/hover_tooltip.js';
 import { setupBookmarks } from './features/tools/bookmarks.js';
 import { setupSearch } from './features/tools/search.js';
-import { setupRulerTool } from './features/tools/ruler.js';
-import { setupScreenshotExporter } from './features/tools/screenshot.js';
 import { loadSettings, setupLayerControls, setupSettingsModal } from './features/tools/settings.js';
 import { setupSeedGeneratorControls } from './features/tools/seed_generator.js';
 import { setupSquadControls } from './features/squad/squad_ui.js';
@@ -83,33 +81,18 @@ async function bootstrap() {
     setupModals(elements);
     setupBookmarks(elements);
     setupSearch(elements);
-    setupRulerTool(elements, elements.canvas);
-    setupScreenshotExporter(elements.exportBtn, elements.canvas);
     setupInspectorSidebar(elements);
     setupHoverTooltip(elements, elements.canvas);
     setupFileUploadHandlers(elements.uploadBtn, elements.fileInput, elements.dropOverlay);
     setupSeedGeneratorControls(elements);
     setupSquadControls();
 
-    // 3. Setup Reset, Follow, and Coordinates toggle buttons
+    // 3. Setup Reset and Follow buttons
     if (elements.resetViewBtn) elements.resetViewBtn.addEventListener('click', resetCameraView);
     if (elements.followPlayerBtn) {
         elements.followPlayerBtn.addEventListener('click', () => {
             state.followPlayer = !state.followPlayer;
             elements.followPlayerBtn.classList.toggle('active', state.followPlayer);
-        });
-    }
-    if (elements.toggleCoordsBtn) {
-        elements.toggleCoordsBtn.addEventListener('click', () => {
-            state.showCoordinates = !state.showCoordinates;
-            elements.toggleCoordsBtn.classList.toggle('active', state.showCoordinates);
-            const hud = document.getElementById('coordsHud') || document.getElementById('coordsHUD');
-            if (hud) hud.classList.toggle('hidden', !state.showCoordinates);
-            const cfgShow = document.getElementById('cfgShowCoordinates');
-            if (cfgShow) cfgShow.checked = state.showCoordinates;
-            import('./features/tools/settings.js').then(({ saveSettings }) => {
-                saveSettings();
-            });
         });
     }
 

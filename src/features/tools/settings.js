@@ -140,8 +140,6 @@ export function loadSettings() {
             }
         }
 
-        const coordsBtn = document.getElementById('toggleCoordsBtn');
-        if (coordsBtn) coordsBtn.classList.toggle('active', state.showCoordinates === true);
         const coordsHud = document.getElementById('coordsHud') || document.getElementById('coordsHUD');
         if (coordsHud) coordsHud.classList.toggle('hidden', state.showCoordinates !== true);
     } catch (e) {
@@ -948,8 +946,6 @@ export function setupSettingsModal() {
     if (cfgShowCoordinates) {
         cfgShowCoordinates.addEventListener('change', (e) => {
             state.showCoordinates = e.target.checked;
-            const coordsBtn = document.getElementById('toggleCoordsBtn');
-            if (coordsBtn) coordsBtn.classList.toggle('active', e.target.checked);
             const hud = document.getElementById('coordsHud') || document.getElementById('coordsHUD');
             if (hud) hud.classList.toggle('hidden', !e.target.checked);
             saveSettings();

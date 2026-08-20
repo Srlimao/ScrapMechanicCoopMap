@@ -6,7 +6,6 @@ import { renderEntitiesLayer } from './layer_entities.js';
 import { renderPlayerTrail } from '../live_tracker/player_trail.js';
 import { renderSquadLayer } from '../squad/layer_squad.js';
 import { renderRadar } from './radar.js';
-import { renderRulerLayer } from '../tools/ruler.js';
 
 let isRunning = false;
 let canvasEl = null;
@@ -113,8 +112,5 @@ export function renderFrame(w, h) {
 
     // 6. Multiplayer Squad Members & Tactical Pings
     renderSquadLayer(ctx2d, width, height);
-
-    // 7. Measurement Ruler Tool
-    renderRulerLayer(ctx2d, width, height);
 }
 

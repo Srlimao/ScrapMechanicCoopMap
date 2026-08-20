@@ -2,20 +2,21 @@
 
 .detail-sidebar {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    bottom: 14px;
-    width: 320px;
-    background: linear-gradient(180deg, #242934 0%, #1a1d26 100%);
-    border: 2px solid #3b4252;
-    border-radius: var(--radius-md);
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.8);
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: 300px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-main);
+    border-radius: var(--radius-xs);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
     z-index: 45;
-    transform: translateX(360px);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(340px);
+    transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    color: var(--text-main);
 }
 
 .detail-sidebar.open {
@@ -26,69 +27,69 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 14px;
-    background: #1e222b;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 8px 10px;
+    background: var(--bg-panel-subtle);
+    border-bottom: 1px solid var(--border-main);
 }
 
 .sidebar-title-wrap {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .sidebar-icon-badge {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-sm);
-    background: #2a3140;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-xs);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-main);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 12px;
     color: var(--sm-orange);
 }
 
 .sidebar-header h3 {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 800;
-    color: #ffffff;
+    color: var(--text-bright);
     line-height: 1.1;
 }
 
 .detail-subtitle {
-    font-size: 9.5px;
+    font-size: 8.5px;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    color: var(--text-dim);
+    color: var(--text-muted);
     text-transform: uppercase;
 }
 
 .close-sidebar {
     background: none;
     border: none;
-    color: var(--text-dim);
+    color: var(--text-muted);
     cursor: pointer;
-    font-size: 14px;
-    width: 28px;
-    height: 28px;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
-    transition: background 0.15s, color 0.15s;
+    border-radius: var(--radius-xs);
+    transition: background 0.12s, color 0.12s;
 }
 .close-sidebar:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: var(--bg-panel-hover);
+    color: var(--text-bright);
 }
 
 .sidebar-body {
-    padding: 14px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     overflow-y: auto;
     flex: 1;
 }
@@ -99,43 +100,46 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 30px 10px;
+    padding: 24px 8px;
     color: var(--text-dim);
-    gap: 8px;
+    gap: 6px;
 }
 .empty-state i {
-    font-size: 32px;
-    opacity: 0.4;
+    font-size: 24px;
+    opacity: 0.5;
 }
 .empty-state h4 {
-    font-size: 13px;
-    color: var(--text-muted);
+    font-size: 12px;
+    color: var(--text-bright);
 }
 .empty-state p {
-    font-size: 11.5px;
+    font-size: 10.5px;
     line-height: 1.4;
+    color: var(--text-muted);
 }
 
-/* Detail Property Cards */
+/* Detail Property Cards - Asymmetric CSS Grid */
 .detail-property-card {
-    background: #1e232d;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: var(--bg-panel-subtle);
+    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-xs);
-    padding: 8px 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    padding: 5px 8px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: baseline;
+    gap: 4px;
 }
 
 .prop-label {
-    font-size: 10px;
-    color: var(--text-dim);
+    font-size: 9px;
+    color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
     text-transform: uppercase;
 }
 
 .prop-value {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: var(--text-bright);
+    word-break: break-all;
 }

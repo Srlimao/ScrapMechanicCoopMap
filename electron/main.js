@@ -205,6 +205,7 @@ function createOverlayWindow() {
     const defaultX = overlayBounds.x !== null ? overlayBounds.x : (screenWidth - 370);
     const defaultY = overlayBounds.y !== null ? overlayBounds.y : 30;
 
+    const iconPath = path.join(__dirname, 'icon.png');
     overlayWindow = new BrowserWindow({
         width: overlayBounds.width || 320,
         height: overlayBounds.height || 320,
@@ -216,6 +217,7 @@ function createOverlayWindow() {
         hasShadow: false,
         skipTaskbar: true,
         resizable: true,
+        icon: fs.existsSync(iconPath) ? iconPath : undefined,
         backgroundColor: '#00000000',
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),

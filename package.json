@@ -1,6 +1,6 @@
 {
   "name": "scrap-mechanic-tactical-map",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Scrap Mechanic Tactical Save Map Viewer & Real-Time Player Tracker",
   "main": "electron/main.js",
   "scripts": {
@@ -14,6 +14,7 @@
     "dist:linux": "vite build && electron-builder --linux AppImage",
     "test:e2e": "npx tsx ../test-harness/runners/mock-e2e.ts",
     "test:live": "npx tsx ../test-harness/runners/live-runner.ts",
+    "test:responsive": "node scripts/test-responsive.js",
     "test": "npm run test:e2e"
   },
   "keywords": [
@@ -75,6 +76,7 @@
     "concurrently": "^9.1.2",
     "electron": "^34.2.0",
     "electron-builder": "^25.1.8",
+    "playwright": "^1.62.1",
     "sql.js": "^1.12.0",
     "vite": "^6.2.0",
     "wait-on": "^8.0.2"

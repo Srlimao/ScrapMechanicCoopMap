@@ -3,14 +3,14 @@
 /* Analog Compass Gauge docked in Bottom-Right HUD */
 .hardware-compass-widget {
     position: absolute;
-    bottom: 10px;
-    right: 12px;
-    width: 76px;
-    height: 76px;
+    bottom: 8px;
+    right: 10px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 45%, #78350f 100%);
-    border: 2.5px solid #451a03;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+    background: var(--bg-panel);
+    border: 2px solid var(--sm-orange);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,62 +21,61 @@
 }
 
 .hardware-compass-widget:hover {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .compass-dial-face {
-    width: 60px;
-    height: 60px;
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
-    background: radial-gradient(circle, #1e2430 0%, #141820 75%, #0b0e14 100%);
-    border: 1.5px solid #334155;
+    background: var(--bg-panel-inset);
+    border: 1px solid var(--border-main);
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
 }
 
 .compass-cardinal-n {
     position: absolute;
-    top: 2px;
-    font-size: 10px;
+    top: 1px;
+    font-size: 9px;
     font-weight: 900;
-    color: #ef4444;
+    color: var(--color-danger);
     font-family: 'JetBrains Mono', monospace;
 }
 
 .compass-cardinal-s {
     position: absolute;
-    bottom: 2px;
-    font-size: 8px;
+    bottom: 1px;
+    font-size: 7.5px;
     font-weight: 800;
-    color: #9ca3af;
+    color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
 }
 
 .compass-cardinal-e {
     position: absolute;
-    right: 3px;
-    font-size: 8px;
+    right: 2px;
+    font-size: 7.5px;
     font-weight: 800;
-    color: #9ca3af;
+    color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
 }
 
 .compass-cardinal-w {
     position: absolute;
-    left: 3px;
-    font-size: 8px;
+    left: 2px;
+    font-size: 7.5px;
     font-weight: 800;
-    color: #9ca3af;
+    color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
 }
 
 /* 3D Magnetic Needle */
 .compass-needle-3d {
     width: 6px;
-    height: 42px;
+    height: 38px;
     position: relative;
     transform-origin: center center;
     transition: transform 0.28s cubic-bezier(0.34, 1.45, 0.64, 1);
@@ -90,7 +89,7 @@
     height: 0;
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
-    border-bottom: 21px solid #ef4444;
+    border-bottom: 19px solid var(--color-danger);
 }
 
 .needle-south {
@@ -101,7 +100,7 @@
     height: 0;
     border-left: 3px solid transparent;
     border-right: 3px solid transparent;
-    border-top: 21px solid #9ca3af;
+    border-top: 19px solid var(--border-strong);
 }
 
 .needle-center-cap {
@@ -109,11 +108,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: #475569;
-    border: 1px solid #14171a;
+    background: var(--border-dark);
+    border: 1px solid var(--border-main);
     z-index: 5;
 }
 
@@ -124,19 +123,19 @@
 /* Attached Tactical Proximity Radar Module at Bottom-Right */
 .hardware-radar-module {
     position: absolute;
-    right: 16px;
-    bottom: 16px;
-    width: 220px;
+    right: 12px;
+    bottom: 12px;
+    width: 216px;
     background: var(--bg-panel);
     border: 1px solid var(--border-main);
     border-top: 2px solid var(--sm-orange);
-    border-radius: var(--radius-sm);
-    padding: 8px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-xs);
+    padding: 6px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
     z-index: 35;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
     user-select: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
@@ -145,140 +144,129 @@
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
-    transform: translateY(16px) scale(0.95);
+    transform: translateY(12px) scale(0.95);
 }
 
+/* Asymmetric CSS Grid Radar Header */
 .radar-module-header {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
-    gap: 6px;
+    gap: 4px;
 }
 
 .radar-title-wrap {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .radar-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
-    letter-spacing: 1px;
-    color: #22c55e;
+    letter-spacing: 0.6px;
+    color: var(--color-live-green);
     font-family: 'JetBrains Mono', monospace;
-    text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .radar-mode-badge {
     font-size: 8px;
     font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
-    padding: 1px 5px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
+    padding: 1px 4px;
+    border-radius: 2px;
 }
 
 .radar-mode-badge.player {
-    background: rgba(34, 197, 94, 0.15);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.4);
+    background: var(--bg-panel-inset);
+    color: var(--color-live-green);
+    border: 1px solid var(--color-live-green);
 }
 
 .radar-mode-badge.camera {
-    background: rgba(245, 158, 11, 0.15);
-    color: #f59e0b;
-    border: 1px solid rgba(245, 158, 11, 0.4);
+    background: var(--sm-orange-subtle);
+    color: var(--sm-orange);
+    border: 1px solid var(--sm-orange-border);
 }
 
 .radar-popout-btn {
-    background: rgba(34, 197, 94, 0.12);
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    color: #4ade80;
-    font-size: 8.5px;
+    background: var(--bg-panel-inset);
+    border: 1px solid var(--border-main);
+    color: var(--text-main);
+    font-size: 8px;
     font-weight: 800;
     font-family: 'JetBrains Mono', monospace;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 2px 5px;
+    border-radius: 2px;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 3px;
-    transition: all 0.15s ease;
+    gap: 2px;
+    transition: all 0.12s ease;
 }
 .radar-popout-btn:hover {
-    background: #22c55e;
-    color: #080c14;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+    background: var(--sm-orange);
+    color: var(--text-on-dark);
+    border-color: var(--sm-orange-active);
 }
 .radar-popout-btn.active {
-    background: #38bdf8;
-    border-color: #38bdf8;
-    color: #080c14;
+    background: var(--sm-orange);
+    border-color: var(--sm-orange-active);
+    color: var(--text-on-dark);
 }
 
 .radar-threat-badge {
-    font-size: 9px;
+    font-size: 8.5px;
     font-weight: 800;
     font-family: 'JetBrains Mono', monospace;
-    padding: 2px 7px;
-    border-radius: 4px;
+    padding: 1px 5px;
+    border-radius: 2px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    letter-spacing: 0.5px;
+    gap: 3px;
     white-space: nowrap;
+    justify-self: end;
 }
 
 .radar-threat-badge.normal {
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
-    border: 1px solid rgba(16, 185, 129, 0.35);
+    background: var(--bg-panel-inset);
+    color: var(--color-live-green);
+    border: 1px solid var(--color-live-green);
 }
 
 .radar-threat-badge.info {
-    background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
-    border: 1px solid rgba(59, 130, 246, 0.35);
+    background: var(--bg-panel-inset);
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
 }
 
 .radar-threat-badge.warning {
-    background: rgba(245, 158, 11, 0.2);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.5);
+    background: var(--sm-orange-subtle);
+    color: var(--sm-orange);
+    border: 1px solid var(--sm-orange-border);
 }
 
 .radar-threat-badge.danger-blink {
-    background: rgba(239, 68, 68, 0.3);
-    color: #ff4d4d;
-    border: 1px solid #ef4444;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
-    animation: radarDangerPulse 0.9s infinite alternate;
-}
-
-@keyframes radarDangerPulse {
-    0% { transform: scale(1); opacity: 0.9; }
-    100% { transform: scale(1.04); opacity: 1; filter: brightness(1.25); }
+    background: var(--bg-panel-inset);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
 }
 
 .radar-screen-bezel {
-    background: #020503;
-    border: 2px solid #142a1a;
+    background: #050b06;
+    border: 1.5px solid #1f3a24;
     border-radius: 50%;
-    width: 200px;
-    height: 200px;
+    width: 196px;
+    height: 196px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 
-        inset 0 3px 10px rgba(0, 0, 0, 0.98),
-        0 0 12px rgba(34, 197, 94, 0.15);
 }
 
 .radar-screen-bezel canvas {
@@ -286,25 +274,23 @@
     height: 100%;
     display: block;
     border-radius: 50%;
-    background: #020503;
+    background: #050b06;
     cursor: crosshair;
 }
 
 .radar-install-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(2, 5, 3, 0.94);
+    background: rgba(5, 11, 6, 0.95);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 16px 12px;
+    padding: 12px 8px;
     text-align: center;
     z-index: 10;
-    gap: 6px;
+    gap: 5px;
     border-radius: 50%;
-    backdrop-filter: blur(4px);
-    transition: all 0.25s ease;
 }
 
 .radar-install-overlay.hidden {
@@ -314,169 +300,135 @@
 }
 
 .radar-install-icon {
-    font-size: 22px;
-    color: #22c55e;
-    text-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
-    animation: radarInstallPulse 1.8s infinite ease-in-out;
-}
-
-@keyframes radarInstallPulse {
-    0%, 100% { transform: scale(1); opacity: 0.85; }
-    50% { transform: scale(1.1); opacity: 1; }
+    font-size: 18px;
+    color: var(--color-live-green);
 }
 
 .radar-install-title {
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 800;
-    color: #22c55e;
+    color: var(--color-live-green);
     font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.8px;
 }
 
 .radar-install-desc {
     font-size: 8px;
-    color: #86efac;
-    font-family: 'Inter', sans-serif;
-    line-height: 1.25;
-    max-width: 140px;
+    color: var(--color-live-green);
+    opacity: 0.85;
+    line-height: 1.2;
+    max-width: 130px;
 }
 
 .radar-install-btn {
-    margin-top: 4px;
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-    border: none;
-    color: #021205;
-    font-size: 9px;
-    font-weight: 900;
+    margin-top: 3px;
+    background: var(--color-harvestable);
+    border: 1px solid var(--color-live-green);
+    color: var(--text-on-dark);
+    font-size: 8.5px;
+    font-weight: 800;
     font-family: 'JetBrains Mono', monospace;
-    padding: 5px 12px;
-    border-radius: 20px;
+    padding: 3px 10px;
+    border-radius: 2px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 4px;
-    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
-    transition: all 0.15s ease;
+    gap: 3px;
 }
 
 .radar-install-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 16px rgba(34, 197, 94, 0.8);
-}
-
-.radar-install-btn:active {
-    transform: scale(0.96);
+    background: var(--color-live-green);
 }
 
 .radar-browse-btn {
     background: transparent;
-    border: 1px dashed rgba(34, 197, 94, 0.4);
-    color: #86efac;
-    font-size: 8px;
+    border: 1px dashed var(--color-live-green);
+    color: var(--color-live-green);
+    font-size: 7.5px;
     font-weight: 600;
     font-family: 'JetBrains Mono', monospace;
-    padding: 3px 8px;
-    border-radius: 12px;
+    padding: 2px 6px;
+    border-radius: 2px;
     cursor: pointer;
-    transition: all 0.15s ease;
     display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+/* Asymmetric CSS Grid Radar Footer - Fix Button Overflow */
+.radar-module-footer {
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
     gap: 4px;
-}
-
-.radar-browse-btn:hover {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: #22c55e;
-    color: #ffffff;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
-}
-
-.radar-module-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    margin-top: 2px;
+    margin-top: 1px;
+    width: 100%;
 }
 
 .radar-range-selector {
-    display: flex;
-    align-items: center;
-    background: #07120a;
-    border: 1px solid #142a1a;
-    border-radius: 6px;
-    padding: 2px;
-    gap: 2px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--bg-panel-inset);
+    border: 1px solid var(--border-main);
+    border-radius: var(--radius-xs);
+    padding: 1px;
+    gap: 1px;
 }
 
 .radar-range-btn {
     background: transparent;
     border: none;
-    color: #52795d;
-    font-size: 9px;
+    color: var(--text-muted);
+    font-size: 8.5px;
     font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
-    padding: 2px 5px;
-    border-radius: 4px;
+    padding: 2px 0;
+    text-align: center;
+    border-radius: 1px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.12s ease;
 }
 
 .radar-range-btn:hover {
-    color: #86efac;
-    background: rgba(34, 197, 94, 0.1);
+    color: var(--text-bright);
+    background: var(--bg-panel-hover);
 }
 
 .radar-range-btn.active {
-    background: #22c55e;
-    color: #031407;
+    background: var(--sm-orange);
+    color: var(--text-on-dark);
     font-weight: 900;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
 }
 
 .radar-toggle-actions {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, 20px);
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
 
 .radar-icon-btn {
-    background: #0b1118;
-    border: 1px solid #1e293b;
-    color: #64748b;
-    width: 22px;
-    height: 22px;
-    border-radius: 5px;
+    background: var(--bg-panel-inset);
+    border: 1px solid var(--border-main);
+    color: var(--text-muted);
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-xs);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9px;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.12s ease;
 }
 
 .radar-icon-btn:hover {
-    color: #cbd5e1;
-    border-color: #334155;
+    color: var(--text-bright);
+    border-color: var(--border-strong);
+    background: var(--bg-panel-hover);
 }
 
 .radar-icon-btn.active {
-    color: #00e5ff;
-    border-color: rgba(0, 229, 255, 0.4);
-    background: rgba(0, 229, 255, 0.1);
-    box-shadow: 0 0 6px rgba(0, 229, 255, 0.25);
-}
-
-.radar-icon-btn.active#btnRadarEnemies {
-    color: #ef4444;
-    border-color: rgba(239, 68, 68, 0.4);
-    background: rgba(239, 68, 68, 0.1);
-    box-shadow: 0 0 6px rgba(239, 68, 68, 0.25);
-}
-
-.radar-icon-btn.active#btnRadarPOIs {
-    color: #f59e0b;
-    border-color: rgba(245, 158, 11, 0.4);
-    background: rgba(245, 158, 11, 0.1);
-    box-shadow: 0 0 6px rgba(245, 158, 11, 0.25);
+    color: var(--text-on-dark);
+    border-color: var(--sm-orange-active);
+    background: var(--sm-orange);
 }

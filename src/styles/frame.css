@@ -4,31 +4,28 @@
     flex: 1;
     display: flex;
     position: relative;
-    padding: 10px 12px 10px 12px;
+    padding: 6px 8px;
     overflow: hidden;
-    gap: 10px;
+    gap: 8px;
     align-items: stretch;
 }
 
-/* Iconic Safety-Orange Scrap Mechanic Chassis */
+/* Iconic Safety-Orange Scrap Mechanic Chassis - Clean Mechanical Styling */
 .tablet-outer-frame {
     flex: 1;
     display: flex;
     position: relative;
-    background: linear-gradient(180deg, #ff8c1a 0%, #ea580c 45%, #c2410c 100%);
-    border: 2.5px solid #9a3412;
-    border-radius: var(--radius-lg);
-    padding: 6px 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    background: var(--sm-orange);
+    border: 2px solid var(--sm-orange-active);
+    border-radius: var(--radius-sm);
+    padding: 4px 6px;
     min-height: 0;
 }
 
-/* Subtle Corner Trim Accents (Hidden) */
 .tablet-bumper {
     display: none;
 }
 
-/* Tactile Grips & Hazard Rims (Hidden) */
 .tablet-grip {
     display: none;
 }
@@ -42,11 +39,10 @@
     flex: 1;
     display: flex;
     position: relative;
-    background: linear-gradient(145deg, #1e2430 0%, #131720 100%);
-    border: 1.5px solid #334155;
-    border-radius: var(--radius-md);
-    padding: 4px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+    background: #222222;
+    border: 1px solid #333333;
+    border-radius: var(--radius-xs);
+    padding: 3px;
     min-height: 0;
 }
 
@@ -54,12 +50,11 @@
 .bezel-screw {
     display: block;
     position: absolute;
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: radial-gradient(circle, #e2e8f0 20%, #64748b 65%, #1e293b 100%);
-    border: 1px solid #0f172a;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.75), 0 1px 2px rgba(0, 0, 0, 0.6);
+    background: #888888;
+    border: 1px solid #111111;
     z-index: 25;
 }
 
@@ -69,8 +64,8 @@
     top: 50%;
     left: 20%;
     right: 20%;
-    height: 1.5px;
-    background: #0f172a;
+    height: 1px;
+    background: #111111;
     transform: translateY(-50%) rotate(45deg);
 }
 
@@ -85,18 +80,16 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #0b0e14;
-    border-radius: var(--radius-xs);
+    background: #0e1117;
+    border-radius: 1px;
     overflow: hidden;
     min-height: 0;
 }
 
-/* Glass Glare Specular Reflection Overlay */
 .screen-glass-glare {
     display: none;
 }
 
-/* Subtle Tactical LCD / CRT Scanline Texture */
 .screen-scanlines {
     display: none;
 }
@@ -105,42 +98,40 @@
 .tablet-optic-turret {
     display: flex;
     position: absolute;
-    top: -12px;
+    top: -9px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 40;
 }
 
 .turret-housing {
-    width: 90px;
-    height: 22px;
-    background: linear-gradient(180deg, #d97706 0%, #b45309 60%, #78350f 100%);
-    border: 1.5px solid #451a03;
-    border-radius: 6px 6px 3px 3px;
+    width: 72px;
+    height: 16px;
+    background: #cc7a00;
+    border: 1px solid #804d00;
+    border-radius: 3px 3px 1px 1px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 0 8px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    gap: 4px;
+    padding: 0 6px;
 }
 
 .turret-lens-dome {
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #4ade80 0%, #10b981 40%, #059669 75%, #022c22 100%);
-    border: 1px solid #1c1917;
-    box-shadow: 0 0 6px #10b981;
+    background: #52c41a;
+    border: 1px solid #135200;
     position: relative;
 }
 
 .turret-sensor-slit {
-    width: 10px;
-    height: 6px;
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 2px;
+    width: 8px;
+    height: 4px;
+    background: #222222;
+    border: 1px solid #444444;
+    border-radius: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -148,14 +139,8 @@
 
 .turret-sensor-slit::before {
     content: '';
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
-    background: #f59e0b;
-    box-shadow: 0 0 6px #f59e0b;
-}
-
-@keyframes turretPulse {
-    0%, 100% { box-shadow: 0 0 10px #10b981; }
-    50% { box-shadow: 0 0 22px #4ade80, 0 0 35px rgba(16, 185, 129, 0.5); }
+    background: var(--sm-orange);
 }

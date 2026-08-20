@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scrap Mechanic - Tactical Save Map Viewer & Live Tracker</title>
+    <link rel="icon" type="image/png" href="app-icon.png">
+    <link rel="shortcut icon" href="favicon.ico">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,8 +26,8 @@
         <!-- Top Tactical Header Bar -->
         <header class="header-bar">
             <div class="brand">
-                <div class="brand-badge-icon">
-                    <i class="fa-solid fa-wrench"></i>
+                <div class="brand-badge-icon" title="Scrap Mechanic Tactical Map">
+                    <img src="app-icon.png" alt="GPS App Icon" style="width:100%; height:100%; object-fit:cover; border-radius:inherit; display:block;">
                 </div>
                 <div class="brand-text">
                     <div class="brand-title">SCRAP MECHANIC</div>
@@ -65,18 +67,6 @@
                     <span class="squad-badge offline" id="squadStatusBadge"><i class="fa-solid fa-users"></i> Squad: Offline</span>
                 </button>
 
-                <!-- Dedicated Map Tools Action Dock -->
-                <div class="map-tools-dock">
-                    <button class="btn btn-tool" id="rulerToolBtn" title="Distance Measure Tool (Ruler) - Measure distance between two points">
-                        <i class="fa-solid fa-ruler-combined"></i> <span>Measure</span>
-                    </button>
-                    <button class="btn btn-tool" id="exportBtn" title="Capture & Export High-Res PNG Map Snapshot">
-                        <i class="fa-solid fa-camera"></i> <span>Snapshot</span>
-                    </button>
-                    <button class="btn btn-icon" id="toggleCoordsBtn" title="Toggle Coordinates HUD Overlay (World / Cell / Zoom)">
-                        <i class="fa-solid fa-location-crosshairs"></i>
-                    </button>
-                </div>
 
                 <button class="btn btn-tool" id="followPlayerBtn" title="Lock Camera and Follow In-Game Character">
                     <i class="fa-solid fa-crosshairs"></i> <span>Follow Player</span>
@@ -155,70 +145,32 @@
                         <div class="layer-card">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-person-walking layer-icon" style="color:var(--color-player);"></i>
-                                    <span class="layer-title" style="color:var(--color-player);">Live Character & Trail</span>
+                                    <i class="fa-solid fa-person-walking layer-icon"></i>
+                                    <span class="layer-title">Live Character & Trail</span>
                                 </div>
-                                <span class="count-badge badge-green" id="playerSpeedBadge">0.0 m/s</span>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerLivePlayer" checked>
-                                    <span class="mech-switch"></span>
-                                </label>
+                                <span class="count-badge" id="playerSpeedBadge">0.0 m/s</span>
+                                <input type="checkbox" id="layerLivePlayer" checked>
                             </div>
                         </div>
 
-                        <!-- POI Layer (Highlighted Gold Active Theme) -->
-                        <div class="layer-card active-poi collapsible" id="cardPoi">
+                        <!-- POI Layer -->
+                        <div class="layer-card collapsible" id="cardPoi">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-key layer-icon" style="color:var(--color-poi);"></i>
-                                    <span class="layer-title" style="color:#fbbf24;">Points of Interest</span>
+                                    <i class="fa-solid fa-key layer-icon"></i>
+                                    <span class="layer-title">Points of Interest</span>
                                     <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
-                                <span class="count-badge badge-gold" id="countPOIs">20</span>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerPOIs" checked>
-                                    <span class="mech-switch poi-theme-switch"></span>
-                                </label>
+                                <span class="count-badge" id="countPOIs">20</span>
+                                <input type="checkbox" id="layerPOIs" checked>
                             </div>
-
-                            <!-- Sub-Group Field Missions List (Collapsible Accordion) -->
-                            <div class="sub-missions-card" id="poiAccordion">
-                                <div class="sub-missions-header" id="poiAccordionHeader">
-                                    <span><i class="fa-solid fa-caret-down caret-icon"></i> Field Missions / POI</span>
-                                    <span class="count-badge badge-gold" id="countPOIsSub" style="font-size:9px;">20</span>
-                                </div>
-                                <div class="sub-missions-list" id="poiSubList">
-                                    <label class="sub-mission-item">
-                                        <input type="checkbox" id="subPoiMechanic" checked>
-                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#38bdf8;"></i>
-                                        <span>Mechanic Stations</span>
-                                    </label>
-                                    <label class="sub-mission-item">
-                                        <input type="checkbox" id="subPoiTrader" checked>
-                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#a855f7;"></i>
-                                        <span>Trader Hideout & Cages</span>
-                                    </label>
-                                    <label class="sub-mission-item">
-                                        <input type="checkbox" id="subPoiPacking" checked>
-                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#4ade80;"></i>
-                                        <span>Packing Stations</span>
-                                    </label>
-                                    <label class="sub-mission-item">
-                                        <input type="checkbox" id="subPoiGrowlabs" checked>
-                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#f59e0b;"></i>
-                                        <span>Growlabs & Hostile Farms</span>
-                                    </label>
-                                    <label class="sub-mission-item">
-                                        <input type="checkbox" id="subPoiChemOil" checked>
-                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#06b6d4;"></i>
-                                        <span>Chemical Plants & Oil Lakes</span>
-                                    </label>
-                                    <label class="sub-mission-item">
-                                        <input type="checkbox" id="subPoiOther" checked>
-                                        <i class="fa-solid fa-diamond sub-mission-diamond" style="color:#cbd5e1;"></i>
-                                        <span>Story & Landmarks</span>
-                                    </label>
-                                </div>
+                            <div class="layer-sub-options sub-filter-tags">
+                                <label class="sub-tag"><input type="checkbox" id="subPoiMechanic" checked><span class="tag-pill"><i class="fa-solid fa-wrench"></i> Mechanic</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subPoiTrader" checked><span class="tag-pill"><i class="fa-solid fa-store"></i> Trader</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subPoiPacking" checked><span class="tag-pill"><i class="fa-solid fa-box"></i> Packing</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subPoiGrowlabs" checked><span class="tag-pill"><i class="fa-solid fa-biohazard"></i> Growlabs</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subPoiChemOil" checked><span class="tag-pill"><i class="fa-solid fa-flask"></i> Chem/Oil</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subPoiOther" checked><span class="tag-pill"><i class="fa-solid fa-flag"></i> Story/Other</span></label>
                             </div>
                         </div>
 
@@ -226,14 +178,11 @@
                         <div class="layer-card">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-microchip layer-icon" style="color:var(--color-schematic);"></i>
+                                    <i class="fa-solid fa-microchip layer-icon"></i>
                                     <span class="layer-title">Schematic Stations & Guides</span>
                                 </div>
                                 <span class="count-badge" id="countSchematics">0</span>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerSchematics" checked>
-                                    <span class="mech-switch"></span>
-                                </label>
+                                <input type="checkbox" id="layerSchematics" checked>
                             </div>
                         </div>
 
@@ -241,15 +190,12 @@
                         <div class="layer-card collapsible" id="cardCreations">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-truck-pickup layer-icon" style="color:var(--color-creation);"></i>
+                                    <i class="fa-solid fa-truck-pickup layer-icon"></i>
                                     <span class="layer-title">Creations & Vehicles</span>
                                     <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge" id="countCreations">0</span>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerCreations">
-                                    <span class="mech-switch"></span>
-                                </label>
+                                <input type="checkbox" id="layerCreations">
                             </div>
                             <div class="layer-sub-options">
                                 <div class="size-filter-buttons">
@@ -265,23 +211,20 @@
                         <div class="layer-card collapsible" id="cardUnits">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-robot layer-icon" style="color:var(--color-unit);"></i>
+                                    <i class="fa-solid fa-robot layer-icon"></i>
                                     <span class="layer-title">Bots, Enemies & Animals</span>
                                     <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge" id="countUnits">0</span>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerUnits">
-                                    <span class="mech-switch"></span>
-                                </label>
+                                <input type="checkbox" id="layerUnits">
                             </div>
                             <div class="layer-sub-options sub-filter-tags">
-                                <label class="sub-tag"><input type="checkbox" id="subFarmbots" checked><span class="tag-pill tag-danger"><i class="fa-solid fa-skull"></i> Bosses</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subHaybots" checked><span class="tag-pill tag-warning"><i class="fa-solid fa-robot"></i> Haybots</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subTapebots" checked><span class="tag-pill tag-info"><i class="fa-solid fa-crosshairs"></i> Tapebots</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subTotebots" checked><span class="tag-pill tag-lime"><i class="fa-solid fa-bolt"></i> Totebots</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subSeedbots" checked><span class="tag-pill tag-seedbot"><i class="fa-solid fa-seedling"></i> Seedbots / Passives</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subAnimals" checked><span class="tag-pill tag-woc"><i class="fa-solid fa-cow"></i> Wocs / Animals</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subFarmbots" checked><span class="tag-pill"><i class="fa-solid fa-skull"></i> Bosses</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subHaybots" checked><span class="tag-pill"><i class="fa-solid fa-robot"></i> Haybots</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subTapebots" checked><span class="tag-pill"><i class="fa-solid fa-crosshairs"></i> Tapebots</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subTotebots" checked><span class="tag-pill"><i class="fa-solid fa-bolt"></i> Totebots</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subSeedbots" checked><span class="tag-pill"><i class="fa-solid fa-seedling"></i> Seedbots / Passives</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subAnimals" checked><span class="tag-pill"><i class="fa-solid fa-cow"></i> Wocs / Animals</span></label>
                             </div>
                         </div>
 
@@ -289,25 +232,22 @@
                         <div class="layer-card collapsible" id="cardHarvestables">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-gem layer-icon" style="color:var(--color-harvestable);"></i>
+                                    <i class="fa-solid fa-gem layer-icon"></i>
                                     <span class="layer-title">Resources & Harvestables</span>
                                     <i class="fa-solid fa-chevron-down layer-collapse-icon"></i>
                                 </div>
                                 <span class="count-badge" id="countHarvestables">0</span>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerHarvestables">
-                                    <span class="mech-switch green-theme-switch"></span>
-                                </label>
+                                <input type="checkbox" id="layerHarvestables">
                             </div>
                             <div class="layer-sub-options sub-filter-tags">
-                                <label class="sub-tag"><input type="checkbox" id="subOil" checked><span class="tag-pill tag-oil"><i class="fa-solid fa-oil-well"></i> Oil</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subCotton" checked><span class="tag-pill tag-cotton"><i class="fa-solid fa-feather"></i> Cotton</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subMinerals" checked><span class="tag-pill tag-stone"><i class="fa-solid fa-mountain"></i> Stones/Ore</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subTrees" checked><span class="tag-pill tag-tree"><i class="fa-solid fa-tree"></i> Trees</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subCrops" checked><span class="tag-pill tag-crop"><i class="fa-solid fa-wheat-awn"></i> Crops</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subChemicals" checked><span class="tag-pill tag-chem"><i class="fa-solid fa-flask-vial"></i> Chem</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subFlowers" checked><span class="tag-pill tag-flower"><i class="fa-solid fa-spa"></i> Flowers</span></label>
-                                <label class="sub-tag"><input type="checkbox" id="subOtherRes" checked><span class="tag-pill tag-other"><i class="fa-solid fa-seedling"></i> Other</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subOil" checked><span class="tag-pill"><i class="fa-solid fa-oil-well"></i> Oil</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subCotton" checked><span class="tag-pill"><i class="fa-solid fa-feather"></i> Cotton</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subMinerals" checked><span class="tag-pill"><i class="fa-solid fa-mountain"></i> Stones/Ore</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subTrees" checked><span class="tag-pill"><i class="fa-solid fa-tree"></i> Trees</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subCrops" checked><span class="tag-pill"><i class="fa-solid fa-wheat-awn"></i> Crops</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subChemicals" checked><span class="tag-pill"><i class="fa-solid fa-flask-vial"></i> Chem</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subFlowers" checked><span class="tag-pill"><i class="fa-solid fa-spa"></i> Flowers</span></label>
+                                <label class="sub-tag"><input type="checkbox" id="subOtherRes" checked><span class="tag-pill"><i class="fa-solid fa-seedling"></i> Other</span></label>
                             </div>
                         </div>
 
@@ -315,13 +255,10 @@
                         <div class="layer-card">
                             <div class="layer-card-header">
                                 <div class="layer-title-wrap">
-                                    <i class="fa-solid fa-border-all layer-icon" style="color:var(--text-dim);"></i>
+                                    <i class="fa-solid fa-border-all layer-icon"></i>
                                     <span class="layer-title">Cell Grid Overlay</span>
                                 </div>
-                                <label class="mech-switch-wrap">
-                                    <input type="checkbox" id="layerGrid" checked>
-                                    <span class="mech-switch"></span>
-                                </label>
+                                <input type="checkbox" id="layerGrid" checked>
                             </div>
                         </div>
                     </div>
@@ -355,7 +292,7 @@
                     <h3><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--sm-orange)"></i> Procedural Map Gen</h3>
                     <div style="display:flex; flex-direction:column; gap:6px;">
                         <div style="display:flex; gap:6px;">
-                            <input type="number" id="seedInput" placeholder="Seed (e.g. 631793443)..." style="flex:1; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:4px 8px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px;">
+                            <input type="number" id="seedInput" placeholder="Seed (e.g. 631793443)..." style="flex:1; background:#ffffff; border:1px solid var(--border-main); border-radius:var(--radius-xs); padding:4px 8px; color:#111111; font-family:'JetBrains Mono', monospace; font-size:11px;">
                             <button class="btn btn-primary" id="btnGenSeed" style="padding:4px 10px; font-size:11px; height:28px;" title="Generate procedural terrain for this seed">
                                 <i class="fa-solid fa-play"></i> Gen
                             </button>
@@ -364,7 +301,7 @@
                             <button class="btn btn-tool" id="btnLoadReferenceSeed" style="flex:1; justify-content:center; font-size:10.5px; height:26px;" title="Load Official Reference Atlas (Seed 151054709)">
                                 <i class="fa-solid fa-globe"></i> Reference Atlas
                             </button>
-                            <button class="btn btn-tool" id="btnClearCache" style="flex:1; justify-content:center; font-size:10.5px; height:26px; color:#f87171; border-color: rgba(248, 113, 113, 0.3);" title="Clear local terrain cache">
+                            <button class="btn btn-tool" id="btnClearCache" style="flex:1; justify-content:center; font-size:10.5px; height:26px; color:#cf1322; border-color: #ffa39e;" title="Clear local terrain cache">
                                 <i class="fa-solid fa-trash-can"></i> Clear Cache
                             </button>
                         </div>
@@ -691,31 +628,31 @@
     <div class="modal-backdrop" id="squadModal">
         <div class="modal">
             <div class="modal-header">
-                <h2><i class="fa-solid fa-users" style="color:var(--color-portal)"></i> Multiplayer Squad Rooms</h2>
+                <h2><i class="fa-solid fa-users" style="color:var(--sm-orange)"></i> Multiplayer Squad Rooms</h2>
                 <button class="modal-close" id="closeSquadModal"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <div id="squadSetupPanel" style="display:flex; flex-direction:column; gap:12px;">
                     <div>
                         <label style="font-size:10.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Your Nickname</label>
-                        <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="width:100%; margin-top:4px; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:6px 10px; color:#fff; font-size:12px;">
+                        <input type="text" id="squadNickname" value="ScrapMechanic" placeholder="Your Nickname" style="width:100%; margin-top:4px; background:#ffffff; border:1px solid var(--border-main); border-radius:var(--radius-xs); padding:6px 10px; color:#111111; font-size:12px;">
                     </div>
 
                     <div>
                         <label style="font-size:10.5px; font-weight:700; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Choose Beacon Color</label>
-                        <div class="squad-color-picker-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:6px; padding:8px 12px; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px;">
+                        <div class="squad-color-picker-row" style="display:flex; align-items:center; justify-content:space-between; margin-top:6px; padding:8px 12px; background:#f5f5f5; border:1px solid var(--border-subtle); border-radius:var(--radius-xs);">
                             <button type="button" class="squad-color-chip active" data-color="#00e5ff" style="width:28px; height:28px; border-radius:50%; background-color:#00e5ff; border:2px solid #ffffff; cursor:pointer;" title="Cyan"></button>
-                            <button type="button" class="squad-color-chip" data-color="#ff7a00" style="width:28px; height:28px; border-radius:50%; background-color:#ff7a00; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Orange"></button>
-                            <button type="button" class="squad-color-chip" data-color="#10b981" style="width:28px; height:28px; border-radius:50%; background-color:#10b981; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Lime"></button>
-                            <button type="button" class="squad-color-chip" data-color="#a855f7" style="width:28px; height:28px; border-radius:50%; background-color:#a855f7; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Purple"></button>
-                            <button type="button" class="squad-color-chip" data-color="#ec4899" style="width:28px; height:28px; border-radius:50%; background-color:#ec4899; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Pink"></button>
-                            <button type="button" class="squad-color-chip" data-color="#eab308" style="width:28px; height:28px; border-radius:50%; background-color:#eab308; border:2px solid rgba(255,255,255,0.2); cursor:pointer;" title="Yellow"></button>
+                            <button type="button" class="squad-color-chip" data-color="#d95c00" style="width:28px; height:28px; border-radius:50%; background-color:#d95c00; border:2px solid rgba(0,0,0,0.15); cursor:pointer;" title="Orange"></button>
+                            <button type="button" class="squad-color-chip" data-color="#237804" style="width:28px; height:28px; border-radius:50%; background-color:#237804; border:2px solid rgba(0,0,0,0.15); cursor:pointer;" title="Green"></button>
+                            <button type="button" class="squad-color-chip" data-color="#722ed1" style="width:28px; height:28px; border-radius:50%; background-color:#722ed1; border:2px solid rgba(0,0,0,0.15); cursor:pointer;" title="Purple"></button>
+                            <button type="button" class="squad-color-chip" data-color="#c41d7f" style="width:28px; height:28px; border-radius:50%; background-color:#c41d7f; border:2px solid rgba(0,0,0,0.15); cursor:pointer;" title="Magenta"></button>
+                            <button type="button" class="squad-color-chip" data-color="#cc7a00" style="width:28px; height:28px; border-radius:50%; background-color:#cc7a00; border:2px solid rgba(0,0,0,0.15); cursor:pointer;" title="Gold"></button>
                         </div>
                     </div>
 
                     <details style="font-size:10.5px; color:var(--text-dim);">
                         <summary style="cursor:pointer; font-family:'JetBrains Mono', monospace; margin-bottom:4px;">Advanced Server Settings (Default: Cloud Relay)</summary>
-                        <input type="text" id="squadServerUrl" value="wss://sm.dunhas.com" placeholder="wss://sm.dunhas.com" style="width:100%; margin-top:4px; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:4px 8px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px;">
+                        <input type="text" id="squadServerUrl" value="wss://sm.dunhas.com" placeholder="wss://sm.dunhas.com" style="width:100%; margin-top:4px; background:#ffffff; border:1px solid var(--border-main); border-radius:var(--radius-xs); padding:4px 8px; color:#111111; font-family:'JetBrains Mono', monospace; font-size:11px;">
                     </details>
 
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:4px;">
@@ -723,8 +660,8 @@
                             <i class="fa-solid fa-plus-circle"></i> Create Room (Host)
                         </button>
                         <div style="display:flex; gap:4px;">
-                            <input type="text" id="squadRoomInput" placeholder="Room Code" style="flex:1; background:#181c24; border:1px solid rgba(255,255,255,0.15); border-radius:4px; padding:0 8px; color:#fff; font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase;">
-                            <button class="btn btn-tool" id="btnJoinRoom" style="border-color:var(--color-portal); color:#c084fc;">
+                            <input type="text" id="squadRoomInput" placeholder="Room Code" style="flex:1; background:#ffffff; border:1px solid var(--border-main); border-radius:var(--radius-xs); padding:0 8px; color:#111111; font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase;">
+                            <button class="btn btn-tool" id="btnJoinRoom">
                                 <i class="fa-solid fa-right-to-bracket"></i> Join
                             </button>
                         </div>
@@ -732,14 +669,14 @@
                 </div>
 
                 <div id="squadActivePanel" style="display:none; flex-direction:column; gap:12px;">
-                    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); border-radius:6px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:#f5f5f5; border:1px solid var(--border-main); border-radius:var(--radius-xs);">
                         <div>
                             <span style="font-size:10px; color:var(--text-dim); text-transform:uppercase; font-family:'JetBrains Mono', monospace;">Active Room Code</span>
-                            <h3 id="activeRoomCode" style="font-size:16px; color:#c084fc; font-family:'JetBrains Mono', monospace; margin:0;">#SQUAD-1</h3>
+                            <h3 id="activeRoomCode" style="font-size:16px; color:var(--sm-orange); font-family:'JetBrains Mono', monospace; margin:0;">#SQUAD-1</h3>
                         </div>
                         <div style="display:flex; gap:6px;">
                             <button class="btn btn-tool" id="btnCopyRoomCode" title="Copy Code"><i class="fa-solid fa-copy"></i></button>
-                            <button class="btn btn-tool" id="btnLeaveRoom" style="color:#ef4444;" title="Leave"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                            <button class="btn btn-tool" id="btnLeaveRoom" style="color:#cf1322;" title="Leave"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
                         </div>
                     </div>
                     <div>
@@ -765,38 +702,38 @@
                         <div class="settings-item">
                             <label for="cfgRadarRange">Default Scope Range</label>
                             <select id="cfgRadarRange" class="settings-select">
-                                <option value="50">50 Meters (Close CQB)</option>
-                                <option value="100">100 Meters</option>
-                                <option value="150" selected>150 Meters (Default)</option>
-                                <option value="300">300 Meters (Long Range)</option>
-                                <option value="500">500 Meters (Maximum)</option>
+                                <option value="50">50m (CQB)</option>
+                                <option value="100">100m</option>
+                                <option value="150" selected>150m (Default)</option>
+                                <option value="300">300m (Long)</option>
+                                <option value="500">500m (Max)</option>
                             </select>
                         </div>
                         <div class="settings-item">
-                            <label for="cfgRadarVerticalBand">Vertical Altitude Filter (Z-Axis)</label>
+                            <label for="cfgRadarVerticalBand">Vertical Band (Z-Axis)</label>
                             <select id="cfgRadarVerticalBand" class="settings-select">
-                                <option value="10">±10 Meters (~40 Blocks - Single Floor)</option>
-                                <option value="20" selected>±20 Meters (~80 Blocks - Default)</option>
-                                <option value="35">±35 Meters (~140 Blocks - Multi-Story)</option>
-                                <option value="50">±50 Meters (~200 Blocks - Mountain/Valley)</option>
-                                <option value="9999">Unlimited (No Vertical Cutoff)</option>
+                                <option value="10">±10m (~40b)</option>
+                                <option value="20" selected>±20m (Default)</option>
+                                <option value="35">±35m (~140b)</option>
+                                <option value="50">±50m (~200b)</option>
+                                <option value="9999">Unlimited</option>
                             </select>
                         </div>
                         <div class="settings-item">
                             <label for="cfgRadarCreationMin">Creation Filter Threshold</label>
                             <select id="cfgRadarCreationMin" class="settings-select">
-                                <option value="1">All Dynamic Objects (No Filter)</option>
-                                <option value="20">≥ 20 Blocks (Small Parts)</option>
-                                <option value="50" selected>≥ 50 Blocks (Default Vehicles)</option>
-                                <option value="100">≥ 100 Blocks (Medium Vehicles)</option>
-                                <option value="250">≥ 250 Blocks (Large Bases/Rigs)</option>
+                                <option value="1">All Objects</option>
+                                <option value="20">≥ 20 Blocks</option>
+                                <option value="50" selected>≥ 50b (Default)</option>
+                                <option value="100">≥ 100 Blocks</option>
+                                <option value="250">≥ 250 Blocks</option>
                             </select>
                         </div>
                         <div class="settings-item">
                             <label for="cfgRadarCenterMode">Radar Center Reference</label>
                             <select id="cfgRadarCenterMode" class="settings-select">
-                                <option value="player" selected>Player Centered (Rotating FWD Heading)</option>
-                                <option value="camera">Map Camera Centered (Fixed North)</option>
+                                <option value="player" selected>Player Centered</option>
+                                <option value="camera">Map Camera (North)</option>
                             </select>
                         </div>
                         <div class="settings-item">
@@ -804,9 +741,9 @@
                             <select id="cfgRadarBlipScale" class="settings-select">
                                 <option value="0.85">Small (0.85x)</option>
                                 <option value="1.0">Standard (1.0x)</option>
-                                <option value="1.25" selected>Medium / High Visibility (1.25x - Default)</option>
+                                <option value="1.25" selected>Medium (1.25x)</option>
                                 <option value="1.5">Large (1.5x)</option>
-                                <option value="1.8">Extra Large (1.8x)</option>
+                                <option value="1.8">XL (1.8x)</option>
                             </select>
                         </div>
                     </div>
@@ -818,35 +755,35 @@
                     <div class="settings-grid">
                         <div class="settings-item">
                             <label for="cfgDisplayMode">Active Display Mode</label>
-                            <select id="cfgDisplayMode" class="settings-select" style="margin-top:4px;">
-                                <option value="in-app" selected>In App (Standard Desktop Workstation)</option>
-                                <option value="radar-in-game">Radar In Game (HUD Floats Over Game)</option>
-                                <option value="all-in-game">All In Game (Radar + [M] Full Map Overlay)</option>
+                            <select id="cfgDisplayMode" class="settings-select">
+                                <option value="in-app" selected>In App (Desktop)</option>
+                                <option value="radar-in-game">Radar (In-Game)</option>
+                                <option value="all-in-game">All In Game [M]</option>
                             </select>
                         </div>
                         <div class="settings-item">
-                            <label for="cfgMapOverlayShortcut">In-Game Map Summon Hotkey</label>
-                            <div style="display:flex; gap:6px; margin-top:4px;">
-                                <input type="text" id="cfgMapOverlayShortcut" value="M" readonly style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#00e5ff; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; text-align:center; border-radius:4px; padding:4px 8px; cursor:pointer;" title="Click Rebind, then press any key (e.g. M)">
-                                <button class="btn btn-tool" id="cfgBtnRecordMapShortcut" title="Click to record new keybind">Rebind</button>
+                            <label for="cfgMapOverlayShortcut">Map Summon Hotkey</label>
+                            <div style="display:flex; gap:4px; align-items:center; flex-shrink:0;">
+                                <input type="text" id="cfgMapOverlayShortcut" value="M" readonly style="width:36px; height:24px; background:#ffffff; border:1px solid var(--border-main); color:var(--sm-orange); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; text-align:center; border-radius:var(--radius-xs); cursor:pointer;" title="Click Rebind, then press any key (e.g. M)">
+                                <button class="btn btn-tool" id="cfgBtnRecordMapShortcut" style="height:24px; padding:0 6px; font-size:10px;" title="Click to record new keybind">Rebind</button>
                             </div>
                         </div>
                         <div class="settings-item">
-                            <label for="cfgOverlayShortcut">Radar Edit / Reposition Hotkey</label>
-                            <div style="display:flex; gap:6px; margin-top:4px;">
-                                <input type="text" id="cfgOverlayShortcut" value="F9" readonly style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-color); color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; text-align:center; border-radius:4px; padding:4px 8px; cursor:pointer;" title="Click Rebind, then press any key or combination">
-                                <button class="btn btn-tool" id="cfgBtnRecordShortcut" title="Click to record new keybind">Rebind</button>
+                            <label for="cfgOverlayShortcut">Radar Hotkey</label>
+                            <div style="display:flex; gap:4px; align-items:center; flex-shrink:0;">
+                                <input type="text" id="cfgOverlayShortcut" value="F9" readonly style="width:36px; height:24px; background:#ffffff; border:1px solid var(--border-main); color:var(--sm-orange); font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; text-align:center; border-radius:var(--radius-xs); cursor:pointer;" title="Click Rebind, then press any key or combination">
+                                <button class="btn btn-tool" id="cfgBtnRecordShortcut" style="height:24px; padding:0 6px; font-size:10px;" title="Click to record new keybind">Rebind</button>
                             </div>
                         </div>
                         <div class="settings-item">
-                            <label>Quick Overlay Window Control</label>
-                            <button class="btn btn-tool" id="cfgBtnToggleOverlay" style="margin-top:4px; width:100%; justify-content:center;">
-                                <i class="fa-solid fa-satellite-dish"></i> <span id="cfgOverlayBtnText">Launch In-Game HUD</span>
+                            <label>Quick Overlay</label>
+                            <button class="btn btn-tool" id="cfgBtnToggleOverlay" style="height:24px; padding:0 8px; font-size:10px; flex-shrink:0;">
+                                <i class="fa-solid fa-satellite-dish"></i> <span id="cfgOverlayBtnText">Launch HUD</span>
                             </button>
                         </div>
                     </div>
                     <div style="font-size:11px; color:var(--text-muted); margin-top:8px; line-height:1.4;">
-                        <i class="fa-solid fa-info-circle" style="color:#38bdf8;"></i> Scrap Mechanic must run in <strong>Borderless Windowed</strong> or <strong>Windowed</strong> mode. In <strong>All In Game</strong> mode, press your map hotkey (<kbd style="background:#1e293b; padding:1px 5px; border-radius:3px; color:#00e5ff;">M</kbd>) anytime in-game to summon the full interactive tactical map, and press <kbd style="background:#1e293b; padding:1px 5px; border-radius:3px; color:#fff;">Esc</kbd> or <kbd style="background:#1e293b; padding:1px 5px; border-radius:3px; color:#00e5ff;">M</kbd> to return to the game.
+                        <i class="fa-solid fa-info-circle" style="color:var(--sm-orange);"></i> Scrap Mechanic must run in <strong>Borderless Windowed</strong> or <strong>Windowed</strong> mode. In <strong>All In Game</strong> mode, press your map hotkey (<kbd class="kbd-key">M</kbd>) anytime in-game to summon the full interactive tactical map, and press <kbd class="kbd-key">Esc</kbd> or <kbd class="kbd-key">M</kbd> to return to the game.
                     </div>
                 </div>
 
@@ -856,7 +793,7 @@
                     <div style="display:flex; flex-direction:column; gap:8px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                             <div>
-                                <div style="font-size:12px; font-weight:700; color:#fff;">Game Installation Path</div>
+                                <div style="font-size:12px; font-weight:700; color:#111111;">Game Installation Path</div>
                                 <div style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono', monospace;" id="cfgGamePathDisplay">Auto-detecting...</div>
                             </div>
                             <div style="display:flex; gap:6px;">
@@ -872,32 +809,23 @@
                     <h3 class="help-section-title"><i class="fa-solid fa-map"></i> 4. Visual & Map Rendering</h3>
                     <div class="settings-grid">
                         <div class="settings-item">
-                            <label for="cfgMapOpacity">Terrain Map Opacity</label>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <input type="range" id="cfgMapOpacity" min="0.2" max="1.0" step="0.05" value="0.9" style="flex:1;">
-                                <span id="cfgMapOpacityVal" style="font-family:'JetBrains Mono', monospace; font-size:11px; color:#38bdf8; min-width:35px;">90%</span>
+                            <label for="cfgMapOpacity">Terrain Opacity</label>
+                            <div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">
+                                <input type="range" id="cfgMapOpacity" min="0.2" max="1.0" step="0.05" value="0.9" style="width:80px; height:4px;">
+                                <span id="cfgMapOpacityVal" style="font-family:'JetBrains Mono', monospace; font-size:10.5px; color:var(--sm-orange); font-weight:700; min-width:28px;">90%</span>
                             </div>
                         </div>
                         <div class="settings-item">
                             <label for="cfgTerrainSmooth">Terrain HD Smoothing</label>
-                            <label class="mech-switch-wrap" style="margin-top:4px;">
-                                <input type="checkbox" id="cfgTerrainSmooth" checked>
-                                <span class="mech-switch"></span>
-                            </label>
+                            <input type="checkbox" id="cfgTerrainSmooth" checked>
                         </div>
                         <div class="settings-item">
                             <label for="cfgTerrainBlend">Terrain Edge Blending</label>
-                            <label class="mech-switch-wrap" style="margin-top:4px;">
-                                <input type="checkbox" id="cfgTerrainBlend" checked>
-                                <span class="mech-switch"></span>
-                            </label>
+                            <input type="checkbox" id="cfgTerrainBlend" checked>
                         </div>
                         <div class="settings-item">
                             <label for="cfgShowCoordinates">Coordinates Overlay HUD</label>
-                            <label class="mech-switch-wrap" style="margin-top:4px;">
-                                <input type="checkbox" id="cfgShowCoordinates">
-                                <span class="mech-switch"></span>
-                            </label>
+                            <input type="checkbox" id="cfgShowCoordinates">
                         </div>
                     </div>
                 </div>
@@ -908,10 +836,7 @@
                     <div class="settings-grid">
                         <div class="settings-item">
                             <label for="cfgAutoSyncSave">Auto-Sync Active Survival Save</label>
-                            <label class="mech-switch-wrap" style="margin-top:4px;">
-                                <input type="checkbox" id="cfgAutoSyncSave" checked>
-                                <span class="mech-switch"></span>
-                            </label>
+                            <input type="checkbox" id="cfgAutoSyncSave" checked>
                         </div>
                         <div class="settings-item">
                             <label for="cfgSyncInterval">Save Polling Frequency</label>
@@ -941,10 +866,10 @@
                     <h3 class="help-section-title"><i class="fa-solid fa-gamepad" style="color:var(--sm-orange);"></i> 1. In-Game Overlays & Display Modes</h3>
                     <p class="help-section-desc">Seamlessly play <em>Scrap Mechanic</em> with in-game tactical heads-up overlays without alt-tabbing (requires <strong>Borderless Windowed</strong> or <strong>Windowed</strong> mode):</p>
                     <ul class="help-list">
-                        <li><i class="fa-solid fa-map-location-dot" style="color:#fbbf24;"></i> <div><strong>All In Game Mode [M]</strong>: Press <kbd class="kbd-key">M</kbd> anytime in-game to summon the full interactive tactical map over your game. Press <kbd class="kbd-key">Esc</kbd>, <kbd class="kbd-key">M</kbd>, or click <em>Return to Game</em> to dismiss the map and automatically restore game focus and 3D mouse look.</div></li>
-                        <li><i class="fa-solid fa-satellite-dish" style="color:#4ade80;"></i> <div><strong>Radar In Game Mode [F9]</strong>: Proximity radar floats unobtrusively over the game. Press <kbd class="kbd-key">F9</kbd> in-game to unlock the radar HUD for dragging and resizing.</div></li>
-                        <li><i class="fa-solid fa-crosshairs" style="color:#00e5ff;"></i> <div><strong>Game-Focus Protected Hotkeys</strong>: Shortcuts (<kbd class="kbd-key">M</kbd> / <kbd class="kbd-key">F9</kbd>) only trigger when <em>Scrap Mechanic</em> is the active window, preventing conflicts while typing in Discord, browser, or other apps.</div></li>
-                        <li><i class="fa-solid fa-layer-group" style="color:#38bdf8;"></i> <div><strong>Collapsible Sidebar & POI Waypoints</strong>: In-game mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs) with live distance and perimeter waypoints.</div></li>
+                        <li><i class="fa-solid fa-map-location-dot" style="color:var(--sm-orange);"></i> <div><strong>All In Game Mode [M]</strong>: Press <kbd class="kbd-key">M</kbd> anytime in-game to summon the full interactive tactical map over your game. Press <kbd class="kbd-key">Esc</kbd>, <kbd class="kbd-key">M</kbd>, or click <em>Return to Game</em> to dismiss the map and automatically restore game focus and 3D mouse look.</div></li>
+                        <li><i class="fa-solid fa-satellite-dish" style="color:var(--sm-orange);"></i> <div><strong>Radar In Game Mode [F9]</strong>: Proximity radar floats unobtrusively over the game. Press <kbd class="kbd-key">F9</kbd> in-game to unlock the radar HUD for dragging and resizing.</div></li>
+                        <li><i class="fa-solid fa-crosshairs" style="color:var(--sm-orange);"></i> <div><strong>Game-Focus Protected Hotkeys</strong>: Shortcuts (<kbd class="kbd-key">M</kbd> / <kbd class="kbd-key">F9</kbd>) only trigger when <em>Scrap Mechanic</em> is the active window, preventing conflicts while typing in Discord, browser, or other apps.</div></li>
+                        <li><i class="fa-solid fa-layer-group" style="color:var(--sm-orange);"></i> <div><strong>Collapsible Sidebar & POI Waypoints</strong>: In-game mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs) with live distance and perimeter waypoints.</div></li>
                     </ul>
                 </div>
 
@@ -963,9 +888,9 @@
                     <h3 class="help-section-title"><i class="fa-solid fa-radar" style="color:var(--sm-orange);"></i> 3. Tactical Proximity Radar & DLL Bridge</h3>
                     <p class="help-section-desc">A 360° military scope in the bottom-right corner powered by the bundled <strong>Proxy DLL Bridge (<code>dinput8.dll</code>)</strong> for real-time threat detection.</p>
                     <ul class="help-list">
-                        <li><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i> <div><strong>Hostile Threat Arrows</strong>: Farmbots, Tapebots, Haybots, and Totebots render as pure red icons with clear directional altitude arrows (<strong>▲ Above</strong>, <strong>▼ Below</strong>, <strong>● Same Level</strong>).</div></li>
-                        <li><i class="fa-solid fa-seedling" style="color:#4ade80;"></i> <div><strong>Passive & Wildlife Filtering</strong>: Seedbots, Caged Farmers, Traders, Wocs, and Glowbugs appear as soft green dots and never trigger danger alerts.</div></li>
-                        <li><i class="fa-solid fa-car" style="color:#00e5ff;"></i> <div><strong>Creations & Vehicles</strong>: Dynamic vehicles with 50+ blocks are tracked with distance and altitude chevrons.</div></li>
+                        <li><i class="fa-solid fa-triangle-exclamation" style="color:#cf1322;"></i> <div><strong>Hostile Threat Arrows</strong>: Farmbots, Tapebots, Haybots, and Totebots render with clear directional altitude arrows (<strong>▲ Above</strong>, <strong>▼ Below</strong>, <strong>● Same Level</strong>).</div></li>
+                        <li><i class="fa-solid fa-seedling" style="color:var(--sm-orange);"></i> <div><strong>Passive & Wildlife Filtering</strong>: Seedbots, Caged Farmers, Traders, Wocs, and Glowbugs appear as soft dots and never trigger danger alerts.</div></li>
+                        <li><i class="fa-solid fa-car" style="color:var(--sm-orange);"></i> <div><strong>Creations & Vehicles</strong>: Dynamic vehicles with 50+ blocks are tracked with distance and altitude chevrons.</div></li>
                         <li><i class="fa-solid fa-plug" style="color:var(--sm-orange);"></i> <div><strong>1-Click Radar Install & Restart</strong>: If the DLL is missing, click <em>"Install Radar"</em> and <em>"Restart Game"</em> in the radar footer or browse your custom game folder under <strong>Settings (⚙️)</strong>.</div></li>
                     </ul>
                 </div>
@@ -973,7 +898,7 @@
                 <!-- 4. Loading Your World Save -->
                 <div class="help-section">
                     <h3 class="help-section-title"><i class="fa-solid fa-folder-open"></i> 4. Loading Your World Save</h3>
-                    <p class="help-section-desc">Click <strong style="color:#fff;">Select Save</strong> in the top header or drag & drop your <code>.db</code> save file anywhere onto the window.</p>
+                    <p class="help-section-desc">Click <strong style="color:#111111;">Select Save</strong> in the top header or drag & drop your <code>.db</code> save file anywhere onto the window.</p>
                     <code class="code-block">%AppData%\Axolot Games\Scrap Mechanic\User\User_&lt;SteamID&gt;\Save\Survival\&lt;SaveName&gt;.db</code>
                     <p class="help-section-desc">Loading a save parses all 12,288 world cells, Point-of-Interests, Warehouses, Trader hideouts, Oil nodes, player chests, and built vehicles.</p>
                 </div>
@@ -993,10 +918,8 @@
                     <h3 class="help-section-title"><i class="fa-solid fa-toolbox"></i> 6. Tactical Tools & Features</h3>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-magnifying-glass"></i> <div><strong>Inspector Panel</strong>: Click any landmark, vehicle, chest, trader, or robot on the map to inspect coordinates, contents, and health in the slide-out inspector.</div></li>
-                        <li><i class="fa-solid fa-ruler-combined"></i> <div><strong>Measure Tool</strong>: Click <strong>Measure</strong> then pick any two points on the map to measure exact distance in blocks and meters.</div></li>
                         <li><i class="fa-solid fa-layer-group"></i> <div><strong>Layer Filters</strong>: Toggle individual overlays in the left sidebar (Warehouses, Traders, Oil Ponds, Ruin Buildings, Cotton, Beacons, and Vehicles).</div></li>
                         <li><i class="fa-solid fa-bookmark"></i> <div><strong>Bookmarks & Search</strong>: Save custom waypoints with notes or search POIs and creations instantly.</div></li>
-                        <li><i class="fa-solid fa-camera"></i> <div><strong>Snapshot</strong>: Click <strong>Snapshot</strong> to capture and download a crisp, high-resolution PNG export of your current map view.</div></li>
                     </ul>
                 </div>
 
@@ -1007,7 +930,7 @@
                         <li><i class="fa-solid fa-hand-pointer"></i> <div><span class="kbd-key">Left Click + Drag</span> — Pan the tactical map.</div></li>
                         <li><i class="fa-solid fa-arrows-up-down"></i> <div><span class="kbd-key">Mouse Wheel</span> — Smooth zoom in and out.</div></li>
                         <li><i class="fa-solid fa-arrow-pointer"></i> <div><span class="kbd-key">Left Click</span> — Inspect entities, POIs, and creations.</div></li>
-                        <li><i class="fa-solid fa-xmark"></i> <div><span class="kbd-key">Esc</span> — Close active modals and deactivate measurement tool.</div></li>
+                        <li><i class="fa-solid fa-xmark"></i> <div><span class="kbd-key">Esc</span> — Close active modals and drawers.</div></li>
                     </ul>
                 </div>
             </div>

@@ -1,56 +1,106 @@
-/* Scrap Mechanic Tactical Map - Barebones Default HTML Layout Styling */
+/* Scrap Mechanic Tactical Map - Clean Slate Default HTML & Industrial Palette */
 
 :root {
-    /* Safety Orange Accent */
-    --sm-orange: #ff7a00;
-    --sm-orange-hover: #e06900;
-    --sm-orange-active: #c2410c;
-    --sm-orange-subtle: rgba(255, 122, 0, 0.1);
+    /* Safety Orange Primary Accent - Muted Industrial Warm Tone with Opacity */
+    --sm-orange: #d95c0094;
+    --sm-orange-alpha: rgb(217 92 0 / 80%);
+    --sm-orange-hover: rgba(189, 78, 0, 0.95);
+    --sm-orange-active: rgba(158, 63, 0, 1);
+    --sm-orange-subtle: rgba(217, 92, 0, 0.08);
+    --sm-orange-border: rgba(217, 92, 0, 0.90);
 
-    /* Barebones Clean Light/Neutral Palette */
-    --bg-workbench: #f8fafc;
-    --bg-panel: #ffffff;
-    --bg-panel-darker: #f1f5f9;
-    --bg-panel-header: #ffffff;
-    --bg-panel-border: #cbd5e1;
-    --border-main: #cbd5e1;
-    --border-subtle: #e2e8f0;
-
-    /* Card & Control Elements */
+    /* Clean Slate Light Surfaces */
+    --bg-workbench: rgb(94, 94, 94);
+    --bg-panel: rgb(168, 168, 168);
+    --bg-panel-subtle: rgb(190, 190, 190);
+    --bg-panel-inset: #f5f5f5;
+    --bg-panel-hover: #e8e8e8;
+    --bg-panel-active: #dddddd;
     --bg-card: #ffffff;
-    --bg-card-hover: #f8fafc;
-    --bg-card-active: #e2e8f0;
-    --bg-card-poi-active: #fff7ed;
-    --border-card: #e2e8f0;
-    --border-card-poi: #ff7a00;
+    --bg-card-hover: #f5f5f5;
+    --bg-card-active: #ebebeb;
 
-    /* High-Contrast Black & Slate Typography */
+    /* Borders */
+    --border-main: #cccccc;
+    --border-subtle: #e0e0e0;
+    --border-hover: #bbbbbb;
+    --border-strong: #999999;
+    --border-dark: #333333;
+
+    /* High-Contrast Typography */
     --text-bright: #000000;
-    --text-main: #000000;
-    --text-muted: #334155;
-    --text-dim: #64748b;
-    --text-orange: #ea580c;
-    --text-cyan: #0284c7;
-    --text-green: #16a34a;
-    --text-gold: #d97706;
-    --text-red: #dc2626;
+    --text-main: #111111;
+    --text-muted: #000000;
+    --text-dim: #777777;
+    --text-inverse: #ffffff;
+    --text-on-dark: #ffffff;
+    --text-dim-on-dark: #aaaaaa;
 
-    /* Category Colors */
-    --color-poi: #d97706;
-    --color-schematic: #0284c7;
-    --color-creation: #0891b2;
-    --color-unit: #dc2626;
-    --color-harvestable: #16a34a;
-    --color-portal: #9333ea;
-    --color-player: #0284c7;
+    /* Dark Surfaces for HUD, Tablet & Inset Controls */
+    --bg-dark-chassis: #181818;
+    --bg-dark-bezel: #222222;
+    --bg-dark-panel: #1e1e1e;
+    --bg-dark-card: #282828;
+    --bg-dark-input: #121212;
 
-    /* Crisp Standard Radii */
+    /* Category & Status Colors */
+    --color-poi: #cc7a00;
+    /* Industrial Ochre */
+    --color-schematic: #1870d5;
+    /* Steel Blue */
+    --color-creation: #008080;
+    /* Teal */
+    --color-unit: #cf1322;
+    /* Crimson Alert */
+    --color-harvestable: #237804;
+    /* Botany Forest Green */
+    --color-portal: #722ed1;
+    /* Amethyst */
+    --color-player: #0050b3;
+    /* Deep Cobalt */
+    --color-live-green: #389e0d;
+    /* Clean Kelly Green */
+    --color-danger: #cf1322;
+    --color-warning: #d46b08;
+    --color-info: #1870d5;
+
+    /* Crisp Angular Radii (Kill the rounded-2xl reflex: max 2px-3px) */
+    --radius-none: 0px;
     --radius-xs: 2px;
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 10px;
-    --radius-xl: 14px;
-    --radius-full: 9999px;
+    --radius-sm: 2px;
+    --radius-md: 3px;
+    --radius-lg: 4px;
+    --radius-full: 2px;
+
+    /* Crisp borders & subtle mechanical elevations */
+    --shadow-flat: 0 1px 2px rgba(0, 0, 0, 0.08);
+    --shadow-pop: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Instant Dark Mode Theme Override */
+[data-theme="dark"] {
+    --bg-workbench: #121418;
+    --bg-panel: #1a1d24;
+    --bg-panel-subtle: #222630;
+    --bg-panel-inset: #16181f;
+    --bg-panel-hover: #2a303c;
+    --bg-panel-active: #323947;
+    --bg-card: #1e222b;
+    --bg-card-hover: #262c38;
+    --bg-card-active: #303746;
+
+    --border-main: #2d333f;
+    --border-subtle: #232730;
+    --border-hover: #3d4554;
+    --border-strong: #4a5468;
+    --border-dark: #555e6d;
+
+    --text-bright: #ffffff;
+    --text-main: #e6e6e6;
+    --text-muted: #9ba3af;
+    --text-dim: #6b7280;
+    --text-inverse: #111111;
 }
 
 * {
@@ -61,7 +111,8 @@
     -webkit-font-smoothing: antialiased;
 }
 
-body, html {
+body,
+html {
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -75,15 +126,18 @@ body, html {
     width: 6px;
     height: 6px;
 }
+
 ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: var(--bg-panel-inset);
 }
+
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 2px;
+    background: var(--border-main);
+    border-radius: var(--radius-xs);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: var(--border-strong);
 }
 
 .monospace,
@@ -99,7 +153,6 @@ body, html {
 .live-status-sub-text,
 .coord-tag,
 .scale-text,
-.ruler-stats,
 .radar-title,
 .radar-threat-badge,
 .radar-mode-badge,
@@ -111,66 +164,28 @@ body, html {
     font-variant-numeric: tabular-nums;
 }
 
-/* Hex Bolt & Screw Corner Elements */
-.bolt-screw {
-    width: var(--screw-size);
-    height: var(--screw-size);
-    border-radius: 50%;
-    background: var(--screw-head);
-    border: 1px solid #1e293b;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.8), 0 1px 3px rgba(0, 0, 0, 0.6);
-    position: relative;
-    display: inline-block;
-    flex-shrink: 0;
-}
-.bolt-screw::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 20%;
-    right: 20%;
-    height: 2px;
-    background: #334155;
-    transform: translateY(-50%) rotate(45deg);
-    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.4);
-}
-
 /* Stamped Metal Badge Plate */
 .stamped-metal-badge {
-    background: linear-gradient(180deg, #333c4d 0%, #1e2430 100%);
-    border: 1px solid #4a5568;
+    background: var(--bg-dark-card);
+    border: 1px solid var(--border-dark);
     border-radius: var(--radius-xs);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 2px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
 }
 
-/* Warning Hazard Stripe Borders */
-.hazard-trim-bottom {
-    position: relative;
-}
-.hazard-trim-bottom::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--hazard-stripe-caution);
-    opacity: 0.9;
-}
-
-.hazard-trim-left {
-    border-left: 3.5px solid #f59e0b !important;
-}
-
 /* Inset Cast Iron Bevel Panel */
 .panel-inset-beveled {
-    background: var(--sm-cast-iron);
-    box-shadow: var(--sm-panel-inset);
-    border: 1px solid var(--sm-slate-border);
+    background: var(--bg-dark-panel);
+    border: 1px solid var(--border-dark);
     border-radius: var(--radius-sm);
 }
 
+/* Range & Checkbox Inputs */
+input[type="range"],
+input[type="checkbox"] {
+    accent-color: var(--sm-orange);
+    cursor: pointer;
+}
