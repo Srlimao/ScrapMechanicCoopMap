@@ -1,24 +1,30 @@
 /* Physical Hardware Gadgets: Analog Compass Gauge & CRT Radar Module */
 
-/* Physical Analog Compass Gauge attached to Right Bezel */
+/* Analog Compass Gauge docked in Bottom-Right HUD */
 .hardware-compass-widget {
     position: absolute;
-    right: -42px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 94px;
-    height: 94px;
+    bottom: 10px;
+    right: 12px;
+    width: 78px;
+    height: 78px;
     border-radius: 50%;
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 45%, #78350f 100%);
-    border: 3.5px solid #451a03;
+    border: 2.5px solid #451a03;
     box-shadow: 
-        0 12px 30px rgba(0, 0, 0, 0.8),
-        inset 0 2px 4px rgba(255, 255, 255, 0.7),
-        inset 0 -3px 8px rgba(0, 0, 0, 0.85);
+        0 6px 16px rgba(0, 0, 0, 0.75),
+        inset 0 2px 3px rgba(255, 255, 255, 0.7),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.85);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 35;
+    z-index: 32;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hardware-compass-widget:hover {
+    transform: scale(1.06);
 }
 
 /* Outer knurled brass ring ridges */
@@ -32,32 +38,32 @@
 }
 
 .compass-dial-face {
-    width: 74px;
-    height: 74px;
+    width: 62px;
+    height: 62px;
     border-radius: 50%;
     background: radial-gradient(circle, #1a202c 0%, #131720 75%, #0b0e14 100%);
-    border: 2px solid #334155;
+    border: 1.5px solid #334155;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.95);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.95);
 }
 
 .compass-cardinal-n {
     position: absolute;
-    top: 3px;
-    font-size: 11.5px;
+    top: 2px;
+    font-size: 10.5px;
     font-weight: 900;
     color: #ef4444;
     font-family: 'JetBrains Mono', monospace;
-    text-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+    text-shadow: 0 0 5px rgba(239, 68, 68, 0.6);
 }
 
 .compass-cardinal-s {
     position: absolute;
-    bottom: 3px;
-    font-size: 9px;
+    bottom: 2px;
+    font-size: 8.5px;
     font-weight: 800;
     color: #94a3b8;
     font-family: 'JetBrains Mono', monospace;
@@ -65,8 +71,8 @@
 
 .compass-cardinal-e {
     position: absolute;
-    right: 4px;
-    font-size: 9px;
+    right: 3px;
+    font-size: 8.5px;
     font-weight: 800;
     color: #94a3b8;
     font-family: 'JetBrains Mono', monospace;
@@ -74,8 +80,8 @@
 
 .compass-cardinal-w {
     position: absolute;
-    left: 4px;
-    font-size: 9px;
+    left: 3px;
+    font-size: 8.5px;
     font-weight: 800;
     color: #94a3b8;
     font-family: 'JetBrains Mono', monospace;
@@ -83,8 +89,8 @@
 
 /* 3D Magnetic Needle with Physics Spring Feel */
 .compass-needle-3d {
-    width: 8px;
-    height: 54px;
+    width: 6px;
+    height: 46px;
     position: relative;
     transform-origin: center center;
     transition: transform 0.28s cubic-bezier(0.34, 1.45, 0.64, 1);
@@ -96,10 +102,10 @@
     left: 0;
     width: 0;
     height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 27px solid #ef4444;
-    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.75));
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 23px solid #ef4444;
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.75));
 }
 
 .needle-south {
@@ -108,9 +114,9 @@
     left: 0;
     width: 0;
     height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 27px solid #94a3b8;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 23px solid #94a3b8;
 }
 
 .needle-center-cap {
@@ -118,23 +124,23 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: radial-gradient(circle, #f8fafc 30%, #475569 100%);
     border: 1px solid #1e293b;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
     z-index: 5;
 }
 
 .compass-glass-glare {
     position: absolute;
     top: 2px;
-    left: 4px;
-    width: 66px;
-    height: 33px;
-    border-radius: 66px 66px 0 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
+    left: 3px;
+    width: 56px;
+    height: 28px;
+    border-radius: 56px 56px 0 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 100%);
     pointer-events: none;
 }
 
