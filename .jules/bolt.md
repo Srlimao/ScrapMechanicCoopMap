@@ -1,0 +1,3 @@
+## 2026-08-20 - World-Space View Frustum Culling for Canvas Entities
+**Learning:** In 2D HTML Canvas render loops, converting world coordinates to screen coordinates (`worldToScreen`) and evaluating sub-filter strings for thousands of off-screen entities on every frame creates unnecessary CPU overhead. Pre-calculating world-space view frustum bounding box (`minX`, `maxX`, `minY`, `maxY`) using camera position and zoom level allows instant culling of off-screen entities before expensive coordinate transforms and string operations.
+**Action:** Always compute world-space view bounds once per frame/layer render pass when rendering large entity collections on HTML Canvas.

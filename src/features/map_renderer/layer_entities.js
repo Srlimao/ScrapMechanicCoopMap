@@ -8,6 +8,23 @@ export function clearLabelCollisionGrid() {
     occupiedLabelBoxes = [];
 }
 
+/**
+ * Calculates world-space view frustum bounding box for off-screen entity culling.
+ * Pre-computing world bounds eliminates unnecessary coordinate transforms (worldToScreen)
+ * and expensive string/sub-filter parsing for off-screen entities.
+ */
+function getWorldViewBounds(width, height, marginPx = 50) {
+    const margin = marginPx / state.zoom;
+    const halfW = (width / 2) / state.zoom;
+    const halfH = (height / 2) / state.zoom;
+    return {
+        minX: state.cameraX - halfW - margin,
+        maxX: state.cameraX + halfW + margin,
+        minY: state.cameraY - halfH - margin,
+        maxY: state.cameraY + halfH + margin
+    };
+}
+
 export function renderEntitiesLayer(ctx, width, height) {
     const data = state.mapData;
     if (!data) return;
@@ -50,9 +67,17 @@ export function renderEntitiesLayer(ctx, width, height) {
 
 function renderPOIs(ctx, pois, width, height) {
     ctx.save();
+    // Optimization: Calculate world-space view frustum bounds once to cull off-screen POIs early
+    const view = getWorldViewBounds(width, height, 50);
+
     for (const poi of pois) {
         const isHovered = state.hoveredEntity === poi;
         const isSelected = state.selectedEntity === poi;
+
+        // Early world-space frustum culling before sub-filters and coordinate math
+        if (!isSelected && !isHovered && (poi.x < view.minX || poi.x > view.maxX || poi.y < view.minY || poi.y > view.maxY)) {
+            continue;
+        }
 
         const name = (poi.name || '').toLowerCase();
         const cat = (poi.category || '').toLowerCase();
@@ -93,11 +118,19 @@ function renderCreations(ctx, creations, width, height) {
     ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
     ctx.lineWidth = 1.5;
 
+    // Optimization: Calculate world-space view frustum bounds once to cull off-screen creations early
+    const view = getWorldViewBounds(width, height, 50);
+
     for (const cr of creations) {
         const isHovered = state.hoveredEntity === cr;
         const isSelected = state.selectedEntity === cr;
 
         if (state.zoom < 0.18 && !isSelected && !isHovered) continue;
+
+        // Early world-space frustum culling before size sub-filters and screen transforms
+        if (!isSelected && !isHovered && (cr.maxX < view.minX || cr.minX > view.maxX || cr.maxY < view.minY || cr.minY > view.maxY)) {
+            continue;
+        }
 
         // Size filter: Small (<50b), Medium (50-500b), Large (500b+)
         if (state.subFilters.creationsSize === 'small' && cr.blocks >= 50) continue;
@@ -178,9 +211,18 @@ function drawIconBadge(ctx, x, y, radius, iconClass, color, isSelected, isHovere
 
 function renderUnits(ctx, units, width, height) {
     ctx.save();
+    // Optimization: Calculate world-space view frustum bounds once to cull off-screen units early
+    const view = getWorldViewBounds(width, height, 20);
+
     for (const u of units) {
         const isHovered = state.hoveredEntity === u;
         const isSelected = state.selectedEntity === u;
+
+        // Early world-space frustum culling before sub-filters and coordinate transforms
+        if (!isSelected && !isHovered && (u.x < view.minX || u.x > view.maxX || u.y < view.minY || u.y > view.maxY)) {
+            continue;
+        }
+
         const sub = u.subType || u.category;
         const isBoss = sub === 'boss';
 
@@ -221,11 +263,19 @@ function renderHarvestables(ctx, harvestables, width, height) {
     if (state.zoom < 0.24 && !state.selectedEntity) return;
 
     ctx.save();
+    // Optimization: Calculate world-space view frustum bounds once to cull off-screen resource nodes early
+    const view = getWorldViewBounds(width, height, 25);
+
     for (const h of harvestables) {
         const isHovered = state.hoveredEntity === h;
         const isSelected = state.selectedEntity === h;
 
         if (state.zoom < 0.24 && !isSelected && !isHovered) continue;
+
+        // Early world-space frustum culling before string operations and sub-filter checks
+        if (!isSelected && !isHovered && (h.x < view.minX || h.x > view.maxX || h.y < view.minY || h.y > view.maxY)) {
+            continue;
+        }
 
         const cat = (h.category || '').toLowerCase();
         if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
@@ -249,9 +299,13 @@ function renderPortals(ctx, portals, width, height) {
     if (state.zoom < 0.18 && !state.selectedEntity) return;
 
     ctx.save();
+    // Optimization: Calculate world-space view frustum bounds once to cull off-screen portals early
+    const view = getWorldViewBounds(width, height, 20);
+
     for (const pt of portals) {
+        if (pt.x < view.minX || pt.x > view.maxX || pt.y < view.minY || pt.y > view.maxY) continue;
+
         const p = worldToScreen(pt.x, pt.y, width, height);
-        if (p.x < -20 || p.x > width + 20 || p.y < -20 || p.y > height + 20) continue;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
@@ -269,11 +323,19 @@ function renderSchematics(ctx, schematics, width, height) {
     if (state.zoom < 0.18 && !state.selectedEntity) return;
 
     ctx.save();
+    // Optimization: Calculate world-space view frustum bounds once to cull off-screen schematics early
+    const view = getWorldViewBounds(width, height, 50);
+
     for (const sch of schematics) {
         const isHovered = state.hoveredEntity === sch;
         const isSelected = state.selectedEntity === sch;
 
         if (state.zoom < 0.18 && !isSelected && !isHovered) continue;
+
+        // Early world-space frustum culling before coordinate transforms and label rendering
+        if (!isSelected && !isHovered && (sch.x < view.minX || sch.x > view.maxX || sch.y < view.minY || sch.y > view.maxY)) {
+            continue;
+        }
 
         const p = worldToScreen(sch.x, sch.y, width, height);
         if (p.x < -50 || p.x > width + 50 || p.y < -50 || p.y > height + 50) continue;
