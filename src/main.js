@@ -197,6 +197,7 @@ async function bootstrap() {
     startLivePoller();
 
     // 9. Subscribe to live player state to update badges & gadgets
+    let currentCompassAngle = 0;
     subscribe((type, payload) => {
         if (type === 'live_player_update') {
             if (elements.radarContainer) {
@@ -216,8 +217,12 @@ async function bootstrap() {
                 elements.playerSpeedBadge.textContent = `${(payload.speed || 0).toFixed(1)} m/s`;
             }
             if (elements.compassNeedle && payload.angle !== undefined) {
-                const deg = -(payload.angle * 180 / Math.PI) + 90;
-                elements.compassNeedle.style.transform = `rotate(${deg}deg)`;
+                const targetDeg = -(payload.angle * 180 / Math.PI) + 90;
+                let diff = (targetDeg - currentCompassAngle) % 360;
+                if (diff > 180) diff -= 360;
+                if (diff < -180) diff += 360;
+                currentCompassAngle += diff;
+                elements.compassNeedle.style.transform = `rotate(${currentCompassAngle}deg)`;
             }
             if (payload.age && elements.hudGameTime && elements.hudGameDays) {
                 const totalMinutes = Math.floor(payload.age * 24 * 60);
