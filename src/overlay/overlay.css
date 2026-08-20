@@ -10,6 +10,17 @@
     --font-mono: 'JetBrains Mono', monospace;
 }
 
+.monospace,
+.hotkey-hint-banner,
+.btn-pill,
+.btn-lock,
+.toolbar-label,
+.header-title-wrap {
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

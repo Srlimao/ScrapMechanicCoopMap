@@ -125,8 +125,29 @@ body, html {
     background: var(--sm-orange);
 }
 
-.monospace {
+.monospace,
+.prop-value.monospace,
+.search-item-coords,
+.search-dist-badge,
+.meta-value,
+.meta-label,
+.count-badge,
+.clock-stat-item,
+.clock-stat-val,
+.live-status-header-text,
+.live-status-sub-text,
+.coord-tag,
+.scale-text,
+.ruler-stats,
+.radar-title,
+.radar-threat-badge,
+.radar-mode-badge,
+.live-player-badge,
+.mode-kbd,
+.kbd-key {
     font-family: 'JetBrains Mono', monospace;
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Hex Bolt & Screw Corner Elements */

@@ -179,6 +179,22 @@
     z-index: 32;
 }
 
+/* Subtle Tactical LCD / CRT Scanline Texture */
+.screen-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.08) 0px,
+        rgba(0, 0, 0, 0.08) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 31;
+    opacity: 0.8;
+}
+
 /* Top Optical Sensor Turret Module */
 .tablet-optic-turret {
     position: absolute;

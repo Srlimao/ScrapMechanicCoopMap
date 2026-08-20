@@ -454,3 +454,31 @@
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Responsive HUD & High-Contrast Typography */
+@media (max-width: 1100px) {
+    .live-status-sub-text {
+        display: none;
+    }
+    .quick-bookmarks-bar .bm-btn span {
+        display: none;
+    }
+    .quick-bookmarks-bar .bm-btn {
+        padding: 0 6px;
+    }
+}
+
+@media (max-width: 800px) {
+    .screen-top-hud {
+        gap: 6px;
+    }
+    .digital-clock-widget {
+        padding: 3px 6px;
+    }
+    .coords-hud {
+        flex-direction: column;
+        gap: 3px;
+        bottom: 8px;
+        left: 8px;
+    }
+}
+
