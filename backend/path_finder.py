@@ -1,6 +1,68 @@
 import os
+import sys
 import glob
-import winreg
+
+try:
+    import winreg
+except ImportError:
+    winreg = None
+
+def get_linux_steam_roots():
+    home = os.environ.get('HOME', '')
+    if not home:
+        return []
+    candidates = [
+        os.path.join(home, '.steam', 'steam'),
+        os.path.join(home, '.steam', 'root'),
+        os.path.join(home, '.local', 'share', 'Steam'),
+        os.path.join(home, '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
+        os.path.join(home, '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam')
+    ]
+    return [c for c in candidates if os.path.exists(c)]
+
+def get_all_steam_libraries():
+    libs = set()
+    if sys.platform == 'win32' and winreg:
+        try:
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam")
+            steam_path, _ = winreg.QueryValueEx(key, "SteamPath")
+            winreg.CloseKey(key)
+            libs.add(steam_path.replace("\\", "/"))
+            vdf_path = os.path.join(steam_path, "steamapps", "libraryfolders.vdf")
+            if os.path.exists(vdf_path):
+                with open(vdf_path, "r", encoding="utf-8", errors="ignore") as fp:
+                    for line in fp:
+                        if '"path"' in line:
+                            parts = line.split('"')
+                            if len(parts) >= 4:
+                                lib_cand = parts[3].replace("\\\\", "/")
+                                if os.path.exists(lib_cand):
+                                    libs.add(lib_cand)
+        except Exception:
+            pass
+
+        for drive in ["C:", "D:", "E:", "F:", "G:"]:
+            for common_folder in ["SteamLibrary", "Program Files (x86)/Steam", "Steam"]:
+                cand = f"{drive}/{common_folder}"
+                if os.path.exists(cand):
+                    libs.add(cand)
+    else:
+        for root in get_linux_steam_roots():
+            libs.add(root.replace("\\", "/"))
+            vdf_path = os.path.join(root, "steamapps", "libraryfolders.vdf")
+            if os.path.exists(vdf_path):
+                try:
+                    with open(vdf_path, "r", encoding="utf-8", errors="ignore") as fp:
+                        for line in fp:
+                            if '"path"' in line:
+                                parts = line.split('"')
+                                if len(parts) >= 4:
+                                    lib_cand = parts[3].replace("\\\\", "/")
+                                    if os.path.exists(lib_cand):
+                                        libs.add(lib_cand)
+                except Exception:
+                    pass
+    return list(libs)
 
 def find_game_directory():
     """Dynamically finds Scrap Mechanic game install directory."""
@@ -15,48 +77,29 @@ def find_game_directory():
     if os.path.exists(os.path.join(cwd, "Release", "ScrapMechanic.exe")):
         return cwd.replace("\\", "/")
     
-    # 3. Query Steam registry path
-    try:
-        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam")
-        steam_path, _ = winreg.QueryValueEx(key, "SteamPath")
-        winreg.CloseKey(key)
-        
-        # Check standard steamapps/common
-        candidate = os.path.join(steam_path, "steamapps", "common", "Scrap Mechanic")
-        if os.path.exists(os.path.join(candidate, "Release", "ScrapMechanic.exe")):
-            return candidate.replace("\\", "/")
-            
-        # Parse libraryfolders.vdf for external Steam libraries
-        vdf_path = os.path.join(steam_path, "steamapps", "libraryfolders.vdf")
-        if os.path.exists(vdf_path):
-            with open(vdf_path, "r", encoding="utf-8", errors="ignore") as fp:
-                for line in fp:
-                    if '"path"' in line:
-                        parts = line.split('"')
-                        if len(parts) >= 4:
-                            lib_path = parts[3].replace("\\\\", "/")
-                            lib_cand = os.path.join(lib_path, "steamapps", "common", "Scrap Mechanic")
-                            if os.path.exists(os.path.join(lib_cand, "Release", "ScrapMechanic.exe")):
-                                return lib_cand.replace("\\", "/")
-    except Exception:
-        pass
-
-    # 4. Check common drives as fallback
-    for drive in ["C:", "D:", "E:", "F:", "G:"]:
-        for common_folder in ["SteamLibrary", "Program Files (x86)/Steam", "Steam"]:
-            cand = f"{drive}/{common_folder}/steamapps/common/Scrap Mechanic"
-            if os.path.exists(os.path.join(cand, "Release", "ScrapMechanic.exe")):
-                return cand.replace("\\", "/")
+    # 3. Check all Steam libraries
+    for lib in get_all_steam_libraries():
+        cand = os.path.join(lib, "steamapps", "common", "Scrap Mechanic")
+        if os.path.exists(os.path.join(cand, "Release", "ScrapMechanic.exe")) or os.path.exists(os.path.join(cand, "ScrapMechanic.exe")):
+            return cand.replace("\\", "/")
 
     return None
 
 def get_survival_saves():
-    """Finds all Scrap Mechanic Survival save databases in AppData."""
-    appdata = os.environ.get('APPDATA', '')
-    if not appdata:
-        return []
-    pattern = os.path.join(appdata, 'Axolot Games', 'Scrap Mechanic', 'User', 'User_*', 'Save', 'Survival', '*.db')
-    files = glob.glob(pattern)
+    """Finds all Scrap Mechanic Survival save databases in AppData or Proton prefix."""
+    patterns = []
+    if sys.platform == 'win32':
+        appdata = os.environ.get('APPDATA', '')
+        if appdata:
+            patterns.append(os.path.join(appdata, 'Axolot Games', 'Scrap Mechanic', 'User', 'User_*', 'Save', 'Survival', '*.db'))
+    else:
+        for lib in get_all_steam_libraries():
+            patterns.append(os.path.join(lib, 'steamapps', 'compatdata', '387990', 'pfx', 'drive_c', 'users', '*', 'AppData', 'Roaming', 'Axolot Games', 'Scrap Mechanic', 'User', 'User_*', 'Save', 'Survival', '*.db'))
+
+    files = []
+    for pattern in patterns:
+        files.extend(glob.glob(pattern))
+
     saves = []
     for f in files:
         try:

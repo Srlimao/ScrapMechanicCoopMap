@@ -77,6 +77,10 @@ export async function applyDisplayMode(mode, silent = false, notifyElectron = tr
     // 5. Send to Electron Process
     if (notifyElectron && window.electronAPI && typeof window.electronAPI.setDisplayMode === 'function') {
         const res = await window.electronAPI.setDisplayMode(mode);
+        if (res && res.unsupportedPlatform) {
+            const { showToast } = await import('../../ui/toasts.js');
+            showToast("Platform Notice", res.message || "In-Game HUD and Overlays are not available on Linux yet.", "warning", 6000);
+        }
         if (res && res.mode && res.mode !== mode) {
             mode = res.mode;
             state.displayMode = mode;
@@ -455,6 +459,10 @@ export async function checkAndSetupRadarInstaller() {
     if (window.electronAPI && typeof window.electronAPI.checkRadarInstalled === 'function') {
         try {
             const status = await window.electronAPI.checkRadarInstalled();
+            if (status && status.supported === false) {
+                overlay.classList.add('hidden');
+                return;
+            }
             if (!status.installed) {
                 overlay.classList.remove('hidden');
 
@@ -884,7 +892,9 @@ export function setupSettingsModal() {
             cfgBtnReinstallRadar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Installing...';
             const res = await window.electronAPI.installRadarFiles();
             const { showToast } = await import('../../ui/toasts.js');
-            if (res && res.success) {
+            if (res && res.supported === false) {
+                showToast("Windows Only Feature", res.error || "DirectX radar telemetry bridge is currently Windows-only.", "info", 5000);
+            } else if (res && res.success) {
                 showToast("Radar Reinstalled", "Telemetry bridge files updated in game folder.", "success", 5000);
             } else {
                 showToast("Reinstall Failed", (res && res.error) || "Could not copy files", "error", 5000);

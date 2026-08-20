@@ -27,24 +27,116 @@ function scanDirectoryForSaves(dirPath, category, saves) {
     }
 }
 
-function getSurvivalSaves() {
-    const appData = process.env.APPDATA || '';
-    if (!appData) return [];
-    
-    const userDir = path.join(appData, 'Axolot Games', 'Scrap Mechanic', 'User');
-    if (!fs.existsSync(userDir)) return [];
+function getLinuxSteamRoots() {
+    const home = process.env.HOME || '';
+    if (!home) return [];
+    const roots = [
+        path.join(home, '.steam', 'steam'),
+        path.join(home, '.steam', 'root'),
+        path.join(home, '.local', 'share', 'Steam'),
+        path.join(home, '.var', 'app', 'com.valvesoftware.Steam', '.local', 'share', 'Steam'),
+        path.join(home, '.var', 'app', 'com.valvesoftware.Steam', '.steam', 'steam')
+    ];
+    return roots.filter(p => fs.existsSync(p));
+}
 
-    const saves = [];
+function parseLibraryFoldersVdf(vdfPath) {
+    const libraries = [];
+    if (!fs.existsSync(vdfPath)) return libraries;
     try {
-        const userFolders = fs.readdirSync(userDir);
-        for (const uf of userFolders) {
-            const saveBase = path.join(userDir, uf, 'Save');
-            if (fs.existsSync(saveBase)) {
-                scanDirectoryForSaves(saveBase, 'Creative', saves);
+        const content = fs.readFileSync(vdfPath, 'utf-8');
+        const lines = content.split('\n');
+        for (const line of lines) {
+            if (line.includes('"path"')) {
+                const match = line.match(/"path"\s+"([^"]+)"/i);
+                if (match && match[1]) {
+                    const lib = match[1].replace(/\\\\/g, '/');
+                    if (fs.existsSync(lib)) libraries.push(lib);
+                }
             }
         }
-    } catch (e) {
-        console.warn("[GameScanner] Error reading saves:", e);
+    } catch (e) {}
+    return libraries;
+}
+
+function getAllSteamLibraries() {
+    const libs = new Set();
+    if (process.platform === 'win32') {
+        try {
+            const regOut = execSync('reg query "HKCU\\Software\\Valve\\Steam" /v SteamPath', { encoding: 'utf-8' });
+            const match = regOut.match(/SteamPath\s+REG_SZ\s+(.+)/i);
+            if (match && match[1]) {
+                const steamPath = match[1].trim();
+                libs.add(steamPath);
+                const vdf = path.join(steamPath, 'steamapps', 'libraryfolders.vdf');
+                for (const l of parseLibraryFoldersVdf(vdf)) libs.add(l);
+            }
+        } catch (e) {}
+
+        const drives = ['C:', 'D:', 'E:', 'F:', 'G:'];
+        for (const d of drives) {
+            for (const folder of ['SteamLibrary', 'Program Files (x86)/Steam', 'Steam']) {
+                const cand = `${d}/${folder}`;
+                if (fs.existsSync(cand)) libs.add(cand);
+            }
+        }
+    } else {
+        const roots = getLinuxSteamRoots();
+        for (const r of roots) {
+            libs.add(r);
+            const vdf = path.join(r, 'steamapps', 'libraryfolders.vdf');
+            for (const l of parseLibraryFoldersVdf(vdf)) libs.add(l);
+        }
+    }
+    return Array.from(libs);
+}
+
+function getUserDirectories() {
+    const userDirs = [];
+
+    if (process.platform === 'win32') {
+        const appData = process.env.APPDATA || '';
+        if (appData) {
+            const winUserDir = path.join(appData, 'Axolot Games', 'Scrap Mechanic', 'User');
+            if (fs.existsSync(winUserDir)) userDirs.push(winUserDir);
+        }
+    } else {
+        // Linux Proton compatibility prefixes
+        const libraries = getAllSteamLibraries();
+        for (const lib of libraries) {
+            const protonUsers = path.join(lib, 'steamapps', 'compatdata', '387990', 'pfx', 'drive_c', 'users');
+            if (fs.existsSync(protonUsers)) {
+                try {
+                    const users = fs.readdirSync(protonUsers);
+                    for (const u of users) {
+                        const cand = path.join(protonUsers, u, 'AppData', 'Roaming', 'Axolot Games', 'Scrap Mechanic', 'User');
+                        if (fs.existsSync(cand)) userDirs.push(cand);
+                    }
+                } catch (e) {}
+            }
+        }
+    }
+
+    return userDirs;
+}
+
+function getSurvivalSaves() {
+    const userDirs = getUserDirectories();
+    if (!userDirs.length) return [];
+
+    const saves = [];
+    for (const userDir of userDirs) {
+        try {
+            const userFolders = fs.readdirSync(userDir);
+            for (const uf of userFolders) {
+                const saveBase = path.join(userDir, uf, 'Save');
+                if (fs.existsSync(saveBase)) {
+                    scanDirectoryForSaves(saveBase, 'Creative', saves);
+                }
+            }
+        } catch (e) {
+            console.warn("[GameScanner] Error reading saves:", e);
+        }
     }
 
     saves.sort((a, b) => b.mtime - a.mtime);
@@ -133,29 +225,16 @@ function findGameDirectory(customPath = null) {
     if (fs.existsSync(path.join(parentDir, 'Release', 'ScrapMechanic.exe'))) {
         return parentDir.replace(/\\/g, '/');
     }
-    // 3. Query registry via reg query
-    try {
-        const regOut = execSync('reg query "HKCU\\Software\\Valve\\Steam" /v SteamPath', { encoding: 'utf-8' });
-        const match = regOut.match(/SteamPath\s+REG_SZ\s+(.+)/i);
-        if (match && match[1]) {
-            const steamPath = match[1].trim();
-            const cand = path.join(steamPath, 'steamapps', 'common', 'Scrap Mechanic');
-            if (fs.existsSync(path.join(cand, 'Release', 'ScrapMechanic.exe'))) {
-                return cand.replace(/\\/g, '/');
-            }
-        }
-    } catch (e) {}
 
-    // 4. Fallback common paths
-    const drives = ['C:', 'D:', 'E:', 'F:', 'G:'];
-    for (const d of drives) {
-        for (const folder of ['SteamLibrary', 'Program Files (x86)/Steam', 'Steam']) {
-            const cand = path.join(d, folder, 'steamapps', 'common', 'Scrap Mechanic');
-            if (fs.existsSync(path.join(cand, 'Release', 'ScrapMechanic.exe'))) {
-                return cand.replace(/\\/g, '/');
-            }
+    // 3. Check all Steam libraries (Windows & Linux)
+    const libraries = getAllSteamLibraries();
+    for (const lib of libraries) {
+        const cand = path.join(lib, 'steamapps', 'common', 'Scrap Mechanic');
+        if (fs.existsSync(path.join(cand, 'Release', 'ScrapMechanic.exe')) || fs.existsSync(path.join(cand, 'ScrapMechanic.exe'))) {
+            return cand.replace(/\\/g, '/');
         }
     }
+
     return null;
 }
 
@@ -261,8 +340,12 @@ function restartGame() {
     const { exec } = require('child_process');
     const { shell } = require('electron');
 
+    const killCmd = process.platform === 'win32'
+        ? 'taskkill /F /IM ScrapMechanic.exe'
+        : 'pkill -f ScrapMechanic';
+
     try {
-        exec('taskkill /F /IM ScrapMechanic.exe', () => {
+        exec(killCmd, () => {
             setTimeout(() => {
                 if (shell && shell.openExternal) {
                     shell.openExternal('steam://rungameid/387990');

@@ -35,3 +35,6 @@ Thumbs.db
 
 # Separate Server Repo
 relay_server/
+
+# Test reports
+reports/

@@ -36,16 +36,20 @@ let GetForegroundWindow = null;
 let GetWindowTextA = null;
 let GetWindowThreadProcessId = null;
 
-try {
-    const koffi = require('koffi');
-    user32 = koffi.load('user32.dll');
-    FindWindowA = user32.func('void* FindWindowA(str lpClassName, str lpWindowName)');
-    SetForegroundWindow = user32.func('bool SetForegroundWindow(void* hWnd)');
-    ShowWindow = user32.func('bool ShowWindow(void* hWnd, int nCmdShow)');
-    GetForegroundWindow = user32.func('void* GetForegroundWindow()');
-    GetWindowTextA = user32.func('int GetWindowTextA(void* hWnd, _Out_ uint8_t *lpString, int nMaxCount)');
-    GetWindowThreadProcessId = user32.func('uint32_t GetWindowThreadProcessId(void* hWnd, _Out_ uint32_t *lpdwProcessId)');
-} catch (e) {}
+if (process.platform === 'win32') {
+    try {
+        const koffi = require('koffi');
+        user32 = koffi.load('user32.dll');
+        FindWindowA = user32.func('void* FindWindowA(str lpClassName, str lpWindowName)');
+        SetForegroundWindow = user32.func('bool SetForegroundWindow(void* hWnd)');
+        ShowWindow = user32.func('bool ShowWindow(void* hWnd, int nCmdShow)');
+        GetForegroundWindow = user32.func('void* GetForegroundWindow()');
+        GetWindowTextA = user32.func('int GetWindowTextA(void* hWnd, _Out_ uint8_t *lpString, int nMaxCount)');
+        GetWindowThreadProcessId = user32.func('uint32_t GetWindowThreadProcessId(void* hWnd, _Out_ uint32_t *lpdwProcessId)');
+    } catch (e) {
+        console.warn('[Electron] Win32 user32 C-FFI load warning:', e.message);
+    }
+}
 
 function isGameOrOverlayFocused() {
     try {
@@ -115,6 +119,7 @@ function refreshGlobalShortcuts() {
 }
 
 function focusGameWindow() {
+    if (process.platform !== 'win32') return;
     try {
         let focused = false;
         if (FindWindowA && SetForegroundWindow) {
@@ -419,8 +424,18 @@ ipcMain.handle('select-game-directory', async () => {
     }
     return { success: true, gameDir: validated };
 });
-ipcMain.handle('check-radar-installed', async () => checkRadarInstalled());
-ipcMain.handle('install-radar-files', async () => installRadarFiles());
+ipcMain.handle('check-radar-installed', async () => {
+    if (process.platform !== 'win32') {
+        return { installed: false, gameDir: null, supported: false, message: 'DirectX radar telemetry bridge is currently Windows-only.' };
+    }
+    return checkRadarInstalled();
+});
+ipcMain.handle('install-radar-files', async () => {
+    if (process.platform !== 'win32') {
+        return { success: false, supported: false, error: 'DirectX radar telemetry bridge is currently Windows-only.' };
+    }
+    return installRadarFiles();
+});
 ipcMain.handle('restart-game', async () => restartGame());
 
 ipcMain.handle('fetch-live-player', async () => {
@@ -493,7 +508,9 @@ ipcMain.handle('generate-terrain', async (event, seed) => {
     }
 
     // 3. Run Python terrain_builder.py CLI
-    const pythonCandidates = ['python', 'py', 'python3', 'python.exe'];
+    const pythonCandidates = process.platform === 'win32'
+        ? ['python', 'py', 'python3', 'python.exe']
+        : ['python3', 'python'];
     const scriptPath = path.join(backendDir, 'terrain_builder.py');
 
     if (fs.existsSync(scriptPath)) {
@@ -528,6 +545,18 @@ ipcMain.handle('generate-terrain', async (event, seed) => {
 ipcMain.handle('set-display-mode', async (event, mode) => {
     if (!['in-app', 'radar-in-game', 'all-in-game'].includes(mode)) {
         return { success: false, mode: activeDisplayMode };
+    }
+
+    // Platform guard: In-game overlay modes are currently Windows-only
+    if (process.platform !== 'win32' && mode !== 'in-app') {
+        console.log(`[Electron] In-Game Overlay modes are currently Windows-only. Falling back to in-app.`);
+        return {
+            success: false,
+            mode: 'in-app',
+            unsupportedPlatform: true,
+            error: 'PLATFORM_UNSUPPORTED',
+            message: 'In-Game Radar and Map Overlay modes are not yet available on Linux. Full map workstation, save inspection, and online squad co-op are active in In-App mode.'
+        };
     }
 
     // If game is not running, do not enter in-game modes; default back to 'in-app'
@@ -614,6 +643,18 @@ ipcMain.handle('hide-map-overlay', async () => {
 });
 
 ipcMain.handle('toggle-radar-overlay', async (event, forceState) => {
+    if (process.platform !== 'win32') {
+        return {
+            isOpen: false,
+            editMode: false,
+            shortcut: overlayShortcut,
+            mode: 'in-app',
+            unsupportedPlatform: true,
+            error: 'PLATFORM_UNSUPPORTED',
+            message: 'In-Game Radar Overlay is not yet available on Linux.'
+        };
+    }
+
     let shouldOpen = false;
     if (typeof forceState === 'boolean') {
         shouldOpen = forceState;

@@ -21,36 +21,40 @@ let MapViewOfFile = null;
 let UnmapViewOfFile = null;
 let GetExitCodeProcess = null;
 
-try {
-    k32 = koffi.load('kernel32.dll');
-    psapi = koffi.load('psapi.dll');
+if (process.platform === 'win32') {
+    try {
+        k32 = koffi.load('kernel32.dll');
+        psapi = koffi.load('psapi.dll');
 
-    PROCESSENTRY32W = koffi.struct('PROCESSENTRY32W', {
-        dwSize: 'uint32',
-        cntUsage: 'uint32',
-        th32ProcessID: 'uint32',
-        th32DefaultHeapID: 'uintptr',
-        th32ModuleID: 'uint32',
-        cntThreads: 'uint32',
-        th32ParentProcessID: 'uint32',
-        pcPriClassBase: 'int32',
-        dwFlags: 'uint32',
-        szExeFile: koffi.array('char16_t', 260)
-    });
+        PROCESSENTRY32W = koffi.struct('PROCESSENTRY32W', {
+            dwSize: 'uint32',
+            cntUsage: 'uint32',
+            th32ProcessID: 'uint32',
+            th32DefaultHeapID: 'uintptr',
+            th32ModuleID: 'uint32',
+            cntThreads: 'uint32',
+            th32ParentProcessID: 'uint32',
+            pcPriClassBase: 'int32',
+            dwFlags: 'uint32',
+            szExeFile: koffi.array('char16_t', 260)
+        });
 
-    OpenProcess = k32.func('void* OpenProcess(uint32 dwDesiredAccess, bool bInheritHandle, uint32 dwProcessId)');
-    CloseHandle = k32.func('bool CloseHandle(void* hObject)');
-    ReadProcessMemory = k32.func('bool ReadProcessMemory(void* hProcess, uint64 lpBaseAddress, _Out_ uint8* lpBuffer, size_t nSize, _Out_ size_t* lpNumberOfBytesRead)');
-    EnumProcessModulesEx = psapi.func('bool EnumProcessModulesEx(void* hProcess, _Out_ uint64* lphModule, uint32 cb, _Out_ uint32* lpcbNeeded, uint32 dwFilterFlag)');
-    CreateToolhelp32Snapshot = k32.func('void* CreateToolhelp32Snapshot(uint32 dwFlags, uint32 th32ProcessID)');
-    Process32FirstW = k32.func('bool Process32FirstW(void* hSnapshot, _Inout_ PROCESSENTRY32W* lppe)');
-    Process32NextW = k32.func('bool Process32NextW(void* hSnapshot, _Inout_ PROCESSENTRY32W* lppe)');
-    OpenFileMappingA = k32.func('void* OpenFileMappingA(uint32 dwDesiredAccess, bool bInheritHandle, str lpName)');
-    MapViewOfFile = k32.func('void* MapViewOfFile(void* hFileMappingObject, uint32 dwDesiredAccess, uint32 dwFileOffsetHigh, uint32 dwFileOffsetLow, size_t dwNumberOfBytesToMap)');
-    UnmapViewOfFile = k32.func('bool UnmapViewOfFile(void* lpBaseAddress)');
-    GetExitCodeProcess = k32.func('bool GetExitCodeProcess(void* hProcess, _Out_ uint32* lpExitCode)');
-} catch (e) {
-    console.warn("[NodeMemoryReader] Win32 C-FFI load error:", e.message);
+        OpenProcess = k32.func('void* OpenProcess(uint32 dwDesiredAccess, bool bInheritHandle, uint32 dwProcessId)');
+        CloseHandle = k32.func('bool CloseHandle(void* hObject)');
+        ReadProcessMemory = k32.func('bool ReadProcessMemory(void* hProcess, uint64 lpBaseAddress, _Out_ uint8* lpBuffer, size_t nSize, _Out_ size_t* lpNumberOfBytesRead)');
+        EnumProcessModulesEx = psapi.func('bool EnumProcessModulesEx(void* hProcess, _Out_ uint64* lphModule, uint32 cb, _Out_ uint32* lpcbNeeded, uint32 dwFilterFlag)');
+        CreateToolhelp32Snapshot = k32.func('void* CreateToolhelp32Snapshot(uint32 dwFlags, uint32 th32ProcessID)');
+        Process32FirstW = k32.func('bool Process32FirstW(void* hSnapshot, _Inout_ PROCESSENTRY32W* lppe)');
+        Process32NextW = k32.func('bool Process32NextW(void* hSnapshot, _Inout_ PROCESSENTRY32W* lppe)');
+        OpenFileMappingA = k32.func('void* OpenFileMappingA(uint32 dwDesiredAccess, bool bInheritHandle, str lpName)');
+        MapViewOfFile = k32.func('void* MapViewOfFile(void* hFileMappingObject, uint32 dwDesiredAccess, uint32 dwFileOffsetHigh, uint32 dwFileOffsetLow, size_t dwNumberOfBytesToMap)');
+        UnmapViewOfFile = k32.func('bool UnmapViewOfFile(void* lpBaseAddress)');
+        GetExitCodeProcess = k32.func('bool GetExitCodeProcess(void* hProcess, _Out_ uint32* lpExitCode)');
+    } catch (e) {
+        console.warn("[NodeMemoryReader] Win32 C-FFI load error:", e.message);
+    }
+} else {
+    console.log("[NodeMemoryReader] Non-Windows platform detected; Win32 C-FFI memory reading is disabled.");
 }
 
 const FILE_MAP_READ = 0x0004;
