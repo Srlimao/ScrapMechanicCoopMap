@@ -1,29 +1,50 @@
 // Canvas rendering layer for multiplayer squad members and tactical pings
+// OPTIMIZATION (⚡ Bolt): World-space frustum culling and zero-allocation screen position calculations.
+// Pre-computing viewport bounds in world coordinates eliminates off-screen object allocations ({x, y})
+// for multiplayer squad members, trails, and tactical pings.
 import { state } from '../../core/state.js';
-import { worldToScreen, calculateDistance } from '../../core/coords.js';
+import { calculateDistance } from '../../core/coords.js';
+
+/**
+ * Calculates world-space viewport bounds for fast frustum culling.
+ */
+function getViewportWorldBounds(width, height, marginPx = 50) {
+    const invZoom = 1 / state.zoom;
+    const halfW = width * 0.5;
+    const halfH = height * 0.5;
+    const marginWorld = marginPx * invZoom;
+
+    return {
+        halfW,
+        halfH,
+        minX: state.cameraX - halfW * invZoom - marginWorld,
+        maxX: state.cameraX + halfW * invZoom + marginWorld,
+        minY: state.cameraY - halfH * invZoom - marginWorld,
+        maxY: state.cameraY + halfH * invZoom + marginWorld
+    };
+}
 
 export function renderSquadLayer(ctx, width, height) {
     if (!state.squad.roomCode) return;
 
+    const bounds = getViewportWorldBounds(width, height, 50);
+
     // 1. Render Tactical Pings
     if (state.squad.pings && state.squad.pings.length > 0) {
-        renderTacticalPings(ctx, width, height);
+        renderTacticalPings(ctx, width, height, bounds);
     }
 
     // 2. Render Squad Members
     if (state.squad.peers && state.squad.peers.size > 0) {
-        renderSquadPeers(ctx, width, height);
+        renderSquadPeers(ctx, width, height, bounds);
     }
 }
 
-function renderSquadPeers(ctx, width, height) {
+function renderSquadPeers(ctx, width, height, bounds) {
     const now = Date.now();
 
     for (const [peerId, peer] of state.squad.peers.entries()) {
         if (!peer.lastSeen || now - peer.lastSeen > 10000) continue; // Skip stale peers (>10s)
-
-        const p = worldToScreen(peer.x, peer.y, width, height);
-        if (p.x < -100 || p.x > width + 100 || p.y < -100 || p.y > height + 100) continue;
 
         const color = peer.color || '#00e5ff';
 
@@ -33,16 +54,23 @@ function renderSquadPeers(ctx, width, height) {
             ctx.beginPath();
             let started = false;
             for (let i = 0; i < peer.trail.length; i++) {
-                const pt = worldToScreen(peer.trail[i].x, peer.trail[i].y, width, height);
+                const pt = peer.trail[i];
+                if (pt.x < bounds.minX || pt.x > bounds.maxX || pt.y < bounds.minY || pt.y > bounds.maxY) {
+                    started = false;
+                    continue;
+                }
+                const px = (pt.x - state.cameraX) * state.zoom + bounds.halfW;
+                const py = (state.cameraY - pt.y) * state.zoom + bounds.halfH;
+
                 if (!started) {
-                    ctx.moveTo(pt.x, pt.y);
+                    ctx.moveTo(px, py);
                     started = true;
                 } else {
                     const prev = peer.trail[i - 1];
-                    if (Math.hypot(peer.trail[i].x - prev.x, peer.trail[i].y - prev.y) > 80) {
-                        ctx.moveTo(pt.x, pt.y);
+                    if (Math.hypot(pt.x - prev.x, pt.y - prev.y) > 80) {
+                        ctx.moveTo(px, py);
                     } else {
-                        ctx.lineTo(pt.x, pt.y);
+                        ctx.lineTo(px, py);
                     }
                 }
             }
@@ -54,13 +82,19 @@ function renderSquadPeers(ctx, width, height) {
             ctx.restore();
         }
 
+        // Fast World-Space Frustum Culling for peer position
+        if (peer.x < bounds.minX || peer.x > bounds.maxX || peer.y < bounds.minY || peer.y > bounds.maxY) continue;
+
+        const px = (peer.x - state.cameraX) * state.zoom + bounds.halfW;
+        const py = (state.cameraY - peer.y) * state.zoom + bounds.halfH;
+
         ctx.save();
 
         // 2. Direction Cone
         const coneAngle = peer.angle || 0;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 20, -coneAngle - 0.4, -coneAngle + 0.4);
-        ctx.lineTo(p.x, p.y);
+        ctx.arc(px, py, 20, -coneAngle - 0.4, -coneAngle + 0.4);
+        ctx.lineTo(px, py);
         ctx.fillStyle = color;
         ctx.globalAlpha = 0.2;
         ctx.fill();
@@ -68,7 +102,7 @@ function renderSquadPeers(ctx, width, height) {
 
         // 3. Outer Beacon Glow
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+        ctx.arc(px, py, 7, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.shadowColor = color;
         ctx.shadowBlur = 12;
@@ -90,20 +124,24 @@ function renderSquadPeers(ctx, width, height) {
         ctx.shadowColor = '#000000';
         ctx.shadowBlur = 6;
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(label, p.x, p.y - 12);
+        ctx.fillText(label, px, py - 12);
 
         ctx.restore();
     }
 }
 
-function renderTacticalPings(ctx, width, height) {
+function renderTacticalPings(ctx, width, height, bounds) {
     const now = Date.now();
 
     for (const ping of state.squad.pings) {
         const age = (now - ping.t) / 1000;
         if (age > 15) continue;
 
-        const p = worldToScreen(ping.x, ping.y, width, height);
+        // Fast World-Space Frustum Culling
+        if (ping.x < bounds.minX || ping.x > bounds.maxX || ping.y < bounds.minY || ping.y > bounds.maxY) continue;
+
+        const px = (ping.x - state.cameraX) * state.zoom + bounds.halfW;
+        const py = (state.cameraY - ping.y) * state.zoom + bounds.halfH;
         const pulse = (now % 1000) / 1000;
         const color = ping.color || '#ff7a00';
 
@@ -111,7 +149,7 @@ function renderTacticalPings(ctx, width, height) {
 
         // Expanding Ripple
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 10 + pulse * 25, 0, Math.PI * 2);
+        ctx.arc(px, py, 10 + pulse * 25, 0, Math.PI * 2);
         ctx.strokeStyle = color;
         ctx.globalAlpha = 1 - pulse;
         ctx.lineWidth = 2;
@@ -120,7 +158,7 @@ function renderTacticalPings(ctx, width, height) {
         // Ping Core Icon Circle
         ctx.globalAlpha = 1.0;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+        ctx.arc(px, py, 8, 0, Math.PI * 2);
         ctx.fillStyle = color;
         ctx.shadowColor = color;
         ctx.shadowBlur = 10;
@@ -132,7 +170,7 @@ function renderTacticalPings(ctx, width, height) {
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = '#000000';
         ctx.shadowBlur = 6;
-        ctx.fillText(`${ping.authorName}: ${ping.text}`, p.x, p.y + 20);
+        ctx.fillText(`${ping.authorName}: ${ping.text}`, px, py + 20);
 
         ctx.restore();
     }
