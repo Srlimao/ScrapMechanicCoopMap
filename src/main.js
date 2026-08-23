@@ -114,13 +114,17 @@ async function bootstrap() {
     // 5. Initialize Display Mode Selector in Header
     const displayModeSelector = document.getElementById('displayModeSelector');
     if (displayModeSelector) {
-        displayModeSelector.addEventListener('click', (e) => {
+        displayModeSelector.addEventListener('click', async (e) => {
             const btn = e.target.closest('.mode-btn');
             if (!btn) return;
             const mode = btn.dataset.mode;
-            import('./features/tools/settings.js').then(({ applyDisplayMode }) => {
-                applyDisplayMode(mode);
-            });
+            if (mode !== 'in-app' && btn.classList.contains('disabled')) {
+                const { showToast } = await import('./ui/toasts.js');
+                showToast("Game Not Running", "Launch Scrap Mechanic to use In-Game Radar and Map Overlay modes.", "warning", 4500);
+                return;
+            }
+            const { applyDisplayMode } = await import('./features/tools/settings.js');
+            applyDisplayMode(mode);
         });
     }
 
@@ -215,6 +219,9 @@ async function bootstrap() {
                 elements.hudGameTime.textContent = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
                 elements.hudGameDays.textContent = `${day}`;
             }
+            import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
+                updateDisplayModeButtonsState(true);
+            });
         } else if (type === 'live_player_offline') {
             if (elements.radarContainer) {
                 elements.radarContainer.classList.add('hidden');
@@ -224,6 +231,11 @@ async function bootstrap() {
             }
             if (elements.liveStatusText) {
                 elements.liveStatusText.textContent = 'LIVE: OFFLINE';
+            }
+            if (!window.electronAPI) {
+                import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
+                    updateDisplayModeButtonsState(false);
+                });
             }
         } else if (type === 'display_mode_changed') {
             if (elements.radarContainer) {
@@ -277,6 +289,22 @@ async function bootstrap() {
             if (btnReturnToGame) {
                 btnReturnToGame.style.display = (data && data.isOpen) ? 'inline-flex' : 'none';
             }
+        });
+    }
+
+    // Monitor live game process state to enable/disable In-Game mode buttons in real-time
+    if (window.electronAPI && typeof window.electronAPI.getGameProcessStatus === 'function') {
+        window.electronAPI.getGameProcessStatus().then((status) => {
+            import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
+                updateDisplayModeButtonsState(Boolean(status && status.running));
+            });
+        });
+    }
+    if (window.electronAPI && typeof window.electronAPI.onGameProcessStatus === 'function') {
+        window.electronAPI.onGameProcessStatus((status) => {
+            import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
+                updateDisplayModeButtonsState(Boolean(status && status.running));
+            });
         });
     }
 

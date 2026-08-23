@@ -31,6 +31,7 @@ export const state = {
         lastFetch: 0,
         trail: []
     },
+    gameRunning: false,
     followPlayer: false,
 
     // Viewport & Camera

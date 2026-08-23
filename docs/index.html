@@ -28,7 +28,7 @@
         "priceCurrency": "USD"
       },
       "downloadUrl": "https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe",
-      "softwareVersion": "1.6.0",
+      "softwareVersion": "1.7.0",
       "description": "Real-time live player tracking, in-game full map overlay, co-op squad radar, and interactive save database viewer for Scrap Mechanic."
     }
     </script>
@@ -66,7 +66,7 @@
 
         <!-- Hero Section -->
         <header class="hero">
-            <div class="badge-pill"><i class="fa-solid fa-compass"></i> v1.6.0 • CLEAN SLATE UI DESIGN SYSTEM + TACTICAL COMPASS BRANDING + INSTANT DARK MODE + IN-GAME MAP & RADAR HUD</div>
+            <div class="badge-pill"><i class="fa-solid fa-compass"></i> v1.7.0 • OPEN-SOURCE TELEMETRY BRIDGE + SMART PROCESS LIFECYCLE GUARD + PROTON / LINUX SUPPORT</div>
             <h1 class="hero-title">Live In-Game Map Overlay, Proximity Radar & Co-op GPS for <span class="highlight">Scrap Mechanic</span></h1>
             <p class="hero-subtitle">Summon your full tactical map in-game with <kbd style="background:#1e293b; padding:2px 6px; border-radius:4px; color:#00e5ff; font-family:'JetBrains Mono',monospace;">M</kbd>, track hostile bots and POIs with directional altitude arrows on a floating 360° radar scope, and locate teammate beacons across your Survival world in real time.</p>
 
@@ -75,7 +75,7 @@
                     <i class="fa-brands fa-windows" style="font-size:26px;"></i>
                     <div class="btn-subtext">
                         <span>Download Free for Windows</span>
-                        <span>Scrap-Mechanic-Tactical-Map.exe (v1.6.0)</span>
+                        <span>Scrap-Mechanic-Tactical-Map.exe (v1.7.0)</span>
                     </div>
                 </a>
             </div>
@@ -168,8 +168,8 @@
             <h2 class="section-heading" style="text-align:center;">Frequently Asked Questions</h2>
             <div class="faq-list">
                 <details class="faq-item" open>
-                    <summary>How does the Radar Proxy DLL (dinput8.dll) work? Is it safe?</summary>
-                    <p><strong>100% Safe.</strong> The bundled <code>dinput8.dll</code> is a standard proxy wrapper that sits alongside <code>ScrapMechanic.exe</code> in your game folder. It simply executes a lightweight telemetry probe in the game's official Lua environment every 500ms to report entity coordinates. It does not modify game files, does not touch original executable code, and Scrap Mechanic has no VAC bans.</p>
+                    <summary>How does the Radar Telemetry Bridge (version.dll) work? Is it safe?</summary>
+                    <p><strong>100% Safe & Open Source.</strong> The full C++ source code is directly included in the GitHub repository (<code>native/proxy_telemetry/</code>). When you click <em>"Install Radar"</em>, the app attempts to compile <code>version.dll</code> directly on your machine (or deploys the verified open-source binary if no compiler is present). It runs a read-only telemetry probe in the game's official Lua runtime every 500ms to report bot and vehicle positions. It never modifies game executable binaries or memory instructions, and Scrap Mechanic carries zero VAC bans.</p>
                 </details>
                 <details class="faq-item">
                     <summary>What if the app cannot find my Scrap Mechanic install path?</summary>

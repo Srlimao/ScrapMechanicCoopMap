@@ -286,6 +286,90 @@ function checkRadarInstalled(customPath = null) {
     return { installed, gameDir };
 }
 
+function findCppSourceDir() {
+    const appDir = path.resolve(__dirname, '..');
+    const candidates = [
+        path.join(appDir, 'native', 'proxy_telemetry', 'src'),
+        path.join(__dirname, 'resources', 'radar_bridge', 'src'),
+        path.join(process.resourcesPath || '', 'app.asar.unpacked', 'electron', 'resources', 'radar_bridge', 'src'),
+        path.join(appDir, 'electron', 'resources', 'radar_bridge', 'src'),
+        path.join(appDir, '..', 'modding', 'proxy_telemetry', 'src')
+    ];
+    for (const cand of candidates) {
+        if (cand && fs.existsSync(path.join(cand, 'dllmain.cpp'))) {
+            return cand;
+        }
+    }
+    return null;
+}
+
+function tryCompileDllFromSource(outputDllPath) {
+    const srcDir = findCppSourceDir();
+    if (!srcDir) return { compiled: false, reason: "Source files not found" };
+
+    const dllmain = path.join(srcDir, 'dllmain.cpp');
+    const luaBridge = path.join(srcDir, 'lua_bridge.cpp');
+    const defFile = path.join(srcDir, 'version.def');
+    const outDir = path.dirname(outputDllPath);
+
+    // 1. Check for MSVC on Windows
+    if (process.platform === 'win32') {
+        try {
+            const vswherePath = 'C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe';
+            if (fs.existsSync(vswherePath)) {
+                const vsOut = execSync(`"${vswherePath}" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`, { encoding: 'utf-8' }).trim();
+                if (vsOut && fs.existsSync(vsOut)) {
+                    const vcvars = path.join(vsOut, 'VC', 'Auxiliary', 'Build', 'vcvars64.bat');
+                    if (fs.existsSync(vcvars)) {
+                        const tempBuildDir = path.join(outDir, '_temp_build');
+                        if (!fs.existsSync(tempBuildDir)) fs.mkdirSync(tempBuildDir, { recursive: true });
+                        const cmd = `call "${vcvars}" && cd /d "${tempBuildDir}" && cl.exe /nologo /O2 /LD /std:c++17 /EHsc /I"${srcDir}" "${dllmain}" "${luaBridge}" /Fe:"${outputDllPath}" /link /MACHINE:X64 /DEF:"${defFile}"`;
+                        execSync(cmd, { encoding: 'utf-8', shell: 'cmd.exe', timeout: 30000 });
+                        try { fs.rmSync(tempBuildDir, { recursive: true, force: true }); } catch (_) {}
+                        if (fs.existsSync(outputDllPath)) {
+                            console.log('[GameScanner] Compiled version.dll from C++ source via MSVC');
+                            return { compiled: true, compiler: 'MSVC (cl.exe)' };
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.log('[GameScanner] MSVC compile skipped:', e.message);
+        }
+
+        // 2. Check for MinGW / Clang on Windows
+        for (const comp of ['x86_64-w64-mingw32-g++', 'g++', 'clang++']) {
+            try {
+                const check = execSync(`where.exe ${comp}`, { encoding: 'utf-8' });
+                if (check && check.trim()) {
+                    const cmd = `${comp} -shared -O2 -std=c++17 -I"${srcDir}" "${dllmain}" "${luaBridge}" -o "${outputDllPath}" "${defFile}" -static -lpsapi -luser32 -lkernel32`;
+                    execSync(cmd, { encoding: 'utf-8', timeout: 30000 });
+                    if (fs.existsSync(outputDllPath)) {
+                        console.log(`[GameScanner] Compiled version.dll from C++ source via ${comp}`);
+                        return { compiled: true, compiler: comp };
+                    }
+                }
+            } catch (_) {}
+        }
+    } else {
+        // 3. Linux / SteamOS: MinGW cross-compiler
+        const comp = 'x86_64-w64-mingw32-g++';
+        try {
+            const check = execSync(`command -v ${comp}`, { encoding: 'utf-8' });
+            if (check && check.trim()) {
+                const cmd = `${comp} -shared -O2 -std=c++17 -I"${srcDir}" "${dllmain}" "${luaBridge}" -o "${outputDllPath}" "${defFile}" -static-libgcc -static-libstdc++ -lpsapi -luser32 -lkernel32`;
+                execSync(cmd, { encoding: 'utf-8', timeout: 30000 });
+                if (fs.existsSync(outputDllPath)) {
+                    console.log(`[GameScanner] Compiled version.dll from C++ source via Linux ${comp}`);
+                    return { compiled: true, compiler: `MinGW-w64 (${comp})` };
+                }
+            }
+        } catch (_) {}
+    }
+
+    return { compiled: false, reason: "No local C++ compiler toolchain found on system" };
+}
+
 function installRadarFiles(customPath = null) {
     const gameDir = findGameDirectory(customPath);
     if (!gameDir) {
@@ -297,7 +381,7 @@ function installRadarFiles(customPath = null) {
         fs.mkdirSync(releaseDir, { recursive: true });
     }
 
-    // Determine source directory for radar bridge files
+    // Determine source directory for bundled radar bridge fallback files
     const appDir = path.resolve(__dirname, '..');
     const candidates = [
         path.join(__dirname, 'resources', 'radar_bridge'),
@@ -309,18 +393,35 @@ function installRadarFiles(customPath = null) {
 
     let srcDir = null;
     for (const cand of candidates) {
-        if (cand && fs.existsSync(path.join(cand, 'version.dll'))) {
+        if (cand && (fs.existsSync(path.join(cand, 'version.dll')) || fs.existsSync(path.join(cand, 'sm_telemetry.lua')))) {
             srcDir = cand;
             break;
         }
     }
 
-    if (!srcDir) {
-        return { success: false, error: "Radar telemetry bridge source assets not found in package." };
+    const targetDllPath = path.join(releaseDir, 'version.dll');
+    let buildResult = { compiled: false };
+
+    // 1. Try to compile version.dll on-demand on the user's computer from C++ source
+    try {
+        buildResult = tryCompileDllFromSource(targetDllPath);
+    } catch (e) {
+        console.warn(`[GameScanner] On-demand compile warning:`, e.message);
     }
 
-    try {
-        const filesToCopy = ['version.dll', 'sm_telemetry.lua', 'settings.ini'];
+    // 2. If compilation did not produce a DLL, copy the verified bundled pre-compiled DLL
+    if (!buildResult.compiled || !fs.existsSync(targetDllPath)) {
+        if (srcDir && fs.existsSync(path.join(srcDir, 'version.dll'))) {
+            fs.copyFileSync(path.join(srcDir, 'version.dll'), targetDllPath);
+            console.log(`[GameScanner] Deployed verified bundled version.dll to ${releaseDir}`);
+        } else if (!fs.existsSync(targetDllPath)) {
+            return { success: false, error: "Radar telemetry bridge version.dll binary could not be found or built." };
+        }
+    }
+
+    // 3. Deploy companion Lua telemetry script & settings.ini
+    if (srcDir) {
+        const filesToCopy = ['sm_telemetry.lua', 'settings.ini'];
         for (const file of filesToCopy) {
             const src = path.join(srcDir, file);
             const dst = path.join(releaseDir, file);
@@ -328,12 +429,19 @@ function installRadarFiles(customPath = null) {
                 fs.copyFileSync(src, dst);
             }
         }
-        console.log(`[GameScanner] Successfully installed radar telemetry files to ${releaseDir}`);
-        return { success: true, gameDir, releaseDir };
-    } catch (e) {
-        console.error(`[GameScanner] Failed to install radar files:`, e);
-        return { success: false, error: e.message };
     }
+
+    const isLinux = process.platform !== 'win32';
+    console.log(`[GameScanner] Successfully installed radar telemetry files to ${releaseDir} (Built from source: ${buildResult.compiled})`);
+    return {
+        success: true,
+        gameDir,
+        releaseDir,
+        builtFromSource: buildResult.compiled,
+        compiler: buildResult.compiler || null,
+        isLinux,
+        wineOverrideNotice: isLinux ? 'WINEDLLOVERRIDES="version=n,b" %command%' : null
+    };
 }
 
 function restartGame() {

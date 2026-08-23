@@ -1,169 +1,80 @@
-# 🗺️ Scrap Mechanic Tactical Map & Real-Time Multiplayer Co-op Tracker
+# 🗺️ Scrap Mechanic Tactical Map & Real-Time Multiplayer Tracker
 
 [![Download Latest Windows Executable](https://img.shields.io/badge/Download-Latest%20Release%20(.exe)-00e5ff?style=for-the-badge&logo=windows)](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)
 [![GitHub Release](https://img.shields.io/github/v/release/Srlimao/ScrapMechanicCoopMap?style=for-the-badge&color=ff7a00)](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Srlimao/ScrapMechanicCoopMap/release.yml?style=for-the-badge&label=Build%20%26%20Release)](https://github.com/Srlimao/ScrapMechanicCoopMap/actions)
 
-A high-performance, release-ready desktop tactical map application and real-time multiplayer co-op companion for **Scrap Mechanic** survival worlds.
+A high-performance tactical map workbench and real-time companion for **Scrap Mechanic** survival worlds.
 
-Featuring **in-game full-screen map overlays**, **floating proximity radar HUD**, **zero-mod live memory character tracking**, **instant cloud squad room relays**, **authentic 12,288-cell procedural terrain stitching**, and comprehensive **save file entity inspection**.
+Featuring **in-game HUD overlays**, **floating proximity radar**, **live character tracking**, **instant cloud squad co-op**, **12,288-cell procedural terrain stitching**, and **save file entity inspection**.
 
 ---
 
 ## 📥 Direct Download
 
-> 🔗 **Permanent Direct Download Link (Always Latest Version)**:  
-> **[https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)**  
-> *(Clicking this link always downloads the latest standalone portable `.exe` with zero installation required).*
+> 🔗 **Permanent Direct Download (Latest Standalone Portable Executable)**:  
+> **[Download Scrap-Mechanic-Tactical-Map.exe](https://github.com/Srlimao/ScrapMechanicCoopMap/releases/latest/download/Scrap-Mechanic-Tactical-Map.exe)**  
+> *(Zero installation required — download and run).*
 
 ---
 
-## ✨ Features
+## ✨ Core Features
 
-### 🎮 1. In-Game Full Map Overlay & Floating Radar HUD (v1.5.1)
-- **`All In Game` Mode ([M])**: Press <kbd>M</kbd> anytime while playing *Scrap Mechanic* to summon the full interactive tactical workbench directly over your game screen. Press <kbd>Esc</kbd>, <kbd>M</kbd>, or click *Return to Game* to dismiss the map and automatically restore game focus and 3D mouse look with zero desktop cursor interruptions.
-- **Floating Proximity Radar HUD ([F9])**: Proximity radar floats seamlessly over the game. Press <kbd>F9</kbd> in-game to unlock, drag, and resize the HUD.
-- **Auto-Close Game Lifecycle**: Opening the app when no game is running automatically defaults to In-App desktop mode. When the game exits, the app automatically closes cleanly.
-- **Game-Focus Protected Hotkeys**: Shortcuts (<kbd>M</kbd> / <kbd>F9</kbd>) only trigger while *Scrap Mechanic* is the active foreground window, preventing conflicts while typing in Discord, browser, or other apps.
-- **Collapsible Sidebar & POI Waypoints**: In-game overlay mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs, Oil Lakes) with live distance and perimeter waypoints.
+### 🎮 1. In-Game Map & Floating Radar Overlay (v1.7.0)
+- **`All In Game` Mode ([M])**: Press <kbd>M</kbd> in-game to summon the interactive tactical map over your screen. Press <kbd>Esc</kbd> or <kbd>M</kbd> to return to the game with seamless mouse-look restoration.
+- **Floating Proximity Radar HUD ([F9])**: Floats over the game. Press <kbd>F9</kbd> in-game to unlock, drag, and resize the HUD.
+- **Smart Game Process Guard**: In-game mode buttons are safely blocked when *Scrap Mechanic* is not running. Closing the game while in an in-game overlay mode cleanly closes the map, while desktop workstation mode stays open.
+- **Game-Focus Protected Hotkeys**: Shortcuts (<kbd>M</kbd> / <kbd>F9</kbd>) only fire when *Scrap Mechanic* is the active window.
 
----
+### 📡 2. Tactical Proximity Radar & Telemetry Bridge (`version.dll`)
+- **360° Military Proximity Scope**: Live circular radar with phosphor sweep beam, dynamic range (50m–300m), and blip scaling.
+- **Directional Threat Arrows**: Farmbots, Tapebots, Haybots, and Totebots render with altitude indicators (▲ Above, ▼ Below, ● Level).
+- **Vehicles & POIs**: Live tracking for vehicles (50+ blocks) and surrounding landmarks (Mechanic Station, Trader, Packing, Growlabs).
 
-### 📡 2. Tactical Proximity Radar & Proxy DLL Bridge
-- **360° Military Proximity Scope**: Live circular radar in the bottom-right corner with phosphor sweep beam, dynamic range settings (50m to 500m), and customizable blip scale.
-- **Directional Altitude Threats**: Farmbots, Tapebots, Haybots, and Totebots render as pure red threat blips with crisp altitude arrows:
-  - 🔺 **▲ Red Arrow Up**: Hostile bot is above the player ($> 2.5\text{m}$).
-  - 🔻 **▼ Red Arrow Down**: Hostile bot is below the player ($< -2.5\text{m}$).
-  - 🔴 **● Red Circle**: Hostile bot is on the same level ($\pm 2.5\text{m}$).
-- **Passive Helpers & Wildlife Separation**: Seedbots, Wocs, Glowbugs, Caged Farmers, and Traders render in soft green (`#4ade80`) and are excluded from danger alerts.
-- **Dynamic Vehicle Detection**: Automatically tracks vehicles and creations with $\ge 50$ blocks, displaying altitude chevrons and distance.
-- **Zero-Friction Proxy DLL Bridge (`dinput8.dll`)**: Bundled DirectX proxy DLL hooks into the game's internal Lua runtime to stream live bot entities and player orientation at 20 Hz without altering executable code.
-- **1-Click Radar Install & Game Restart**: Built-in 1-click DLL installation and Steam game relauncher with custom folder browsing fallback.
+> [!NOTE]
+> ### 🛡️ About the Telemetry Bridge (`version.dll`)
+> - **100% Open Source**: Full C++ source code is directly included in [`native/proxy_telemetry/src/`](native/proxy_telemetry/src/).
+> - **No Game File Modifications**: The DLL acts as a standard Windows DirectX proxy sitting in `Release/`. It runs a read-only telemetry script inside the official Lua environment every 500ms. It does not alter game executables or memory code.
+> - **On-Demand Local Build**: When you click **"Install Radar"**, the app automatically compiles `version.dll` directly on your machine if a compiler (MSVC, MinGW, Clang) is detected. If no compiler toolchain is installed, it safely deploys the verified open-source binary.
+> - **Linux / Steam Deck (Proton)**: Supported out of the box. Simply add the Steam Launch Option if required:  
+>   `WINEDLLOVERRIDES="version=n,b" %command%`
 
----
+### 🛰️ 3. Real-Time Player Tracking & Save Inspection
+- **Zero-Mod Live Tracking**: Ultra-fast native memory reader updates player coordinates $(X, Y, Z)$, heading cone, and speed at 30 Hz.
+- **SQLite Save File Decoder**: Drag and drop any `.db` save to decode world cells, chests, oil nodes, and built vehicles in milliseconds.
+- **Procedural Seed Generator**: Enter any numeric seed to preview terrain layout before building.
 
-### 🛰️ 3. Zero-Mod Real-Time Player Tracking
-- **Ultra-Fast Memory Hook**: Native Win32 C-FFI memory reader connecting directly to `ScrapMechanic.exe` in **0.18 ms** at **20 Hz**.
-- **Zero Game Modifications**: Operates completely externally via Windows memory pointers—no mods, Lua injection, or custom game files required.
-- **Dynamic Orientation & Breadcrumbs**: Displays live world coordinates $(X, Y, Z)$, heading cone, movement speed, and historical breadcrumb trails.
-- **Follow Player Camera**: Center and lock the camera view onto your moving character with smooth interpolation.
-- **One-Click Reconnect**: Live badge button to instantly re-scan and hook into the game process if launched or restarted mid-session.
-
----
-
-### 👥 3. Multiplayer Squad Rooms & Live Co-op Relay
-- **Cloud Squad Rooms**: Create or join multiplayer rooms with 5-character codes (e.g. `#SQ-9421`).
-- **⚡ Instant 30ms Map Sync (Zero Generation for Friends)**:
-  - When the Host creates a room, the app automatically uploads the active **12,288 world cells** (~78 KB compressed) to the cloud relay.
-  - When friends join, their app receives the cells in **0.02s** and stitches the full terrain map in **~30 milliseconds** using their local texture atlas!
-  - **Guests need zero Python, zero Lua engines, and zero save files!**
-- **Live Squad Member Markers**:
-  - Custom chosen nickname and glowing beacon colors (Cyan, Orange, Lime, Purple, Pink, Yellow).
-  - Real-time distance measurement from local player (e.g. `240m away`).
-  - Heading cones, speed badges, and individual player breadcrumb trails.
-- **🎯 Tactical Map Pings**: Double-click anywhere on the map canvas to drop timed tactical pings that pulse and alert all room members in real time.
-- **Squad Member Roster**: Interactive sidebar panel with player distance and a **"Jump Camera"** button.
+### 👥 4. Cloud Multiplayer Squad Rooms
+- **Instant Cloud Sync**: Create a 6-character room code to link with teammates worldwide over high-speed WebSocket relay (`wss://sm.dunhas.com`).
+- **Live Teammate Beacons**: Real-time teammate markers, heading arrows, distance badges, and tactical alert pings.
+- **Host World Sync**: Guests don't need Python or save files — world cells stream in 30ms directly from the host.
 
 ---
 
-### 🏔️ 3. Authentic Procedural Terrain Atlas
-- **High-Speed Save Tile Decoding**: Decodes `g_cellData` and world seed directly from SQLite `.db` save files using local LZ4 decompression and bitstream parsing.
-- **Official Texture Atlas**: Stitches 12,288 world cells from `terrain-cell-atlas.webp` into a crisp, high-resolution canvas map.
-- **Procedural Seed Generator**: Enter any numeric world seed (e.g. `631793443`) to dynamically compute and render the complete terrain surface.
-
----
-
-### 🔍 4. Interactive Entity & Save Inspector
-- **Creations & Vehicles**: Overworld rigid bodies categorized by block count with bounding boxes, dimensions, and inspection dialogs.
-- **Bots & Wildlife**: Farmbots, Haybots, Tapebots, Totebots, and Wocs with custom icons and sub-layer filters.
-- **Harvestables & Resources**: Oil geysers, Cotton plants, Stone/Metal deposits, and Trees.
-- **Points of Interest (POIs)**: Mechanic Stations, Hideouts, Warehouses, Packing Stations, Trader, and Craftbots.
-- **Save Sync**: 1-click active save detection and automatic reload on world saves.
-
----
-
-### 📐 5. Tactical HUD & Navigation Tools
-- **Distance Ruler**: Click two points to measure distance in meters, blocks, and estimated walking/driving travel time.
-- **Coordinates HUD & Grid**: Toggleable world and cell coordinate overlay grid.
-- **Search Engine**: Live search for POIs, creations, bots, or coordinates.
-- **High-Res Screenshot Exporter**: One-click high-resolution PNG map export.
-- **Modern Dark UI**: Glowing cyber-tactical dark interface with custom Scrap Mechanic application icon.
-
----
-
-## 🛰️ Cloud Relay Server (`ScrapMechanicCoopMapServer`)
-
-The multiplayer squad room system is powered by an independent, ultra-lightweight WebSocket room relay server located in the [`relay_server/`](file:///d:/SteamLibrary/steamapps/common/Scrap%20Mechanic/save_map_viewer/relay_server) directory and maintained in its own dedicated repository:
-
-👉 **Relay Server GitHub Repository**: **[https://github.com/Srlimao/ScrapMechanicCoopMapServer](https://github.com/Srlimao/ScrapMechanicCoopMapServer)**
-
-### 💡 Relay Server Architecture:
-- **100% In-Memory RAM**: Zero disk writes, zero databases, and zero file leftovers.
-- **Automatic Room Purging**: When the host leaves or a room becomes empty, the room and its cell data are immediately purged from memory.
-- **Zombie Socket Cleanup**: 10-second heartbeat ping automatically prunes dead connections (crashes, Wi-Fi drops, sleep mode).
-- **Ultra-Low Resource Footprint**: Consumes only **~25–35 MB RAM** and **<0.5% CPU**, running 24/7 on lightweight cloud instances (like Google Cloud `e2-micro`).
-- **Production Endpoint**: Preconfigured to route securely over Cloudflare SSL at `wss://sm.dunhas.com`.
-
-### 🚀 Deploying the Relay Server on Linux / Google Cloud VM:
-```bash
-# 1. Clone standalone server repo
-git clone https://github.com/Srlimao/ScrapMechanicCoopMapServer.git
-cd ScrapMechanicCoopMapServer
-
-# 2. Install dependencies
-npm install --production
-
-# 3. Start with PM2
-pm2 start server.js --name "sm-coop-relay" -- 8090
-pm2 save
-```
-
----
-
-## 🏗️ Project Architecture & Vertical Slices
+## 🏗️ Project Architecture
 
 ```
 ScrapMechanicCoopMap/
-├── .github/workflows/
-│   └── release.yml             # Automated Windows CI/CD release workflow
-├── build/                      # Multi-resolution application icons (.ico, .png)
+├── native/proxy_telemetry/     # C++ proxy telemetry bridge source (version.dll)
+│   ├── src/                    # dllmain.cpp, lua_bridge.cpp, proxy_exports.h
+│   ├── build_proxy_dll.bat     # Windows MSVC/MinGW build script
+│   └── build_proxy_dll.sh      # Linux MinGW cross-compiler script
 ├── electron/
-│   ├── main.js                 # Electron main process & IPC coordinator
-│   ├── memory_reader.js        # Win32 C-FFI memory hook (Toolhelp + ReadProcessMemory)
-│   ├── game_scanner.js         # Steam save detector & path scanner
-│   └── preload.js              # Secure IPC bridge
-├── public/
-│   ├── asset_uuids.json        # Game entity & tile UUID dictionary
-│   ├── terrain-cell-atlas.webp # Official terrain texture atlas
-│   └── terrain-cell-atlas.json # Atlas coordinate manifest
-├── relay_server/               # Standalone WebSocket room relay server (Node.js)
-│   ├── server.js               # In-memory room manager & telemetry broadcaster
-│   ├── Dockerfile              # Container deployment definition
-│   ├── docker-compose.yml      # Multi-container compose configuration
-│   └── deploy_gcp.sh           # Automated 1-command Linux / GCP deployment script
-├── src/
-│   ├── core/                   # Reactive state store, coordinates, constants
-│   ├── features/
-│   │   ├── live_tracker/       # Live memory polling & player trail renderer
-│   │   ├── map_renderer/       # Canvas engine, camera, layers, minimap
-│   │   ├── save_loader/        # SQLite WASM decoder & save synchronizer
-│   │   ├── squad/              # Multiplayer relay client, squad canvas layer & UI
-│   │   └── tools/              # Seed generator, bookmarks, ruler, search, screenshot
-│   ├── styles/                 # Modular dark-mode CSS design system
-│   └── ui/                     # Modals, toasts, and HUD controllers
-└── index.html                  # Main viewport & application shell
+│   ├── main.js                 # Electron process, overlay & lifecycle coordinator
+│   ├── memory_reader.js        # Win32 C-FFI memory hook (ReadProcessMemory)
+│   ├── game_scanner.js         # Save detector, path scanner & on-demand compiler
+│   └── preload.js              # IPC bridge
+├── relay_server/               # Standalone WebSocket co-op room server
+├── src/                        # Modular frontend engine (Vite / Vanilla JS)
+│   ├── features/               # Live tracker, map renderer, save loader, squad
+│   └── styles/                 # Modular dark-mode CSS design system
+└── index.html                  # Main workstation application shell
 ```
 
 ---
 
-## 🛠️ Local Development & Building
+## 🛠️ Local Development
 
-### Prerequisites:
-- [Node.js 20+](https://nodejs.org/)
-- Windows 10 / 11 (for live memory tracking)
-
-### Setup:
 ```bash
 # 1. Clone repository
 git clone https://github.com/Srlimao/ScrapMechanicCoopMap.git
@@ -175,17 +86,14 @@ npm install
 # 3. Run in Vite Web mode (Hot Reloading)
 npm run dev
 
-# 4. Run in Desktop Electron mode
+# 4. Run Desktop Electron app
 npm run electron:dev
-```
 
-### Build Standalone Portable Executable:
-```bash
+# 5. Build Standalone Portable Executable
 npm run dist:portable
 ```
-The compiled single-file binary will be generated in `dist_release/Scrap-Mechanic-Tactical-Map.exe`.
 
 ---
 
 ## 📜 License
-This project is licensed under the [MIT License](LICENSE).
+Released under the [MIT License](LICENSE).

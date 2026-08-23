@@ -561,11 +561,16 @@ ipcMain.handle('set-display-mode', async (event, mode) => {
         };
     }
 
-    // If game is not running, do not enter in-game modes; default back to 'in-app'
+    // If game is not running, block switching to in-game modes
     const isGameRunning = Boolean(memoryReader && (memoryReader.isProcessOpen() || memoryReader.findScrapProcess()));
     if (mode !== 'in-app' && !isGameRunning) {
-        console.log(`[Electron] Scrap Mechanic is not running. Defaulting '${mode}' back to 'in-app'.`);
-        mode = 'in-app';
+        console.log(`[Electron] Scrap Mechanic is not running. Blocking '${mode}'.`);
+        return {
+            success: false,
+            mode: activeDisplayMode,
+            error: 'GAME_NOT_RUNNING',
+            message: 'Scrap Mechanic is not running. Launch the game to use In-Game display modes.'
+        };
     }
 
     // Guard against redundant sets
@@ -748,6 +753,11 @@ ipcMain.handle('is-window-maximized', () => {
     return { isMaximized: Boolean(mainWindow && !mainWindow.isDestroyed() && mainWindow.isMaximized()) };
 });
 
+ipcMain.handle('get-game-process-status', async () => {
+    const isGameRunning = Boolean(memoryReader && (memoryReader.isProcessOpen() || memoryReader.findScrapProcess()));
+    return { running: isGameRunning, activeMode: activeDisplayMode };
+});
+
 let hadGameRunning = false;
 let gameExitCheckCount = 0;
 let gameLifecycleInterval = null;
@@ -756,6 +766,16 @@ function startGameLifecycleMonitor() {
     if (gameLifecycleInterval) clearInterval(gameLifecycleInterval);
     gameLifecycleInterval = setInterval(() => {
         const isGameRunning = Boolean(memoryReader && (memoryReader.isProcessOpen() || memoryReader.findScrapProcess()));
+        
+        // Broadcast real-time process state to frontend
+        const statusPayload = { running: isGameRunning, activeMode: activeDisplayMode };
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            mainWindow.webContents.send('game-process-status', statusPayload);
+        }
+        if (overlayWindow && !overlayWindow.isDestroyed()) {
+            overlayWindow.webContents.send('game-process-status', statusPayload);
+        }
+
         if (isGameRunning) {
             hadGameRunning = true;
             gameExitCheckCount = 0;
@@ -763,10 +783,19 @@ function startGameLifecycleMonitor() {
             // Game was running previously and is now closed
             gameExitCheckCount++;
             if (gameExitCheckCount >= 2) {
-                console.log('[Electron] Scrap Mechanic process has terminated. Auto-closing Tactical Map...');
-                if (gameLifecycleInterval) clearInterval(gameLifecycleInterval);
-                if (memoryReader) memoryReader.stop();
-                app.quit();
+                hadGameRunning = false;
+                gameExitCheckCount = 0;
+                console.log(`[Electron] Scrap Mechanic process terminated. Active mode: ${activeDisplayMode}`);
+
+                // If in in-game mode, close the map app; if in standard in-app workstation mode, don't close
+                if (activeDisplayMode === 'all-in-game' || activeDisplayMode === 'radar-in-game') {
+                    console.log('[Electron] Game closed while in In-Game display mode. Closing Tactical Map...');
+                    if (gameLifecycleInterval) clearInterval(gameLifecycleInterval);
+                    if (memoryReader) memoryReader.stop();
+                    app.quit();
+                } else {
+                    console.log('[Electron] Game closed while in In-App workstation mode. Keeping Tactical Map open.');
+                }
             }
         }
     }, 1000);

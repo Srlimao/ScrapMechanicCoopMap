@@ -286,10 +286,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px 8px;
+    padding: 8px 6px;
     text-align: center;
     z-index: 10;
-    gap: 5px;
+    gap: 4px;
     border-radius: 50%;
 }
 
@@ -300,7 +300,7 @@
 }
 
 .radar-install-icon {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--color-live-green);
 }
 
@@ -309,18 +309,45 @@
     font-weight: 800;
     color: var(--color-live-green);
     font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
 }
 
 .radar-install-desc {
     font-size: 8px;
     color: var(--color-live-green);
-    opacity: 0.85;
+    opacity: 0.9;
     line-height: 1.2;
-    max-width: 130px;
+    max-width: 140px;
+}
+
+.radar-install-desc code {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    padding: 0 2px;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5px;
+}
+
+.radar-install-warning {
+    font-size: 7px;
+    color: #facc15;
+    background: rgba(234, 179, 8, 0.15);
+    border: 1px solid rgba(234, 179, 8, 0.35);
+    border-radius: 3px;
+    padding: 1.5px 5px;
+    max-width: 148px;
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
 }
 
 .radar-install-btn {
-    margin-top: 3px;
+    margin-top: 2px;
     background: var(--color-harvestable);
     border: 1px solid var(--color-live-green);
     color: var(--text-on-dark);

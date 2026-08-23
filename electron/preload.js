@@ -54,5 +54,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     minimizeWindow: () => ipcRenderer.invoke('window-minimize'),
     maximizeWindow: () => ipcRenderer.invoke('window-maximize'),
     closeWindow: () => ipcRenderer.invoke('window-close'),
-    isWindowMaximized: () => ipcRenderer.invoke('is-window-maximized')
+    isWindowMaximized: () => ipcRenderer.invoke('is-window-maximized'),
+    // Game Process Status APIs
+    getGameProcessStatus: () => ipcRenderer.invoke('get-game-process-status'),
+    onGameProcessStatus: (callback) => {
+        const handler = (event, data) => callback(data);
+        ipcRenderer.on('game-process-status', handler);
+        return () => ipcRenderer.removeListener('game-process-status', handler);
+    }
 });

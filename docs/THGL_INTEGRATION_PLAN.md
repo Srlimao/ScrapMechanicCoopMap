@@ -25,7 +25,7 @@ TH.GL provides interactive maps, in-game overlays, and real-time companion track
 | **Monorepo / Build** | Turborepo + Bun + TypeScript | Vite / Node.js / Python | TypeScript packages under `packages/@repo/*` and apps in `apps/*` |
 | **Frontend Framework** | Next.js (Web Apps), Vite (Overwolf) | Vanilla JS / Leaflet / HTML5 Canvas | React/TypeScript components with Leaflet / MapLibre / Canvas engine |
 | **Save File Parsing** | Browser-side / Local privacy-focused | Python backend (`sqlite3`) / Node.js | Client-side **`sql.js` (WebAssembly SQLite)** — 0 server uploads |
-| **Live Tracking** | TH.GL Companion App / Memory Hook | C-FFI Memory Reader & `dinput8.dll` Proxy | Direct memory address integration into TH.GL Companion + WebSocket relay |
+| **Live Tracking** | TH.GL Companion App / Memory Hook | C-FFI Memory Reader & `version.dll` Proxy | Direct memory address integration into TH.GL Companion + WebSocket relay |
 | **Map Rendering** | WebGL2 / Tile Layers / Canvas | 12,288 Cell Atlas WebP + JSON metadata | Modular tile layer generator supporting seeds & custom worlds |
 
 ---

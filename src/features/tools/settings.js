@@ -36,8 +36,53 @@ export function setFilterSectionsCollapsed(collapsed) {
     }
 }
 
+export function updateDisplayModeButtonsState(isGameRunning) {
+    state.gameRunning = Boolean(isGameRunning);
+
+    const modeBtns = document.querySelectorAll('#displayModeSelector .mode-btn');
+    modeBtns.forEach(b => {
+        const mode = b.dataset.mode;
+        if (mode !== 'in-app') {
+            b.classList.toggle('disabled', !state.gameRunning);
+            b.setAttribute('aria-disabled', !state.gameRunning ? 'true' : 'false');
+            if (!state.gameRunning) {
+                if (!b.hasAttribute('data-orig-title')) {
+                    b.setAttribute('data-orig-title', b.title);
+                }
+                b.title = "Scrap Mechanic is not running. Launch the game to use In-Game mode.";
+            } else {
+                const orig = b.getAttribute('data-orig-title');
+                if (orig) b.title = orig;
+            }
+        }
+    });
+
+    const cfgDisplayMode = document.getElementById('cfgDisplayMode');
+    if (cfgDisplayMode) {
+        const opts = cfgDisplayMode.querySelectorAll('option');
+        opts.forEach(opt => {
+            if (opt.value !== 'in-app') {
+                opt.disabled = !state.gameRunning;
+            }
+        });
+    }
+
+    // If game is not running and we are in an in-game mode, revert to in-app
+    if (!state.gameRunning && (state.displayMode === 'all-in-game' || state.displayMode === 'radar-in-game')) {
+        applyDisplayMode('in-app', true, true);
+    }
+}
+
 export async function applyDisplayMode(mode, silent = false, notifyElectron = true) {
     if (!['in-app', 'radar-in-game', 'all-in-game'].includes(mode)) return;
+
+    // Block in-game modes if Scrap Mechanic is not running
+    if (mode !== 'in-app' && !state.gameRunning) {
+        const { showToast } = await import('../../ui/toasts.js');
+        showToast("Game Not Running", "Launch Scrap Mechanic to use In-Game Radar and Map Overlay modes.", "warning", 4500);
+        return;
+    }
+
     const changed = state.displayMode !== mode;
     state.displayMode = mode;
 
@@ -80,6 +125,10 @@ export async function applyDisplayMode(mode, silent = false, notifyElectron = tr
         if (res && res.unsupportedPlatform) {
             const { showToast } = await import('../../ui/toasts.js');
             showToast("Platform Notice", res.message || "In-Game HUD and Overlays are not available on Linux yet.", "warning", 6000);
+        }
+        if (res && res.error === 'GAME_NOT_RUNNING') {
+            const { showToast } = await import('../../ui/toasts.js');
+            showToast("Game Not Running", res.message || "Launch Scrap Mechanic first.", "warning", 4500);
         }
         if (res && res.mode && res.mode !== mode) {
             mode = res.mode;
@@ -484,12 +533,26 @@ export async function checkAndSetupRadarInstaller() {
                     const res = await window.electronAPI.installRadarFiles();
                     const { showToast } = await import('../../ui/toasts.js');
                     if (res && res.success) {
-                        desc.textContent = "Radar installed! Click below to restart Scrap Mechanic and activate live tracking.";
+                        const buildMsg = res.builtFromSource
+                            ? `Radar built from C++ source via ${res.compiler || 'local compiler'}!`
+                            : "Radar installed (version.dll)!";
+                        desc.textContent = `${buildMsg} Click below to restart game.`;
                         btn.disabled = false;
                         btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> RESTART GAME';
                         btn.style.background = '#16a34a';
                         if (btnBrowse) btnBrowse.style.display = 'none';
-                        showToast("Radar Installed!", "Click 'Restart Game' to launch Scrap Mechanic with radar telemetry.", "success", 6000);
+
+                        if (res.builtFromSource) {
+                            showToast("Built From Source!", `Compiled version.dll using ${res.compiler}.`, "success", 6000);
+                        } else {
+                            showToast("Radar Installed!", "version.dll deployed. Click 'Restart Game' to activate.", "success", 6000);
+                        }
+
+                        if (res.isLinux && res.wineOverrideNotice) {
+                            setTimeout(() => {
+                                showToast("Linux / Steam Deck Tip", `Steam Launch Option: ${res.wineOverrideNotice}`, "info", 8000);
+                            }, 1500);
+                        }
 
                         btn.onclick = async () => {
                             btn.disabled = true;
@@ -891,9 +954,13 @@ export function setupSettingsModal() {
             const res = await window.electronAPI.installRadarFiles();
             const { showToast } = await import('../../ui/toasts.js');
             if (res && res.supported === false) {
-                showToast("Windows Only Feature", res.error || "DirectX radar telemetry bridge is currently Windows-only.", "info", 5000);
+                showToast("Radar Not Supported", res.error || "Could not deploy telemetry bridge.", "info", 5000);
             } else if (res && res.success) {
-                showToast("Radar Reinstalled", "Telemetry bridge files updated in game folder.", "success", 5000);
+                if (res.builtFromSource) {
+                    showToast("Radar Built & Reinstalled", `Compiled version.dll using ${res.compiler}!`, "success", 6000);
+                } else {
+                    showToast("Radar Reinstalled", "Telemetry bridge files deployed to game folder.", "success", 5000);
+                }
             } else {
                 showToast("Reinstall Failed", (res && res.error) || "Could not copy files", "error", 5000);
             }

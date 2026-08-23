@@ -75,6 +75,7 @@ class NodeMemoryReader {
             tick: 0,
             age: 999,
             source: "node_win32_hook",
+            process_running: false,
             process_pid: null
         };
         this.hMapFile = null;
@@ -243,15 +244,22 @@ class NodeMemoryReader {
             const found = this.findScrapProcess();
             if (!found) {
                 this.state.online = false;
+                this.state.process_running = false;
                 this.state.process_pid = null;
+                this.hProcess = null;
+                this.pid = null;
                 this.cleanupSharedMemory();
                 return;
             }
             this.hProcess = found.hProcess;
             this.baseAddr = found.baseAddr;
             this.pid = found.pid;
+            this.state.process_running = true;
             this.state.process_pid = found.pid;
             console.log(`[NodeMemoryReader] DETECTED Scrap Mechanic (PID: ${this.pid}, Base: 0x${this.baseAddr.toString(16)})`);
+        } else {
+            this.state.process_running = true;
+            this.state.process_pid = this.pid;
         }
 
         // 2. Read shared memory telemetry from proxy DLL if present

@@ -167,6 +167,18 @@
     box-shadow: none;
 }
 
+.mode-btn.disabled,
+.mode-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+    filter: grayscale(0.7);
+}
+
+.mode-btn.disabled:hover {
+    background: transparent;
+    color: var(--text-muted);
+}
+
 .mode-kbd {
     display: inline-block;
     padding: 1px 3px;

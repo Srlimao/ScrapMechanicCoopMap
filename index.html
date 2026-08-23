@@ -569,7 +569,8 @@
                             <div class="radar-install-overlay hidden" id="radarInstallOverlay">
                                 <div class="radar-install-icon"><i class="fa-solid fa-microchip"></i></div>
                                 <div class="radar-install-title">TACTICAL RADAR</div>
-                                <div class="radar-install-desc" id="radarInstallDesc">Install the radar telemetry proxy to track live bots & creations in real-time.</div>
+                                <div class="radar-install-desc" id="radarInstallDesc">Install radar telemetry proxy (<code>version.dll</code>) to track live bots & creations.</div>
+                                <div class="radar-install-warning"><i class="fa-solid fa-shield-halved"></i> 100% Safe (Read-only Lua probe)</div>
                                 <button class="radar-install-btn" id="btnInstallRadar">
                                     <i class="fa-solid fa-download"></i> INSTALL RADAR
                                 </button>
@@ -801,6 +802,9 @@
                                 <button class="btn btn-tool" id="cfgBtnReinstallRadar"><i class="fa-solid fa-download"></i> Reinstall Radar</button>
                             </div>
                         </div>
+                        <div style="font-size:11px; color:var(--text-muted); line-height:1.4; background:#fffbe6; border:1px solid #ffe58f; padding:8px 10px; border-radius:6px;">
+                            <i class="fa-solid fa-shield-halved" style="color:#d48806;"></i> <strong>Telemetry Bridge Notice:</strong> Radar telemetry copies an open-source bridge (<code>version.dll</code>) and telemetry script into your <code>Scrap Mechanic/Release</code> folder. It is 100% safe, read-only telemetry, and does not modify core game binaries or trigger bans.
+                        </div>
                     </div>
                 </div>
 
@@ -861,14 +865,14 @@
                 <button class="modal-close" id="closeHelpModal" title="Close Guide"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <!-- 1. In-Game Display Modes & Live Overlays (v1.5.0) -->
+                <!-- 1. In-Game Display Modes & Live Overlays (v1.7.0) -->
                 <div class="help-section">
                     <h3 class="help-section-title"><i class="fa-solid fa-gamepad" style="color:var(--sm-orange);"></i> 1. In-Game Overlays & Display Modes</h3>
                     <p class="help-section-desc">Seamlessly play <em>Scrap Mechanic</em> with in-game tactical heads-up overlays without alt-tabbing (requires <strong>Borderless Windowed</strong> or <strong>Windowed</strong> mode):</p>
                     <ul class="help-list">
                         <li><i class="fa-solid fa-map-location-dot" style="color:var(--sm-orange);"></i> <div><strong>All In Game Mode [M]</strong>: Press <kbd class="kbd-key">M</kbd> anytime in-game to summon the full interactive tactical map over your game. Press <kbd class="kbd-key">Esc</kbd>, <kbd class="kbd-key">M</kbd>, or click <em>Return to Game</em> to dismiss the map and automatically restore game focus and 3D mouse look.</div></li>
                         <li><i class="fa-solid fa-satellite-dish" style="color:var(--sm-orange);"></i> <div><strong>Radar In Game Mode [F9]</strong>: Proximity radar floats unobtrusively over the game. Press <kbd class="kbd-key">F9</kbd> in-game to unlock the radar HUD for dragging and resizing.</div></li>
-                        <li><i class="fa-solid fa-crosshairs" style="color:var(--sm-orange);"></i> <div><strong>Game-Focus Protected Hotkeys</strong>: Shortcuts (<kbd class="kbd-key">M</kbd> / <kbd class="kbd-key">F9</kbd>) only trigger when <em>Scrap Mechanic</em> is the active window, preventing conflicts while typing in Discord, browser, or other apps.</div></li>
+                        <li><i class="fa-solid fa-crosshairs" style="color:var(--sm-orange);"></i> <div><strong>Process Guard & Smart Lifecycle</strong>: In-Game display modes are only active while <em>Scrap Mechanic</em> is running. Closing the game while in an in-game overlay mode cleanly exits the map, while desktop workstation mode stays open.</div></li>
                         <li><i class="fa-solid fa-layer-group" style="color:var(--sm-orange);"></i> <div><strong>Collapsible Sidebar & POI Waypoints</strong>: In-game mode automatically starts with a collapsed left sidebar and collapsed sub-filters for maximum screen visibility. The radar displays surrounding POIs (Mechanic, Trader, Packing, Growlabs) with live distance and perimeter waypoints.</div></li>
                     </ul>
                 </div>
@@ -885,13 +889,14 @@
 
                 <!-- 3. Tactical Proximity Radar & DLL Bridge -->
                 <div class="help-section">
-                    <h3 class="help-section-title"><i class="fa-solid fa-radar" style="color:var(--sm-orange);"></i> 3. Tactical Proximity Radar & DLL Bridge</h3>
-                    <p class="help-section-desc">A 360° military scope in the bottom-right corner powered by the bundled <strong>Proxy DLL Bridge (<code>dinput8.dll</code>)</strong> for real-time threat detection.</p>
+                    <h3 class="help-section-title"><i class="fa-solid fa-radar" style="color:var(--sm-orange);"></i> 3. Tactical Proximity Radar & Open-Source Bridge</h3>
+                    <p class="help-section-desc">A 360° military scope in the bottom-right corner powered by an open-source <strong>Proxy Bridge (<code>version.dll</code>)</strong> for real-time threat detection.</p>
                     <ul class="help-list">
+                        <li><i class="fa-solid fa-shield-halved" style="color:var(--sm-orange);"></i> <div><strong>100% Open-Source & Safe</strong>: Full C++ source code is included in the project repository. It runs a read-only Lua probe in the game's official environment with zero executable modification.</div></li>
                         <li><i class="fa-solid fa-triangle-exclamation" style="color:#cf1322;"></i> <div><strong>Hostile Threat Arrows</strong>: Farmbots, Tapebots, Haybots, and Totebots render with clear directional altitude arrows (<strong>▲ Above</strong>, <strong>▼ Below</strong>, <strong>● Same Level</strong>).</div></li>
                         <li><i class="fa-solid fa-seedling" style="color:var(--sm-orange);"></i> <div><strong>Passive & Wildlife Filtering</strong>: Seedbots, Caged Farmers, Traders, Wocs, and Glowbugs appear as soft dots and never trigger danger alerts.</div></li>
                         <li><i class="fa-solid fa-car" style="color:var(--sm-orange);"></i> <div><strong>Creations & Vehicles</strong>: Dynamic vehicles with 50+ blocks are tracked with distance and altitude chevrons.</div></li>
-                        <li><i class="fa-solid fa-plug" style="color:var(--sm-orange);"></i> <div><strong>1-Click Radar Install & Restart</strong>: If the DLL is missing, click <em>"Install Radar"</em> and <em>"Restart Game"</em> in the radar footer or browse your custom game folder under <strong>Settings (⚙️)</strong>.</div></li>
+                        <li><i class="fa-solid fa-plug" style="color:var(--sm-orange);"></i> <div><strong>On-Demand Install & Build</strong>: Click <em>"Install Radar"</em> to compile or deploy the bridge to your game folder. Supported on Windows and Linux / Steam Deck (Proton).</div></li>
                     </ul>
                 </div>
 
