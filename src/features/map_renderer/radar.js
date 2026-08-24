@@ -7,6 +7,52 @@ let lastRadarEntities = [];
 let sweepAngle = 0;
 let lastFrameTime = performance.now();
 
+// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted helper functions, and squared distance pre-culling
+const SWEEP_STEPS = 18;
+const SWEEP_TRAIL_ANGLE = Math.PI / 3.2; // ~56 degrees trail
+const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
+    const alpha = Math.pow(i / SWEEP_STEPS, 2.2) * 0.35;
+    return `rgba(34, 197, 94, ${alpha})`;
+});
+
+/**
+ * Helper: Convert world entity (x, y, z) to radar screen (bx, by) with fast squared-distance culling and vertical elevation filtering.
+ */
+function worldToRadarScreen(ex, ey, ez, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle) {
+    const dx = ex - cx;
+    const dy = ey - cy;
+    const distSq = dx * dx + dy * dy;
+
+    // Fast Squared Distance Culling before computing Math.sqrt or checking altitude
+    if (distSq > rangeSq) return null;
+
+    // Vertical altitude/elevation filtering (±20m / ~80 blocks)
+    let elevation = 'level';
+    let dz = 0;
+    if (cz !== null && ez !== undefined && ez !== null) {
+        dz = ez - cz;
+        const maxVertical = state.radarVerticalBand || 20; // default ±20m band
+        if (Math.abs(dz) > maxVertical) return null; // Outside vertical threshold
+        if (dz > 2.5) elevation = 'above';
+        else if (dz < -2.5) elevation = 'below';
+    }
+
+    const dist = Math.sqrt(distSq);
+    const worldAngle = Math.atan2(dy, dx);
+    const screenAngle = (worldAngle - playerHeading + Math.PI / 2 + Math.PI * 4) % (Math.PI * 2);
+    const normDist = (dist / range) * radarRadius;
+
+    const bx = centerX + Math.cos(screenAngle) * normDist;
+    const by = centerY - Math.sin(screenAngle) * normDist;
+
+    // Phosphor decay calculation against rotating sweep beam
+    const sweepDelta = ((sweepAngle - screenAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+    const isJustSwept = sweepDelta < 0.22;
+    const decay = Math.max(0.35, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.65);
+
+    return { bx, by, dist, dz, elevation, screenAngle, isJustSwept, decay };
+}
+
 export function setupRadar(radarCanvas) {
     if (!radarCanvas) return;
 
@@ -124,6 +170,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
 
     // 2. Crisp Phosphor-Green Concentric Range Rings
     const range = state.radarRange || 150; // in meters (e.g. 50, 100, 150, 300)
+    const rangeSq = range * range;
     const ringCount = 3;
 
     ctx.strokeStyle = 'rgba(34, 197, 94, 0.4)';
@@ -184,20 +231,15 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.fillText('▲ FWD', centerX, centerY - radarRadius + 9);
 
     // 5. Continuous 360-Degree Rotating Sonar Sweep Beam with Green Phosphor Trail
-    const sweepTrailAngle = Math.PI / 3.2; // ~56 degrees trail
-    const steps = 18;
-
-    for (let i = 0; i < steps; i++) {
-        const frac = i / steps;
-        const a1 = sweepAngle - sweepTrailAngle * (1 - frac);
-        const a2 = sweepAngle - sweepTrailAngle * (1 - (i + 1) / steps);
-        const alpha = Math.pow(frac, 2.2) * 0.35;
+    for (let i = 0; i < SWEEP_STEPS; i++) {
+        const a1 = sweepAngle - SWEEP_TRAIL_ANGLE * (1 - i / SWEEP_STEPS);
+        const a2 = sweepAngle - SWEEP_TRAIL_ANGLE * (1 - (i + 1) / SWEEP_STEPS);
 
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.arc(centerX, centerY, radarRadius, -a1, -a2, true);
         ctx.closePath();
-        ctx.fillStyle = `rgba(34, 197, 94, ${alpha})`;
+        ctx.fillStyle = SWEEP_STEP_COLORS[i];
         ctx.fill();
     }
 
@@ -216,45 +258,12 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.shadowBlur = 0;
 
     // 6. Gather Surrounding Entities and Draw Radar Blips (Rotated Relative to Player)
-    lastRadarEntities = [];
+    lastRadarEntities.length = 0;
 
     let hostileCount = 0;
     let vehicleCount = 0;
     let poiCount = 0;
     let nearestHostileDist = Infinity;
-
-    // Helper: Convert world entity (x, y, z) to radar screen (bx, by) with vertical elevation filtering
-    function worldToRadarScreen(ex, ey, ez) {
-        // Vertical altitude/elevation filtering (±20m / ~80 blocks)
-        let elevation = 'level';
-        let dz = 0;
-        if (cz !== null && ez !== undefined && ez !== null) {
-            dz = ez - cz;
-            const maxVertical = state.radarVerticalBand || 20; // default ±20m band
-            if (Math.abs(dz) > maxVertical) return null; // Outside vertical threshold
-            if (dz > 2.5) elevation = 'above';
-            else if (dz < -2.5) elevation = 'below';
-        }
-
-        const dx = ex - cx;
-        const dy = ey - cy;
-        const dist = Math.hypot(dx, dy);
-        if (dist > range) return null;
-
-        const worldAngle = Math.atan2(dy, dx);
-        const screenAngle = (worldAngle - playerHeading + Math.PI / 2 + Math.PI * 4) % (Math.PI * 2);
-        const normDist = (dist / range) * radarRadius;
-
-        const bx = centerX + Math.cos(screenAngle) * normDist;
-        const by = centerY - Math.sin(screenAngle) * normDist;
-
-        // Phosphor decay calculation against rotating sweep beam
-        const sweepDelta = ((sweepAngle - screenAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-        const isJustSwept = sweepDelta < 0.22;
-        const decay = Math.max(0.35, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.65);
-
-        return { bx, by, dist, dz, elevation, screenAngle, isJustSwept, decay };
-    }
 
     // A. Enemies / Hostile Bots & Passive Animals (Prioritize Live Telemetry over Save Snapshot)
     const botSource = (state.livePlayer && state.livePlayer.bots && state.livePlayer.bots.length > 0) 
@@ -265,7 +274,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
 
     if (botSource.length > 0 && (state.radarFilters ? state.radarFilters.enemies !== false : true)) {
         for (const unit of botSource) {
-            const p = worldToRadarScreen(unit.x, unit.y, unit.z);
+            const p = worldToRadarScreen(unit.x, unit.y, unit.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
             if (!p) continue;
 
             const typeStr = (unit.type || unit.name || '').toLowerCase();
@@ -372,7 +381,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             const blockCount = creation.blocks || creation.shapes || (creation.mass ? Math.floor(creation.mass / 2) : 0);
             if (blockCount < 50) continue;
 
-            const p = worldToRadarScreen(creation.x, creation.y, creation.z);
+            const p = worldToRadarScreen(creation.x, creation.y, creation.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
             if (!p || p.dist < 1.5) continue; // Don't self-detect current seat
 
             vehicleCount++;
@@ -424,8 +433,18 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     }
 
     // C. Points of Interest & Facilities
+    const maxDist = Math.max(range * 3.5, 450);
+    const maxDistSq = maxDist * maxDist;
+
     if (state.mapData && state.mapData.pois && (state.radarFilters ? state.radarFilters.pois !== false : true)) {
         for (const poi of state.mapData.pois) {
+            const dx = poi.x - cx;
+            const dy = poi.y - cy;
+            const distSq = dx * dx + dy * dy;
+
+            // Fast Squared Distance Culling before sub-filter string lowercasing & trig
+            if (distSq > maxDistSq) continue;
+
             const name = (poi.name || '').toLowerCase();
             const cat = (poi.category || '').toLowerCase();
 
@@ -464,14 +483,12 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
                 poiColor = '#fbbf24';
             }
 
-            const dx = poi.x - cx;
-            const dy = poi.y - cy;
-            const dist = Math.hypot(dx, dy);
+            const dist = Math.sqrt(distSq);
             const worldAngle = Math.atan2(dy, dx);
             const screenAngle = (worldAngle - playerHeading + Math.PI / 2 + Math.PI * 4) % (Math.PI * 2);
 
             const isInside = dist <= range;
-            const isNearPerimeter = !isInside && dist <= Math.max(range * 3.5, 450);
+            const isNearPerimeter = !isInside && dist <= maxDist;
 
             if (!isInside && !isNearPerimeter) continue;
 
@@ -578,7 +595,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     if (state.squad && state.squad.peers) {
         state.squad.peers.forEach(peer => {
             if (peer.x !== undefined && peer.y !== undefined) {
-                const p = worldToRadarScreen(peer.x, peer.y);
+                const p = worldToRadarScreen(peer.x, peer.y, peer.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
                 if (!p) return;
 
                 const color = peer.color || '#00e5ff';
