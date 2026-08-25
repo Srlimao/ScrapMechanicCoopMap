@@ -135,13 +135,23 @@
         return rawBytes.subarray(start, start + payloadLen);
     }
 
+    // OPTIMIZATION (⚡ Bolt): Memoize FNV-1a hash calculations for cell tile UUIDs.
+    // In a 12,288 cell world map, there are only ~50-750 unique tile UUIDs.
+    // Caching hash results avoids ~12,000 redundant string lowercasing and character-by-character hashing operations per render.
+    const fnv1aCache = new Map();
     function fnv1a(str) {
+        if (!str) return '00000000';
+        let cached = fnv1aCache.get(str);
+        if (cached !== undefined) return cached;
+
         let t = str.toLowerCase(), h = 2166136261;
         for (let i = 0; i < t.length; i++) {
             h ^= t.charCodeAt(i);
             h = Math.imul(h, 16777619);
         }
-        return (h >>> 0).toString(16).padStart(8, '0');
+        const res = (h >>> 0).toString(16).padStart(8, '0');
+        fnv1aCache.set(str, res);
+        return res;
     }
 
     function parseTerrainCellData(db) {
