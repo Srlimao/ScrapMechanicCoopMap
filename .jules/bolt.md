@@ -7,3 +7,7 @@
 ## 2025-05-18 - Squared-Distance Pre-Culling Before String Manipulation and Trigonometry
 **Learning:** In 60 FPS radar and HUD canvas loops processing game entities and POIs, string manipulation (`toLowerCase()`, `includes()`) and trigonometry (`Math.atan2`) performed before range checks consume significant frame time.
 **Action:** Always compute squared distance (`dx*dx + dy*dy`) and cull entities against squared range (`maxDistSq`) BEFORE invoking string parsing, subfilter matching, or trigonometric functions.
+
+## 2025-05-19 - Bounding-Box & Squared-Distance Pre-Culling for Mousemove Entity Hover Search
+**Learning:** High-frequency mousemove events triggering hover detection (`findHoveredEntity`) across tens of thousands of map entities waste CPU cycles performing `Math.sqrt` and string lowercasing on off-cursor entities.
+**Action:** Always apply fast axis-aligned bounding box checks (`Math.abs(dx) > hitDist`) and squared-distance checks (`dx*dx + dy*dy >= hitDistSq`) FIRST to cull >99.9% of entities before running sub-filter string parsing or heavy distance calculations.
