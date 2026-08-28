@@ -1,6 +1,10 @@
 // Dynamic HUD Tooltip for entity hover positioning & metadata
+// OPTIMIZATION (⚡ Bolt): Squared-distance pre-culling on mousemove hover checks.
+// Computing squared distance (dx*dx + dy*dy) and checking against hitDistSq BEFORE
+// performing subfilter string operations (toLowerCase/includes) or Math.sqrt
+// eliminates thousands of unnecessary string allocations and floating-point math per frame.
 import { state } from '../../core/state.js';
-import { calculateDistance, formatCoords } from '../../core/coords.js';
+import { formatCoords } from '../../core/coords.js';
 import { openInspector } from './sidebar.js';
 
 let tooltipEl = null;
@@ -50,10 +54,15 @@ function findHoveredEntity(worldX, worldY) {
     }
 
     const hitDist = Math.max(12, 30 / state.zoom);
+    const hitDistSq = hitDist * hitDist;
 
     // 1. Check POIs (Tier 1: Always checkable)
     if (state.layers.pois && state.mapData.pois) {
         for (const poi of state.mapData.pois) {
+            const dx = poi.x - worldX;
+            const dy = poi.y - worldY;
+            if (dx * dx + dy * dy >= hitDistSq) continue;
+
             const name = (poi.name || '').toLowerCase();
             const cat = (poi.category || '').toLowerCase();
             if (state.subFilters && state.subFilters.pois && state.selectedEntity !== poi) {
@@ -65,17 +74,17 @@ function findHoveredEntity(worldX, worldY) {
                 if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
             }
 
-            if (calculateDistance(worldX, worldY, poi.x, poi.y) < hitDist) {
-                state.hoveredEntity = poi;
-                return;
-            }
+            state.hoveredEntity = poi;
+            return;
         }
     }
 
     // 2. Check Schematics (Tier 2: zoom >= 0.18)
     if (state.layers.schematics && state.mapData.schematics && (state.zoom >= 0.18 || state.selectedEntity)) {
         for (const s of state.mapData.schematics) {
-            if (calculateDistance(worldX, worldY, s.x, s.y) < hitDist) {
+            const dx = s.x - worldX;
+            const dy = s.y - worldY;
+            if (dx * dx + dy * dy < hitDistSq) {
                 state.hoveredEntity = s;
                 return;
             }
@@ -84,25 +93,31 @@ function findHoveredEntity(worldX, worldY) {
 
     // 3. Check Creations (Tier 2/3: zoom >= 0.18)
     if (state.layers.creations && state.mapData.creations) {
-        const filter = state.subFilters.creationsSize;
+        const filter = state.subFilters ? state.subFilters.creationsSize : null;
         for (const c of state.mapData.creations) {
             if (state.zoom < 0.18 && state.selectedEntity !== c) continue;
+
+            const dx = c.x - worldX;
+            const dy = c.y - worldY;
+            if (dx * dx + dy * dy >= hitDistSq) continue;
 
             // Size filter: Small (<50b), Medium (50-500b), Large (500b+)
             if (filter === 'small' && c.blocks >= 50) continue;
             if (filter === 'medium' && (c.blocks < 50 || c.blocks > 500)) continue;
             if (filter === 'large' && c.blocks <= 500) continue;
 
-            if (calculateDistance(worldX, worldY, c.x, c.y) < hitDist) {
-                state.hoveredEntity = c;
-                return;
-            }
+            state.hoveredEntity = c;
+            return;
         }
     }
 
     // 4. Check Units / Bots (Bosses Tier 1: always checkable. Other units zoom >= 0.55)
     if (state.layers.units && state.mapData.units) {
         for (const u of state.mapData.units) {
+            const dx = u.x - worldX;
+            const dy = u.y - worldY;
+            if (dx * dx + dy * dy >= hitDistSq) continue;
+
             const sub = u.subType || u.category;
             const isBoss = sub === 'boss';
 
@@ -115,16 +130,18 @@ function findHoveredEntity(worldX, worldY) {
             if (sub === 'seedbot' && !state.subFilters.units.seedbots) continue;
             if (sub === 'animal' && !state.subFilters.units.animals) continue;
 
-            if (calculateDistance(worldX, worldY, u.x, u.y) < hitDist) {
-                state.hoveredEntity = u;
-                return;
-            }
+            state.hoveredEntity = u;
+            return;
         }
     }
 
     // 5. Check Harvestables (Tier 5: zoom >= 0.24)
     if (state.layers.harvestables && state.mapData.harvestables && (state.zoom >= 0.24 || state.selectedEntity)) {
         for (const h of state.mapData.harvestables) {
+            const dx = h.x - worldX;
+            const dy = h.y - worldY;
+            if (dx * dx + dy * dy >= hitDistSq) continue;
+
             const cat = (h.category || '').toLowerCase();
             if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
             if (cat === 'cotton' && !state.subFilters.harvestables.cotton) continue;
@@ -135,10 +152,8 @@ function findHoveredEntity(worldX, worldY) {
             if (cat === 'flower' && !state.subFilters.harvestables.flowers) continue;
             if (cat === 'other' && !state.subFilters.harvestables.other) continue;
 
-            if (calculateDistance(worldX, worldY, h.x, h.y) < hitDist) {
-                state.hoveredEntity = h;
-                return;
-            }
+            state.hoveredEntity = h;
+            return;
         }
     }
 
