@@ -43,6 +43,9 @@ export function setupHoverTooltip(elements, canvas) {
     });
 }
 
+// OPTIMIZATION (⚡ Bolt): Squared-distance pre-culling during entity mousemove hover detection.
+// Computing squared distance ((dx)^2 + (dy)^2 < hitDistSq) BEFORE string lowercasing/parsing
+// and subfilter checks eliminates Math.sqrt and expensive string operations across thousands of entities.
 function findHoveredEntity(worldX, worldY) {
     if (!state.mapData) {
         state.hoveredEntity = null;
@@ -50,10 +53,18 @@ function findHoveredEntity(worldX, worldY) {
     }
 
     const hitDist = Math.max(12, 30 / state.zoom);
+    const hitDistSq = hitDist * hitDist;
 
     // 1. Check POIs (Tier 1: Always checkable)
     if (state.layers.pois && state.mapData.pois) {
         for (const poi of state.mapData.pois) {
+            const dx = worldX - poi.x;
+            const dy = worldY - poi.y;
+            const distSq = dx * dx + dy * dy;
+
+            // Fast squared distance pre-cull before string parsing & subfilter evaluation
+            if (distSq >= hitDistSq) continue;
+
             const name = (poi.name || '').toLowerCase();
             const cat = (poi.category || '').toLowerCase();
             if (state.subFilters && state.subFilters.pois && state.selectedEntity !== poi) {
@@ -65,17 +76,17 @@ function findHoveredEntity(worldX, worldY) {
                 if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
             }
 
-            if (calculateDistance(worldX, worldY, poi.x, poi.y) < hitDist) {
-                state.hoveredEntity = poi;
-                return;
-            }
+            state.hoveredEntity = poi;
+            return;
         }
     }
 
     // 2. Check Schematics (Tier 2: zoom >= 0.18)
     if (state.layers.schematics && state.mapData.schematics && (state.zoom >= 0.18 || state.selectedEntity)) {
         for (const s of state.mapData.schematics) {
-            if (calculateDistance(worldX, worldY, s.x, s.y) < hitDist) {
+            const dx = worldX - s.x;
+            const dy = worldY - s.y;
+            if (dx * dx + dy * dy < hitDistSq) {
                 state.hoveredEntity = s;
                 return;
             }
@@ -88,15 +99,19 @@ function findHoveredEntity(worldX, worldY) {
         for (const c of state.mapData.creations) {
             if (state.zoom < 0.18 && state.selectedEntity !== c) continue;
 
+            const dx = worldX - c.x;
+            const dy = worldY - c.y;
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq >= hitDistSq) continue;
+
             // Size filter: Small (<50b), Medium (50-500b), Large (500b+)
             if (filter === 'small' && c.blocks >= 50) continue;
             if (filter === 'medium' && (c.blocks < 50 || c.blocks > 500)) continue;
             if (filter === 'large' && c.blocks <= 500) continue;
 
-            if (calculateDistance(worldX, worldY, c.x, c.y) < hitDist) {
-                state.hoveredEntity = c;
-                return;
-            }
+            state.hoveredEntity = c;
+            return;
         }
     }
 
@@ -108,6 +123,12 @@ function findHoveredEntity(worldX, worldY) {
 
             if (!isBoss && state.zoom < 0.55 && state.selectedEntity !== u) continue;
 
+            const dx = worldX - u.x;
+            const dy = worldY - u.y;
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq >= hitDistSq) continue;
+
             if (isBoss && !state.subFilters.units.farmbots) continue;
             if (sub === 'haybot' && !state.subFilters.units.haybots) continue;
             if (sub === 'tapebot' && !state.subFilters.units.tapebots) continue;
@@ -115,16 +136,20 @@ function findHoveredEntity(worldX, worldY) {
             if (sub === 'seedbot' && !state.subFilters.units.seedbots) continue;
             if (sub === 'animal' && !state.subFilters.units.animals) continue;
 
-            if (calculateDistance(worldX, worldY, u.x, u.y) < hitDist) {
-                state.hoveredEntity = u;
-                return;
-            }
+            state.hoveredEntity = u;
+            return;
         }
     }
 
     // 5. Check Harvestables (Tier 5: zoom >= 0.24)
     if (state.layers.harvestables && state.mapData.harvestables && (state.zoom >= 0.24 || state.selectedEntity)) {
         for (const h of state.mapData.harvestables) {
+            const dx = worldX - h.x;
+            const dy = worldY - h.y;
+            const distSq = dx * dx + dy * dy;
+
+            if (distSq >= hitDistSq) continue;
+
             const cat = (h.category || '').toLowerCase();
             if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
             if (cat === 'cotton' && !state.subFilters.harvestables.cotton) continue;
@@ -135,10 +160,8 @@ function findHoveredEntity(worldX, worldY) {
             if (cat === 'flower' && !state.subFilters.harvestables.flowers) continue;
             if (cat === 'other' && !state.subFilters.harvestables.other) continue;
 
-            if (calculateDistance(worldX, worldY, h.x, h.y) < hitDist) {
-                state.hoveredEntity = h;
-                return;
-            }
+            state.hoveredEntity = h;
+            return;
         }
     }
 
