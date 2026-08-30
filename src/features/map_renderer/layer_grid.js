@@ -18,22 +18,31 @@ export function renderGridLayer(ctx, width, height) {
     const minY = Math.max(MAP_MIN_Y, Math.floor((state.cameraY - (height / 2) / state.zoom) / step) * step);
     const maxY = Math.min(MAP_MAX_Y, Math.ceil((state.cameraY + (height / 2) / state.zoom) / step) * step);
 
+    // OPTIMIZATION (⚡ Bolt): Direct scalar coordinate calculations.
+    // Pre-computing screen constants and calculating scalar screen positions inlined
+    // inside loops eliminates `{ x, y }` object allocations on every frame for all grid lines.
+    const halfW = width * 0.5;
+    const halfH = height * 0.5;
+
+    const screenYTop = (state.cameraY - MAP_MAX_Y) * state.zoom + halfH;
+    const screenYBot = (state.cameraY - MAP_MIN_Y) * state.zoom + halfH;
+    const screenXLeft = (MAP_MIN_X - state.cameraX) * state.zoom + halfW;
+    const screenXRight = (MAP_MAX_X - state.cameraX) * state.zoom + halfW;
+
     // Subtle grid lines
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.lineWidth = 1;
 
     ctx.beginPath();
     for (let x = minX; x <= maxX; x += step) {
-        const p1 = worldToScreen(x, MAP_MIN_Y, width, height);
-        const p2 = worldToScreen(x, MAP_MAX_Y, width, height);
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
+        const screenX = (x - state.cameraX) * state.zoom + halfW;
+        ctx.moveTo(screenX, screenYTop);
+        ctx.lineTo(screenX, screenYBot);
     }
     for (let y = minY; y <= maxY; y += step) {
-        const p1 = worldToScreen(MAP_MIN_X, y, width, height);
-        const p2 = worldToScreen(MAP_MAX_X, y, width, height);
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
+        const screenY = (state.cameraY - y) * state.zoom + halfH;
+        ctx.moveTo(screenXLeft, screenY);
+        ctx.lineTo(screenXRight, screenY);
     }
     ctx.stroke();
 
@@ -41,15 +50,13 @@ export function renderGridLayer(ctx, width, height) {
     ctx.strokeStyle = 'rgba(255, 122, 0, 0.35)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    const x0Top = worldToScreen(0, MAP_MAX_Y, width, height);
-    const x0Bot = worldToScreen(0, MAP_MIN_Y, width, height);
-    ctx.moveTo(x0Top.x, x0Top.y);
-    ctx.lineTo(x0Bot.x, x0Bot.y);
+    const x0 = (0 - state.cameraX) * state.zoom + halfW;
+    ctx.moveTo(x0, screenYTop);
+    ctx.lineTo(x0, screenYBot);
 
-    const y0Left = worldToScreen(MAP_MIN_X, 0, width, height);
-    const y0Right = worldToScreen(MAP_MAX_X, 0, width, height);
-    ctx.moveTo(y0Left.x, y0Left.y);
-    ctx.lineTo(y0Right.x, y0Right.y);
+    const y0 = (state.cameraY - 0) * state.zoom + halfH;
+    ctx.moveTo(screenXLeft, y0);
+    ctx.lineTo(screenXRight, y0);
     ctx.stroke();
 
     ctx.restore();
