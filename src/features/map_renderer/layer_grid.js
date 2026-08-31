@@ -1,7 +1,9 @@
 // Coordinate grid lines, cell markers, and origin axes
+// OPTIMIZATION (⚡ Bolt): Zero-allocation screen coordinate calculations in grid loops.
+// Inlining screen coordinate formulas eliminates hundreds of temporary { x, y } object allocations
+// per frame, preventing Garbage Collection (GC) pressure during map pan/zoom operations at 60 FPS.
 import { state } from '../../core/state.js';
 import { CELL_SIZE, MAP_MIN_X, MAP_MAX_X, MAP_MIN_Y, MAP_MAX_Y } from '../../core/constants.js';
-import { worldToScreen } from '../../core/coords.js';
 
 export function renderGridLayer(ctx, width, height) {
     if (!state.layers.grid) return;
@@ -13,27 +15,34 @@ export function renderGridLayer(ctx, width, height) {
     if (state.zoom > 0.15) step = CELL_SIZE; // 64m (1 cell)
     if (state.zoom < 0.02) step = CELL_SIZE * 16; // 1024m (16 cells)
 
-    const minX = Math.max(MAP_MIN_X, Math.floor((state.cameraX - (width / 2) / state.zoom) / step) * step);
-    const maxX = Math.min(MAP_MAX_X, Math.ceil((state.cameraX + (width / 2) / state.zoom) / step) * step);
-    const minY = Math.max(MAP_MIN_Y, Math.floor((state.cameraY - (height / 2) / state.zoom) / step) * step);
-    const maxY = Math.min(MAP_MAX_Y, Math.ceil((state.cameraY + (height / 2) / state.zoom) / step) * step);
+    const halfW = width * 0.5;
+    const halfH = height * 0.5;
+
+    const minX = Math.max(MAP_MIN_X, Math.floor((state.cameraX - halfW / state.zoom) / step) * step);
+    const maxX = Math.min(MAP_MAX_X, Math.ceil((state.cameraX + halfW / state.zoom) / step) * step);
+    const minY = Math.max(MAP_MIN_Y, Math.floor((state.cameraY - halfH / state.zoom) / step) * step);
+    const maxY = Math.min(MAP_MAX_Y, Math.ceil((state.cameraY + halfH / state.zoom) / step) * step);
 
     // Subtle grid lines
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.lineWidth = 1;
 
+    // Pre-calculate vertical and horizontal static screen bounds (zero allocations inside loop)
+    const minYScreen = (state.cameraY - MAP_MIN_Y) * state.zoom + halfH;
+    const maxYScreen = (state.cameraY - MAP_MAX_Y) * state.zoom + halfH;
+    const minXScreen = (MAP_MIN_X - state.cameraX) * state.zoom + halfW;
+    const maxXScreen = (MAP_MAX_X - state.cameraX) * state.zoom + halfW;
+
     ctx.beginPath();
     for (let x = minX; x <= maxX; x += step) {
-        const p1 = worldToScreen(x, MAP_MIN_Y, width, height);
-        const p2 = worldToScreen(x, MAP_MAX_Y, width, height);
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
+        const xScreen = (x - state.cameraX) * state.zoom + halfW;
+        ctx.moveTo(xScreen, minYScreen);
+        ctx.lineTo(xScreen, maxYScreen);
     }
     for (let y = minY; y <= maxY; y += step) {
-        const p1 = worldToScreen(MAP_MIN_X, y, width, height);
-        const p2 = worldToScreen(MAP_MAX_X, y, width, height);
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
+        const yScreen = (state.cameraY - y) * state.zoom + halfH;
+        ctx.moveTo(minXScreen, yScreen);
+        ctx.lineTo(maxXScreen, yScreen);
     }
     ctx.stroke();
 
@@ -41,15 +50,15 @@ export function renderGridLayer(ctx, width, height) {
     ctx.strokeStyle = 'rgba(255, 122, 0, 0.35)';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    const x0Top = worldToScreen(0, MAP_MAX_Y, width, height);
-    const x0Bot = worldToScreen(0, MAP_MIN_Y, width, height);
-    ctx.moveTo(x0Top.x, x0Top.y);
-    ctx.lineTo(x0Bot.x, x0Bot.y);
+    // X = 0 axis
+    const x0Screen = -state.cameraX * state.zoom + halfW;
+    ctx.moveTo(x0Screen, maxYScreen);
+    ctx.lineTo(x0Screen, minYScreen);
 
-    const y0Left = worldToScreen(MAP_MIN_X, 0, width, height);
-    const y0Right = worldToScreen(MAP_MAX_X, 0, width, height);
-    ctx.moveTo(y0Left.x, y0Left.y);
-    ctx.lineTo(y0Right.x, y0Right.y);
+    // Y = 0 axis
+    const y0Screen = state.cameraY * state.zoom + halfH;
+    ctx.moveTo(minXScreen, y0Screen);
+    ctx.lineTo(maxXScreen, y0Screen);
     ctx.stroke();
 
     ctx.restore();
