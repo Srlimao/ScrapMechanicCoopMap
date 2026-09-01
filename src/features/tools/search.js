@@ -1,4 +1,8 @@
 // Fuzzy entity search engine & results dropdown with distance sorting & infinite scroll
+// OPTIMIZATION (⚡ Bolt): Input debouncing, squared-distance pre-sorting, and lazy distance formatting.
+// Adding a 120ms input debounce eliminates redundant fuzzy searches during typing.
+// Pre-computing squared distance (distSq = dx*dx + dy*dy) avoids Math.hypot/Math.sqrt calls during sorting across thousands of items,
+// and distance text formatting is deferred lazily until rendering the visible 25-item batch.
 import { state } from '../../core/state.js';
 import { jumpToLocation } from '../map_renderer/camera.js';
 import { openInspector } from '../inspector/sidebar.js';
@@ -11,6 +15,7 @@ let clearSearchBtn = null;
 let currentMatches = [];
 let renderedIndex = 0;
 const PAGE_SIZE = 25;
+let searchDebounceTimer = null;
 
 export function setupSearch(elements) {
     searchInput = elements.searchInput;
@@ -21,9 +26,13 @@ export function setupSearch(elements) {
 
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim().toLowerCase();
+        if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+
         if (query.length > 0) {
             if (clearSearchBtn) clearSearchBtn.style.display = 'block';
-            performSearch(query);
+            searchDebounceTimer = setTimeout(() => {
+                performSearch(query);
+            }, 120);
         } else {
             if (clearSearchBtn) clearSearchBtn.style.display = 'none';
             if (searchResultsDiv) searchResultsDiv.innerHTML = '';
@@ -34,6 +43,7 @@ export function setupSearch(elements) {
 
     if (clearSearchBtn) {
         clearSearchBtn.addEventListener('click', () => {
+            if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
             searchInput.value = '';
             clearSearchBtn.style.display = 'none';
             if (searchResultsDiv) searchResultsDiv.innerHTML = '';
@@ -73,11 +83,39 @@ function performSearch(query) {
 
     const ref = getSearchReferencePoint();
 
+    // Helper: Push item with pre-computed squared distance and enriched entity details for openInspector
+    function addMatch(item, displayName, icon, color, category) {
+        const x = item.x || 0;
+        const y = item.y || 0;
+        const dx = x - ref.x;
+        const dy = y - ref.y;
+
+        const enrichedEntity = {
+            ...item,
+            x,
+            y,
+            name: displayName || item.name,
+            icon: icon || item.icon || 'fa-location-dot',
+            color: color || item.color || '#ff7a00',
+            category: category || item.category || 'POI'
+        };
+
+        currentMatches.push({
+            x,
+            y,
+            name: enrichedEntity.name,
+            icon: enrichedEntity.icon,
+            color: enrichedEntity.color,
+            distSq: dx * dx + dy * dy,
+            entity: enrichedEntity
+        });
+    }
+
     // 1. Search POIs
     if (state.mapData.pois) {
         for (const poi of state.mapData.pois) {
             if (poi.name.toLowerCase().includes(query) || (poi.desc && poi.desc.toLowerCase().includes(query))) {
-                currentMatches.push(poi);
+                addMatch(poi, poi.name, poi.icon, poi.color, poi.category);
             }
         }
     }
@@ -86,7 +124,7 @@ function performSearch(query) {
     if (state.mapData.schematics) {
         for (const sch of state.mapData.schematics) {
             if (sch.name.toLowerCase().includes(query) || (sch.desc && sch.desc.toLowerCase().includes(query))) {
-                currentMatches.push(sch);
+                addMatch(sch, sch.name, sch.icon, sch.color, 'schematic');
             }
         }
     }
@@ -97,12 +135,7 @@ function performSearch(query) {
             const uName = (u.name || '').toLowerCase();
             const sub = (u.subType || u.category || '').toLowerCase();
             if (uName.includes(query) || sub.includes(query)) {
-                currentMatches.push({
-                    ...u,
-                    name: u.name,
-                    icon: u.icon || 'fa-robot',
-                    color: u.color || '#ef4444'
-                });
+                addMatch(u, u.name, u.icon || 'fa-robot', u.color || '#ef4444', u.category || 'unit');
             }
         }
     }
@@ -112,7 +145,7 @@ function performSearch(query) {
         for (const cr of state.mapData.creations) {
             const name = `Creation #${cr.id}`;
             if (name.toLowerCase().includes(query) || `${cr.blocks}`.includes(query)) {
-                currentMatches.push({ ...cr, name, category: 'creation', icon: 'fa-truck-pickup', color: '#38bdf8' });
+                addMatch(cr, name, 'fa-truck-pickup', '#38bdf8', 'creation');
             }
         }
     }
@@ -144,22 +177,13 @@ function performSearch(query) {
                 const label = h.count > 1 
                     ? `${h.name} (${h.count} nodes)`
                     : h.name;
-                currentMatches.push({
-                    ...h,
-                    name: label
-                });
+                addMatch(h, label, h.icon, h.color, h.category || 'harvestable');
             }
         }
     }
 
-    // Calculate distance from reference point & sort ascending (closest first)
-    for (const item of currentMatches) {
-        const d = Math.hypot((item.x || 0) - ref.x, (item.y || 0) - ref.y);
-        item._dist = d;
-        item._distText = d < 1000 ? `${Math.round(d)}m` : `${(d / 1000).toFixed(1)}km`;
-    }
-
-    currentMatches.sort((a, b) => a._dist - b._dist);
+    // Fast sorting using pre-computed squared distance (a.distSq - b.distSq)
+    currentMatches.sort((a, b) => a.distSq - b.distSq);
 
     if (currentMatches.length === 0) {
         searchResultsDiv.innerHTML = `<div class="search-no-results"><i class="fa-solid fa-circle-exclamation" style="margin-right: 6px;"></i>No matching locations found</div>`;
@@ -177,27 +201,31 @@ function renderNextBatch() {
     renderedIndex += nextBatch.length;
 
     const container = document.createElement('div');
-    container.innerHTML = nextBatch.map(item => `
-        <div class="search-result-item" data-x="${item.x}" data-y="${item.y}">
-            <div class="search-item-icon-wrap" style="color: ${item.color || '#ff7a00'};">
-                <i class="fa-solid ${item.icon || 'fa-location-dot'}"></i>
-            </div>
-            <div class="search-item-info">
-                <div class="search-item-title">${item.name}</div>
-                <div class="search-item-coords">
-                    <span>${formatCoords(item.x, item.y)}</span>
-                    <span class="search-dist-badge"><i class="fa-solid fa-location-arrow" style="font-size:8px; margin-right:3px;"></i>${item._distText}</span>
+    container.innerHTML = nextBatch.map(item => {
+        const distMeters = Math.sqrt(item.distSq);
+        const distText = distMeters < 1000 ? `${Math.round(distMeters)}m` : `${(distMeters / 1000).toFixed(1)}km`;
+        return `
+            <div class="search-result-item" data-x="${item.x}" data-y="${item.y}">
+                <div class="search-item-icon-wrap" style="color: ${item.color || '#ff7a00'};">
+                    <i class="fa-solid ${item.icon || 'fa-location-dot'}"></i>
                 </div>
+                <div class="search-item-info">
+                    <div class="search-item-title">${item.name}</div>
+                    <div class="search-item-coords">
+                        <span>${formatCoords(item.x, item.y)}</span>
+                        <span class="search-dist-badge"><i class="fa-solid fa-location-arrow" style="font-size:8px; margin-right:3px;"></i>${distText}</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right search-item-arrow"></i>
             </div>
-            <i class="fa-solid fa-chevron-right search-item-arrow"></i>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
     Array.from(container.children).forEach((el, relIdx) => {
         const item = currentMatches[startIdx + relIdx];
         el.addEventListener('click', () => {
             jumpToLocation(item.x, item.y, 0.25);
-            openInspector(item);
+            openInspector(item.entity);
             if (searchResultsDiv) searchResultsDiv.innerHTML = '';
         });
         searchResultsDiv.appendChild(el);
