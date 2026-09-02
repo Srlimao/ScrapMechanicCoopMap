@@ -389,59 +389,82 @@ function renderSchematics(ctx, schematics, width, height) {
     ctx.restore();
 }
 
+// OPTIMIZATION (⚡ Bolt): Caching label text widths and eliminating candidate object allocations per frame.
+// Caching ctx.measureText eliminates font layout engine overhead in 60 FPS canvas loops.
+// Inline candidate coordinate calculation avoids creating 12 temporary objects per label per frame,
+// eliminating GC pauses during panning and zooming.
+const labelWidthCache = new Map();
+function getCachedTextWidth(ctx, font, text) {
+    const key = font + ':' + text;
+    let width = labelWidthCache.get(key);
+    if (width === undefined) {
+        ctx.save();
+        ctx.font = font;
+        width = ctx.measureText(text).width;
+        ctx.restore();
+        labelWidthCache.set(key, width);
+    }
+    return width;
+}
+
 function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
     const font = options.font || '600 11.5px "Outfit", sans-serif';
     const color = options.color || '#ffffff';
+
+    const textW = getCachedTextWidth(ctx, font, text);
+    const textH = 14;
+
+    // Default fallback: Candidate 0 (Right)
+    let chosenX = anchorX + radius + 5;
+    let chosenY = anchorY + 4;
+    let chosenBoxX = chosenX;
+    let chosenBoxY = chosenY - 13;
+
+    // Candidate positions evaluated in priority order without object allocation:
+    // 0: Right, 1: Below-Right, 2: Above-Right, 3: Below-Center, 4: Above-Center, 5: Left
+    for (let c = 0; c < 6; c++) {
+        let tx, ty;
+        if (c === 0) { tx = anchorX + radius + 5; ty = anchorY + 4; }
+        else if (c === 1) { tx = anchorX + radius + 5; ty = anchorY + 18; }
+        else if (c === 2) { tx = anchorX + radius + 5; ty = anchorY - 10; }
+        else if (c === 3) { tx = anchorX - textW * 0.5; ty = anchorY + radius + 15; }
+        else if (c === 4) { tx = anchorX - textW * 0.5; ty = anchorY - radius - 6; }
+        else { tx = anchorX - radius - textW - 5; ty = anchorY + 4; }
+
+        const bx = tx;
+        const by = ty - 13;
+
+        let collides = false;
+        for (let i = 0; i < occupiedLabelBoxes.length; i++) {
+            const occ = occupiedLabelBoxes[i];
+            if (bx < occ.x + occ.w + 4 &&
+                bx + textW + 4 > occ.x &&
+                by < occ.y + occ.h + 2 &&
+                by + textH + 2 > occ.y) {
+                collides = true;
+                break;
+            }
+        }
+
+        if (!collides) {
+            chosenX = tx;
+            chosenY = ty;
+            chosenBoxX = bx;
+            chosenBoxY = by;
+            break;
+        }
+    }
+
+    occupiedLabelBoxes.push({ x: chosenBoxX, y: chosenBoxY, w: textW, h: textH });
 
     ctx.save();
     ctx.font = font;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-    const textW = ctx.measureText(text).width;
-    const textH = 14;
-
-    // Candidate positions in priority order:
-    // 1. Right (default)
-    // 2. Below-Right (stacked underneath 15px)
-    // 3. Above-Right (stacked above 15px)
-    // 4. Below-Center
-    // 5. Above-Center
-    // 6. Left
-    const candidates = [
-        { x: anchorX + radius + 5, y: anchorY + 4, box: { x: anchorX + radius + 5, y: anchorY - 9, w: textW, h: textH } },
-        { x: anchorX + radius + 5, y: anchorY + 18, box: { x: anchorX + radius + 5, y: anchorY + 5, w: textW, h: textH } },
-        { x: anchorX + radius + 5, y: anchorY - 10, box: { x: anchorX + radius + 5, y: anchorY - 23, w: textW, h: textH } },
-        { x: anchorX - textW / 2, y: anchorY + radius + 15, box: { x: anchorX - textW / 2, y: anchorY + radius + 2, w: textW, h: textH } },
-        { x: anchorX - textW / 2, y: anchorY - radius - 6, box: { x: anchorX - textW / 2, y: anchorY - radius - 19, w: textW, h: textH } },
-        { x: anchorX - radius - textW - 5, y: anchorY + 4, box: { x: anchorX - radius - textW - 5, y: anchorY - 9, w: textW, h: textH } }
-    ];
-
-    let chosen = candidates[0];
-
-    for (const cand of candidates) {
-        let collides = false;
-        for (const occ of occupiedLabelBoxes) {
-            // AABB collision test with 4px margin
-            if (cand.box.x < occ.x + occ.w + 4 &&
-                cand.box.x + cand.box.w + 4 > occ.x &&
-                cand.box.y < occ.y + occ.h + 2 &&
-                cand.box.y + cand.box.h + 2 > occ.y) {
-                collides = true;
-                break;
-            }
-        }
-        if (!collides) {
-            chosen = cand;
-            break;
-        }
-    }
-
-    occupiedLabelBoxes.push(chosen.box);
-
     ctx.shadowColor = '#000000';
     ctx.shadowBlur = 4;
     ctx.fillStyle = color;
-    ctx.fillText(text, chosen.x, chosen.y);
+    ctx.fillText(text, chosenX, chosenY);
     ctx.restore();
 }
 
