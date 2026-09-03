@@ -1,4 +1,6 @@
 // Fuzzy entity search engine & results dropdown with distance sorting & infinite scroll
+// OPTIMIZATION (⚡ Bolt): 150ms input debouncing and fixed reference point coordinates (cameraX, cameraY, online).
+// Debouncing prevents redundant full-dataset filtering/sorting across thousands of entities on every keystroke.
 import { state } from '../../core/state.js';
 import { jumpToLocation } from '../map_renderer/camera.js';
 import { openInspector } from '../inspector/sidebar.js';
@@ -7,6 +9,7 @@ import { formatCoords } from '../../core/coords.js';
 let searchInput = null;
 let searchResultsDiv = null;
 let clearSearchBtn = null;
+let searchDebounceTimer = null;
 
 let currentMatches = [];
 let renderedIndex = 0;
@@ -21,9 +24,13 @@ export function setupSearch(elements) {
 
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.trim().toLowerCase();
+        if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+
         if (query.length > 0) {
             if (clearSearchBtn) clearSearchBtn.style.display = 'block';
-            performSearch(query);
+            searchDebounceTimer = setTimeout(() => {
+                performSearch(query);
+            }, 150);
         } else {
             if (clearSearchBtn) clearSearchBtn.style.display = 'none';
             if (searchResultsDiv) searchResultsDiv.innerHTML = '';
@@ -34,6 +41,7 @@ export function setupSearch(elements) {
 
     if (clearSearchBtn) {
         clearSearchBtn.addEventListener('click', () => {
+            if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
             searchInput.value = '';
             clearSearchBtn.style.display = 'none';
             if (searchResultsDiv) searchResultsDiv.innerHTML = '';
@@ -52,8 +60,8 @@ export function setupSearch(elements) {
 }
 
 function getSearchReferencePoint() {
-    // 1. Live player position if available & active
-    if (state.livePlayer && state.livePlayer.active && state.livePlayer.x != null && state.livePlayer.y != null) {
+    // 1. Live player position if available & online
+    if (state.livePlayer && state.livePlayer.online && state.livePlayer.x != null && state.livePlayer.y != null) {
         return { x: state.livePlayer.x, y: state.livePlayer.y, originName: 'Player' };
     }
     // 2. Selected entity position if available
@@ -61,7 +69,7 @@ function getSearchReferencePoint() {
         return { x: state.selectedEntity.x, y: state.selectedEntity.y, originName: 'Selection' };
     }
     // 3. Current camera center of screen
-    return { x: state.camX || 0, y: state.camY || 0, originName: 'Center' };
+    return { x: state.cameraX || 0, y: state.cameraY || 0, originName: 'Center' };
 }
 
 function performSearch(query) {
@@ -153,8 +161,13 @@ function performSearch(query) {
     }
 
     // Calculate distance from reference point & sort ascending (closest first)
-    for (const item of currentMatches) {
-        const d = Math.hypot((item.x || 0) - ref.x, (item.y || 0) - ref.y);
+    const refX = ref.x;
+    const refY = ref.y;
+    for (let i = 0; i < currentMatches.length; i++) {
+        const item = currentMatches[i];
+        const dx = (item.x || 0) - refX;
+        const dy = (item.y || 0) - refY;
+        const d = Math.sqrt(dx * dx + dy * dy);
         item._dist = d;
         item._distText = d < 1000 ? `${Math.round(d)}m` : `${(d / 1000).toFixed(1)}km`;
     }
