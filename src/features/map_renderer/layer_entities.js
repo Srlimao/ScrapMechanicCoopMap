@@ -5,10 +5,24 @@
 import { state } from '../../core/state.js';
 import { worldToScreen } from '../../core/coords.js';
 
-let occupiedLabelBoxes = [];
+// OPTIMIZATION (⚡ Bolt): Pooled label collision boxes and text measurement cache
+// Eliminates object allocations ({x,y,box}) and repetitive canvas text measurement calls per frame.
+const occupiedLabelBoxes = [];
+let occupiedCount = 0;
+const textWidthCache = new Map();
 
 export function clearLabelCollisionGrid() {
-    occupiedLabelBoxes = [];
+    occupiedCount = 0;
+}
+
+function getTextWidth(ctx, text, font) {
+    const key = font + ':' + text;
+    let width = textWidthCache.get(key);
+    if (width === undefined) {
+        width = ctx.measureText(text).width;
+        textWidthCache.set(key, width);
+    }
+    return width;
 }
 
 /**
@@ -397,51 +411,109 @@ function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
     ctx.font = font;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
-    const textW = ctx.measureText(text).width;
+
+    // Memoized text width lookup (eliminates repeated ctx.measureText layout recalculations)
+    const textW = getTextWidth(ctx, text, font);
     const textH = 14;
 
-    // Candidate positions in priority order:
-    // 1. Right (default)
-    // 2. Below-Right (stacked underneath 15px)
-    // 3. Above-Right (stacked above 15px)
-    // 4. Below-Center
-    // 5. Above-Center
-    // 6. Left
-    const candidates = [
-        { x: anchorX + radius + 5, y: anchorY + 4, box: { x: anchorX + radius + 5, y: anchorY - 9, w: textW, h: textH } },
-        { x: anchorX + radius + 5, y: anchorY + 18, box: { x: anchorX + radius + 5, y: anchorY + 5, w: textW, h: textH } },
-        { x: anchorX + radius + 5, y: anchorY - 10, box: { x: anchorX + radius + 5, y: anchorY - 23, w: textW, h: textH } },
-        { x: anchorX - textW / 2, y: anchorY + radius + 15, box: { x: anchorX - textW / 2, y: anchorY + radius + 2, w: textW, h: textH } },
-        { x: anchorX - textW / 2, y: anchorY - radius - 6, box: { x: anchorX - textW / 2, y: anchorY - radius - 19, w: textW, h: textH } },
-        { x: anchorX - radius - textW - 5, y: anchorY + 4, box: { x: anchorX - radius - textW - 5, y: anchorY - 9, w: textW, h: textH } }
-    ];
+    // Candidate positions evaluated lazily on demand (0 allocation):
+    // 1. Right (default) | 2. Below-Right | 3. Above-Right | 4. Below-Center | 5. Above-Center | 6. Left
+    let chosenDrawX = 0;
+    let chosenDrawY = 0;
+    let chosenBoxX = 0;
+    let chosenBoxY = 0;
 
-    let chosen = candidates[0];
+    // Default fallback position (Candidate 0 - Right) if all candidates collide
+    let defaultDrawX = anchorX + radius + 5;
+    let defaultDrawY = anchorY + 4;
+    let defaultBoxX = defaultDrawX;
+    let defaultBoxY = anchorY - 9;
 
-    for (const cand of candidates) {
+    let foundNonColliding = false;
+
+    for (let candIdx = 0; candIdx < 6; candIdx++) {
+        switch (candIdx) {
+            case 0:
+                chosenDrawX = defaultDrawX;
+                chosenDrawY = defaultDrawY;
+                chosenBoxX = defaultBoxX;
+                chosenBoxY = defaultBoxY;
+                break;
+            case 1:
+                chosenDrawX = anchorX + radius + 5;
+                chosenDrawY = anchorY + 18;
+                chosenBoxX = chosenDrawX;
+                chosenBoxY = anchorY + 5;
+                break;
+            case 2:
+                chosenDrawX = anchorX + radius + 5;
+                chosenDrawY = anchorY - 10;
+                chosenBoxX = chosenDrawX;
+                chosenBoxY = anchorY - 23;
+                break;
+            case 3:
+                chosenDrawX = anchorX - textW * 0.5;
+                chosenDrawY = anchorY + radius + 15;
+                chosenBoxX = chosenDrawX;
+                chosenBoxY = anchorY + radius + 2;
+                break;
+            case 4:
+                chosenDrawX = anchorX - textW * 0.5;
+                chosenDrawY = anchorY - radius - 6;
+                chosenBoxX = chosenDrawX;
+                chosenBoxY = anchorY - radius - 19;
+                break;
+            case 5:
+                chosenDrawX = anchorX - radius - textW - 5;
+                chosenDrawY = anchorY + 4;
+                chosenBoxX = chosenDrawX;
+                chosenBoxY = anchorY - 9;
+                break;
+        }
+
         let collides = false;
-        for (const occ of occupiedLabelBoxes) {
+        for (let i = 0; i < occupiedCount; i++) {
+            const occ = occupiedLabelBoxes[i];
             // AABB collision test with 4px margin
-            if (cand.box.x < occ.x + occ.w + 4 &&
-                cand.box.x + cand.box.w + 4 > occ.x &&
-                cand.box.y < occ.y + occ.h + 2 &&
-                cand.box.y + cand.box.h + 2 > occ.y) {
+            if (chosenBoxX < occ.x + occ.w + 4 &&
+                chosenBoxX + textW + 4 > occ.x &&
+                chosenBoxY < occ.y + occ.h + 2 &&
+                chosenBoxY + textH + 2 > occ.y) {
                 collides = true;
                 break;
             }
         }
+
         if (!collides) {
-            chosen = cand;
+            foundNonColliding = true;
             break;
         }
     }
 
-    occupiedLabelBoxes.push(chosen.box);
+    // Fallback to Candidate 0 (Right) if all 6 positions collide
+    if (!foundNonColliding) {
+        chosenDrawX = defaultDrawX;
+        chosenDrawY = defaultDrawY;
+        chosenBoxX = defaultBoxX;
+        chosenBoxY = defaultBoxY;
+    }
+
+    // Reuse box instance from pool to avoid GC allocations
+    if (occupiedCount < occupiedLabelBoxes.length) {
+        const box = occupiedLabelBoxes[occupiedCount];
+        box.x = chosenBoxX;
+        box.y = chosenBoxY;
+        box.w = textW;
+        box.h = textH;
+    } else {
+        occupiedLabelBoxes.push({ x: chosenBoxX, y: chosenBoxY, w: textW, h: textH });
+    }
+    occupiedCount++;
 
     ctx.shadowColor = '#000000';
     ctx.shadowBlur = 4;
     ctx.fillStyle = color;
-    ctx.fillText(text, chosen.x, chosen.y);
+    ctx.fillText(text, chosenDrawX, chosenDrawY);
     ctx.restore();
 }
 
