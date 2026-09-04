@@ -7,3 +7,7 @@
 ## 2025-05-18 - Squared-Distance Pre-Culling Before String Manipulation and Trigonometry
 **Learning:** In 60 FPS radar and HUD canvas loops processing game entities and POIs, string manipulation (`toLowerCase()`, `includes()`) and trigonometry (`Math.atan2`) performed before range checks consume significant frame time.
 **Action:** Always compute squared distance (`dx*dx + dy*dy`) and cull entities against squared range (`maxDistSq`) BEFORE invoking string parsing, subfilter matching, or trigonometric functions.
+
+## 2025-05-18 - Lazy Collision Candidate Evaluation and Text Metric Caching
+**Learning:** Constructing candidate position objects (`candidates = [{ box: ... }]`) and repeatedly calling `ctx.measureText` inside HTML5 canvas entity rendering loops creates heavy GC allocation pressure (1200+ objects/sec) and font layout recalculations.
+**Action:** Evaluate label layout candidates lazily in scalar variables without allocating candidate wrapper objects, pool collision bounding box instances across frames, and memoize `ctx.measureText` results.
