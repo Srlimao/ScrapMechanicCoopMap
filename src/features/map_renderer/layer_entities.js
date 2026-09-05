@@ -8,7 +8,7 @@ import { worldToScreen } from '../../core/coords.js';
 let occupiedLabelBoxes = [];
 
 export function clearLabelCollisionGrid() {
-    occupiedLabelBoxes = [];
+    occupiedLabelBoxes.length = 0;
 }
 
 /**
@@ -39,47 +39,49 @@ export function renderEntitiesLayer(ctx, width, height) {
 
     clearLabelCollisionGrid();
 
+    // Single-pass viewport bounds calculation for all entity sub-renderers
+    const bounds = getViewportWorldBounds(width, height, 50);
+
     // 1. Render Creations
     if (state.layers.creations && data.creations) {
-        renderCreations(ctx, data.creations, width, height);
+        renderCreations(ctx, data.creations, width, height, bounds);
     }
 
     // 2. Render Harvestables / Resource nodes
     if (state.layers.harvestables && data.harvestables) {
-        renderHarvestables(ctx, data.harvestables, width, height);
+        renderHarvestables(ctx, data.harvestables, width, height, bounds);
     }
 
     // 3. Render Units (Enemies, Animals, Farmbots)
     if (state.layers.units && data.units) {
-        renderUnits(ctx, data.units, width, height);
+        renderUnits(ctx, data.units, width, height, bounds);
     }
 
     // 4. Render Portals / Elevators
     if (state.layers.portals && data.portals) {
-        renderPortals(ctx, data.portals, width, height);
+        renderPortals(ctx, data.portals, width, height, bounds);
     }
 
     // 5. Render Points of Interest (POIs - Major Landmarks First)
     if (state.layers.pois && data.pois) {
-        renderPOIs(ctx, data.pois, width, height);
+        renderPOIs(ctx, data.pois, width, height, bounds);
     }
 
     // 6. Render Schematics & Builder Guide Platforms (Stacked / Resolved Next)
     if (state.layers.schematics && data.schematics) {
-        renderSchematics(ctx, data.schematics, width, height);
+        renderSchematics(ctx, data.schematics, width, height, bounds);
     }
 
     // 7. Render Custom User Waypoints & Bookmarks
     if (state.customBookmarks && state.customBookmarks.length > 0) {
-        renderCustomWaypoints(ctx, state.customBookmarks, width, height);
+        renderCustomWaypoints(ctx, state.customBookmarks, width, height, bounds);
     }
 
     // 8. Render Selected Point Pulsating Ring
     renderSelectedEntityRing(ctx, width, height);
 }
 
-function renderPOIs(ctx, pois, width, height) {
-    const bounds = getViewportWorldBounds(width, height, 50);
+function renderPOIs(ctx, pois, width, height, bounds) {
 
     ctx.save();
     for (const poi of pois) {
@@ -121,11 +123,9 @@ function renderPOIs(ctx, pois, width, height) {
     ctx.restore();
 }
 
-function renderCreations(ctx, creations, width, height) {
+function renderCreations(ctx, creations, width, height, bounds) {
     // Only appear when zooming in to sector level (zoom >= 0.18)
     if (state.zoom < 0.18 && !state.selectedEntity) return;
-
-    const bounds = getViewportWorldBounds(width, height, 10);
 
     ctx.save();
     ctx.strokeStyle = '#38bdf8';
@@ -225,8 +225,7 @@ function drawIconBadge(ctx, x, y, radius, iconClass, color, isSelected, isHovere
     ctx.restore();
 }
 
-function renderUnits(ctx, units, width, height) {
-    const bounds = getViewportWorldBounds(width, height, 20);
+function renderUnits(ctx, units, width, height, bounds) {
 
     ctx.save();
     for (const u of units) {
@@ -272,11 +271,9 @@ function renderUnits(ctx, units, width, height) {
     ctx.restore();
 }
 
-function renderHarvestables(ctx, harvestables, width, height) {
+function renderHarvestables(ctx, harvestables, width, height, bounds) {
     // Resource nodes appear at zoom >= 0.24 (same level as schematic labels)
     if (state.zoom < 0.24 && !state.selectedEntity) return;
-
-    const bounds = getViewportWorldBounds(width, height, 25);
 
     ctx.save();
     for (const h of harvestables) {
@@ -308,10 +305,8 @@ function renderHarvestables(ctx, harvestables, width, height) {
     ctx.restore();
 }
 
-function renderPortals(ctx, portals, width, height) {
+function renderPortals(ctx, portals, width, height, bounds) {
     if (state.zoom < 0.18 && !state.selectedEntity) return;
-
-    const bounds = getViewportWorldBounds(width, height, 20);
 
     ctx.save();
     for (const pt of portals) {
@@ -334,11 +329,9 @@ function renderPortals(ctx, portals, width, height) {
     ctx.restore();
 }
 
-function renderSchematics(ctx, schematics, width, height) {
+function renderSchematics(ctx, schematics, width, height, bounds) {
     // Icons appear at zoom >= 0.18
     if (state.zoom < 0.18 && !state.selectedEntity) return;
-
-    const bounds = getViewportWorldBounds(width, height, 50);
 
     ctx.save();
     for (const sch of schematics) {
@@ -389,6 +382,23 @@ function renderSchematics(ctx, schematics, width, height) {
     ctx.restore();
 }
 
+// OPTIMIZATION (⚡ Bolt): Fast AABB label collision check without creating candidate objects
+function checkLabelCollision(boxX, boxY, textW, textH) {
+    for (let i = 0; i < occupiedLabelBoxes.length; i++) {
+        const occ = occupiedLabelBoxes[i];
+        if (boxX < occ.x + occ.w + 4 &&
+            boxX + textW + 4 > occ.x &&
+            boxY < occ.y + occ.h + 2 &&
+            boxY + textH + 2 > occ.y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// OPTIMIZATION (⚡ Bolt): Zero-allocation smart label positioning with lazy candidate evaluation.
+// Evaluates candidate label positions on demand to avoid allocating 13 candidate/box objects per label.
+// Reduces object allocations by ~93% in label rendering loops at 60 FPS.
 function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
     const font = options.font || '600 11.5px "Outfit", sans-serif';
     const color = options.color || '#ffffff';
@@ -400,48 +410,71 @@ function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
     const textW = ctx.measureText(text).width;
     const textH = 14;
 
-    // Candidate positions in priority order:
-    // 1. Right (default)
-    // 2. Below-Right (stacked underneath 15px)
-    // 3. Above-Right (stacked above 15px)
-    // 4. Below-Center
-    // 5. Above-Center
-    // 6. Left
-    const candidates = [
-        { x: anchorX + radius + 5, y: anchorY + 4, box: { x: anchorX + radius + 5, y: anchorY - 9, w: textW, h: textH } },
-        { x: anchorX + radius + 5, y: anchorY + 18, box: { x: anchorX + radius + 5, y: anchorY + 5, w: textW, h: textH } },
-        { x: anchorX + radius + 5, y: anchorY - 10, box: { x: anchorX + radius + 5, y: anchorY - 23, w: textW, h: textH } },
-        { x: anchorX - textW / 2, y: anchorY + radius + 15, box: { x: anchorX - textW / 2, y: anchorY + radius + 2, w: textW, h: textH } },
-        { x: anchorX - textW / 2, y: anchorY - radius - 6, box: { x: anchorX - textW / 2, y: anchorY - radius - 19, w: textW, h: textH } },
-        { x: anchorX - radius - textW - 5, y: anchorY + 4, box: { x: anchorX - radius - textW - 5, y: anchorY - 9, w: textW, h: textH } }
-    ];
+    // Candidate 0: Right (default priority)
+    let chosenX = anchorX + radius + 5;
+    let chosenY = anchorY + 4;
+    let chosenBoxX = anchorX + radius + 5;
+    let chosenBoxY = anchorY - 9;
 
-    let chosen = candidates[0];
-
-    for (const cand of candidates) {
-        let collides = false;
-        for (const occ of occupiedLabelBoxes) {
-            // AABB collision test with 4px margin
-            if (cand.box.x < occ.x + occ.w + 4 &&
-                cand.box.x + cand.box.w + 4 > occ.x &&
-                cand.box.y < occ.y + occ.h + 2 &&
-                cand.box.y + cand.box.h + 2 > occ.y) {
-                collides = true;
-                break;
+    // Lazy check: Only evaluate alternative candidate positions if default collides
+    if (occupiedLabelBoxes.length > 0 && checkLabelCollision(chosenBoxX, chosenBoxY, textW, textH)) {
+        // Candidate 1: Below-Right
+        let candBoxX = anchorX + radius + 5;
+        let candBoxY = anchorY + 5;
+        if (!checkLabelCollision(candBoxX, candBoxY, textW, textH)) {
+            chosenX = anchorX + radius + 5;
+            chosenY = anchorY + 18;
+            chosenBoxX = candBoxX;
+            chosenBoxY = candBoxY;
+        } else {
+            // Candidate 2: Above-Right
+            candBoxX = anchorX + radius + 5;
+            candBoxY = anchorY - 23;
+            if (!checkLabelCollision(candBoxX, candBoxY, textW, textH)) {
+                chosenX = anchorX + radius + 5;
+                chosenY = anchorY - 10;
+                chosenBoxX = candBoxX;
+                chosenBoxY = candBoxY;
+            } else {
+                // Candidate 3: Below-Center
+                candBoxX = anchorX - textW / 2;
+                candBoxY = anchorY + radius + 2;
+                if (!checkLabelCollision(candBoxX, candBoxY, textW, textH)) {
+                    chosenX = anchorX - textW / 2;
+                    chosenY = anchorY + radius + 15;
+                    chosenBoxX = candBoxX;
+                    chosenBoxY = candBoxY;
+                } else {
+                    // Candidate 4: Above-Center
+                    candBoxX = anchorX - textW / 2;
+                    candBoxY = anchorY - radius - 19;
+                    if (!checkLabelCollision(candBoxX, candBoxY, textW, textH)) {
+                        chosenX = anchorX - textW / 2;
+                        chosenY = anchorY - radius - 6;
+                        chosenBoxX = candBoxX;
+                        chosenBoxY = candBoxY;
+                    } else {
+                        // Candidate 5: Left
+                        candBoxX = anchorX - radius - textW - 5;
+                        candBoxY = anchorY - 9;
+                        if (!checkLabelCollision(candBoxX, candBoxY, textW, textH)) {
+                            chosenX = anchorX - radius - textW - 5;
+                            chosenY = anchorY + 4;
+                            chosenBoxX = candBoxX;
+                            chosenBoxY = candBoxY;
+                        }
+                    }
+                }
             }
-        }
-        if (!collides) {
-            chosen = cand;
-            break;
         }
     }
 
-    occupiedLabelBoxes.push(chosen.box);
+    occupiedLabelBoxes.push({ x: chosenBoxX, y: chosenBoxY, w: textW, h: textH });
 
     ctx.shadowColor = '#000000';
     ctx.shadowBlur = 4;
     ctx.fillStyle = color;
-    ctx.fillText(text, chosen.x, chosen.y);
+    ctx.fillText(text, chosenX, chosenY);
     ctx.restore();
 }
 
@@ -485,8 +518,7 @@ function renderSelectedEntityRing(ctx, width, height) {
     ctx.restore();
 }
 
-function renderCustomWaypoints(ctx, waypoints, width, height) {
-    const bounds = getViewportWorldBounds(width, height, 50);
+function renderCustomWaypoints(ctx, waypoints, width, height, bounds) {
 
     ctx.save();
     for (const wp of waypoints) {
