@@ -11,3 +11,7 @@
 ## 2025-05-19 - Lazy Candidate Position Evaluation Eliminates Per-Label Object Allocations
 **Learning:** Constructing candidate position/bounding box arrays `[ { x, y, box: { x, y, w, h } }, ... ]` upfront in collision-avoiding smart label placement routines allocates 13–14 temporary objects per label on every frame, generating thousands of garbage objects per second during map panning/zooming.
 **Action:** Always evaluate placement candidate positions lazily one-by-one with early exit checks, testing default position first and allocating only the final chosen bounding box.
+
+## 2025-05-20 - State-Guarded Telemetry Listeners Prevent High-Frequency Microtask & DOM Overhead
+**Learning:** Reacting to 33 Hz live telemetry updates (`live_player_update`) using dynamic `import()` and unguarded DOM queries generates ~33 Promise allocations and redundant DOM iterations per second, causing GC pauses and main-thread stutters during smooth map tracking.
+**Action:** Statically import modules for main event handlers and guard UI/DOM updates behind state change checks (`if (state.gameRunning !== newStatus)`) in high-frequency event loops.
