@@ -36,6 +36,9 @@ export function setFilterSectionsCollapsed(collapsed) {
     }
 }
 
+// OPTIMIZATION (⚡ Bolt): State-guarded button updates prevent unnecessary DOM queries and attribute manipulations.
+// Calling this only when state.gameRunning changes eliminates redundant DOM querySelectorAll and loop overhead
+// during high-frequency (33 Hz) live telemetry tracking.
 export function updateDisplayModeButtonsState(isGameRunning) {
     state.gameRunning = Boolean(isGameRunning);
 

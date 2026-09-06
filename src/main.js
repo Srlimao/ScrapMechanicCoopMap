@@ -9,7 +9,7 @@ import { setupInspectorSidebar } from './features/inspector/sidebar.js';
 import { setupHoverTooltip } from './features/inspector/hover_tooltip.js';
 import { setupBookmarks } from './features/tools/bookmarks.js';
 import { setupSearch } from './features/tools/search.js';
-import { loadSettings, setupLayerControls, setupSettingsModal } from './features/tools/settings.js';
+import { loadSettings, setupLayerControls, setupSettingsModal, applyDisplayMode, updateDisplayModeButtonsState } from './features/tools/settings.js';
 import { setupSeedGeneratorControls } from './features/tools/seed_generator.js';
 import { setupSquadControls } from './features/squad/squad_ui.js';
 import { initToastContainer } from './ui/toasts.js';
@@ -123,7 +123,6 @@ async function bootstrap() {
                 showToast("Game Not Running", "Launch Scrap Mechanic to use In-Game Radar and Map Overlay modes.", "warning", 4500);
                 return;
             }
-            const { applyDisplayMode } = await import('./features/tools/settings.js');
             applyDisplayMode(mode);
         });
     }
@@ -219,9 +218,10 @@ async function bootstrap() {
                 elements.hudGameTime.textContent = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
                 elements.hudGameDays.textContent = `${day}`;
             }
-            import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
+            // OPTIMIZATION (⚡ Bolt): Guard state updates to prevent 33 Hz Promise allocations and redundant DOM updates
+            if (!state.gameRunning) {
                 updateDisplayModeButtonsState(true);
-            });
+            }
         } else if (type === 'live_player_offline') {
             if (elements.radarContainer) {
                 elements.radarContainer.classList.add('hidden');
@@ -232,10 +232,8 @@ async function bootstrap() {
             if (elements.liveStatusText) {
                 elements.liveStatusText.textContent = 'LIVE: OFFLINE';
             }
-            if (!window.electronAPI) {
-                import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
-                    updateDisplayModeButtonsState(false);
-                });
+            if (!window.electronAPI && state.gameRunning) {
+                updateDisplayModeButtonsState(false);
             }
         } else if (type === 'display_mode_changed') {
             if (elements.radarContainer) {
@@ -277,9 +275,7 @@ async function bootstrap() {
     if (window.electronAPI && typeof window.electronAPI.onDisplayModeChanged === 'function') {
         window.electronAPI.onDisplayModeChanged((data) => {
             if (data && data.mode && data.mode !== state.displayMode) {
-                import('./features/tools/settings.js').then(({ applyDisplayMode }) => {
-                    applyDisplayMode(data.mode, true, false);
-                });
+                applyDisplayMode(data.mode, true, false);
             }
         });
     }
@@ -295,16 +291,12 @@ async function bootstrap() {
     // Monitor live game process state to enable/disable In-Game mode buttons in real-time
     if (window.electronAPI && typeof window.electronAPI.getGameProcessStatus === 'function') {
         window.electronAPI.getGameProcessStatus().then((status) => {
-            import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
-                updateDisplayModeButtonsState(Boolean(status && status.running));
-            });
+            updateDisplayModeButtonsState(Boolean(status && status.running));
         });
     }
     if (window.electronAPI && typeof window.electronAPI.onGameProcessStatus === 'function') {
         window.electronAPI.onGameProcessStatus((status) => {
-            import('./features/tools/settings.js').then(({ updateDisplayModeButtonsState }) => {
-                updateDisplayModeButtonsState(Boolean(status && status.running));
-            });
+            updateDisplayModeButtonsState(Boolean(status && status.running));
         });
     }
 
