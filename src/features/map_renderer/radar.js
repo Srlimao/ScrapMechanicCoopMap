@@ -7,13 +7,21 @@ let lastRadarEntities = [];
 let sweepAngle = 0;
 let lastFrameTime = performance.now();
 
-// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted helper functions, and squared distance pre-culling
+// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, zero-allocation screen position object,
+// module-scoped static cardinal direction markers, and cached DOM element references.
 const SWEEP_STEPS = 18;
 const SWEEP_TRAIL_ANGLE = Math.PI / 3.2; // ~56 degrees trail
 const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
     const alpha = Math.pow(i / SWEEP_STEPS, 2.2) * 0.35;
     return `rgba(34, 197, 94, ${alpha})`;
 });
+
+const CARDINALS = [
+    { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
+    { label: 'E', worldAngle: 0, color: '#4ade80' },
+    { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
+    { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
+];
 
 /**
  * Helper: Convert world entity (x, y, z) to radar screen (bx, by) with fast squared-distance culling and vertical elevation filtering.
@@ -48,7 +56,7 @@ function worldToRadarScreen(ex, ey, ez, cx, cy, cz, range, rangeSq, radarRadius,
     // Phosphor decay calculation against rotating sweep beam
     const sweepDelta = ((sweepAngle - screenAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
     const isJustSwept = sweepDelta < 0.22;
-    const decay = Math.max(0.35, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.65);
+    const decay = Math.max(0.35, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.55);
 
     return { bx, by, dist, dz, elevation, screenAngle, isJustSwept, decay };
 }
@@ -208,14 +216,8 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const cardinals = [
-        { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
-        { label: 'E', worldAngle: 0, color: '#4ade80' },
-        { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
-        { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
-    ];
-
-    for (const card of cardinals) {
+    for (let i = 0; i < CARDINALS.length; i++) {
+        const card = CARDINALS[i];
         // Screen angle relative to player heading
         const cardScreenAngle = card.worldAngle - playerHeading + Math.PI / 2;
         const cardX = centerX + Math.cos(cardScreenAngle) * (radarRadius - 9);
@@ -445,8 +447,10 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             // Fast Squared Distance Culling before sub-filter string lowercasing & trig
             if (distSq > maxDistSq) continue;
 
-            const name = (poi.name || '').toLowerCase();
-            const cat = (poi.category || '').toLowerCase();
+            if (!poi._nameLower) poi._nameLower = (poi.name || '').toLowerCase();
+            if (!poi._catLower) poi._catLower = (poi.category || '').toLowerCase();
+            const name = poi._nameLower;
+            const cat = poi._catLower;
 
             // Respect POI Sub-Filters
             if (state.subFilters && state.subFilters.pois) {
@@ -593,10 +597,10 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
 
     // D. Squad Allies
     if (state.squad && state.squad.peers) {
-        state.squad.peers.forEach(peer => {
+        for (const peer of state.squad.peers.values()) {
             if (peer.x !== undefined && peer.y !== undefined) {
                 const p = worldToRadarScreen(peer.x, peer.y, peer.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
-                if (!p) return;
+                if (!p) continue;
 
                 const color = peer.color || '#00e5ff';
                 ctx.beginPath();
@@ -621,7 +625,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
                     dist: p.dist
                 });
             }
-        });
+        }
     }
 
     // 7. Center Origin Indicator (Player Forward Arrow / Camera Reticle)
@@ -672,35 +676,45 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     updateRadarDOMHUD(hostileCount, vehicleCount, poiCount, nearestHostileDist, range, isPlayer);
 }
 
+let threatBadgeEl = null;
+let rangeTextEl = null;
+let modeTextEl = null;
+
 function updateRadarDOMHUD(hostiles, vehicles, pois, nearestHostile, range, isPlayer) {
-    const threatBadge = document.getElementById('radarThreatBadge');
-    if (threatBadge) {
+    if (!threatBadgeEl || !threatBadgeEl.isConnected) {
+        threatBadgeEl = document.getElementById('radarThreatBadge');
+    }
+    if (threatBadgeEl) {
         if (hostiles > 0) {
             if (nearestHostile < 80) {
-                threatBadge.className = 'radar-threat-badge danger-blink';
-                threatBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${hostiles} HOSTILE (${Math.round(nearestHostile)}m)`;
+                threatBadgeEl.className = 'radar-threat-badge danger-blink';
+                threatBadgeEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${hostiles} HOSTILE (${Math.round(nearestHostile)}m)`;
             } else {
-                threatBadge.className = 'radar-threat-badge warning';
-                threatBadge.innerHTML = `<i class="fa-solid fa-skull"></i> ${hostiles} HOSTILE`;
+                threatBadgeEl.className = 'radar-threat-badge warning';
+                threatBadgeEl.innerHTML = `<i class="fa-solid fa-skull"></i> ${hostiles} HOSTILE`;
             }
         } else if (vehicles > 0) {
-            threatBadge.className = 'radar-threat-badge info';
-            threatBadge.innerHTML = `<i class="fa-solid fa-car"></i> ${vehicles} VEHICLE`;
+            threatBadgeEl.className = 'radar-threat-badge info';
+            threatBadgeEl.innerHTML = `<i class="fa-solid fa-car"></i> ${vehicles} VEHICLE`;
         } else {
-            threatBadge.className = 'radar-threat-badge normal';
-            threatBadge.innerHTML = `<i class="fa-solid fa-shield-halved"></i> CLEAR [${range}m]`;
+            threatBadgeEl.className = 'radar-threat-badge normal';
+            threatBadgeEl.innerHTML = `<i class="fa-solid fa-shield-halved"></i> CLEAR [${range}m]`;
         }
     }
 
-    const rangeText = document.getElementById('radarRangeDisplay');
-    if (rangeText) {
-        rangeText.textContent = `${range}m`;
+    if (!rangeTextEl || !rangeTextEl.isConnected) {
+        rangeTextEl = document.getElementById('radarRangeDisplay');
+    }
+    if (rangeTextEl) {
+        rangeTextEl.textContent = `${range}m`;
     }
 
-    const modeText = document.getElementById('radarCenterMode');
-    if (modeText) {
-        modeText.textContent = isPlayer ? 'SRC: PLAYER' : 'SRC: CAMERA';
-        modeText.className = isPlayer ? 'radar-mode-badge player' : 'radar-mode-badge camera';
+    if (!modeTextEl || !modeTextEl.isConnected) {
+        modeTextEl = document.getElementById('radarCenterMode');
+    }
+    if (modeTextEl) {
+        modeTextEl.textContent = isPlayer ? 'SRC: PLAYER' : 'SRC: CAMERA';
+        modeTextEl.className = isPlayer ? 'radar-mode-badge player' : 'radar-mode-badge camera';
     }
 }
 

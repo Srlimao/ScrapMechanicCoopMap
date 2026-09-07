@@ -11,3 +11,7 @@
 ## 2025-05-19 - Lazy Candidate Position Evaluation Eliminates Per-Label Object Allocations
 **Learning:** Constructing candidate position/bounding box arrays `[ { x, y, box: { x, y, w, h } }, ... ]` upfront in collision-avoiding smart label placement routines allocates 13–14 temporary objects per label on every frame, generating thousands of garbage objects per second during map panning/zooming.
 **Action:** Always evaluate placement candidate positions lazily one-by-one with early exit checks, testing default position first and allocating only the final chosen bounding box.
+
+## 2025-05-20 - Safe `isConnected` Caching for Frequent Canvas Loop DOM Lookups
+**Learning:** Querying `document.getElementById` inside 60 FPS canvas render loops causes unnecessary DOM tree searches, while un-validated global DOM caching risks writing to detached nodes if DOM subtrees remount or toggle.
+**Action:** Cache DOM element references in module-level variables and check `!el || !el.isConnected` before reuse to get zero-overhead lookups during steady-state rendering while maintaining safety during DOM updates.
