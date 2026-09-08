@@ -11,3 +11,7 @@
 ## 2025-05-19 - Lazy Candidate Position Evaluation Eliminates Per-Label Object Allocations
 **Learning:** Constructing candidate position/bounding box arrays `[ { x, y, box: { x, y, w, h } }, ... ]` upfront in collision-avoiding smart label placement routines allocates 13–14 temporary objects per label on every frame, generating thousands of garbage objects per second during map panning/zooming.
 **Action:** Always evaluate placement candidate positions lazily one-by-one with early exit checks, testing default position first and allocating only the final chosen bounding box.
+
+## 2025-05-20 - Static Object Reuse in 60 FPS Radar Loops Eliminates Per-Frame Allocation Churn
+**Learning:** Returning newly allocated `{ bx, by, dist, ... }` objects and creating inline static arrays/objects inside 60 FPS animation loops (`renderRadar`, `mousemove` listeners) allocates over 2,200 temporary objects per second, causing periodic Garbage Collection frame drops.
+**Action:** Module-scope constant arrays (e.g. `CARDINALS`) and reuse static result objects (`tempRadarPoint`, `radarCenterPos`) when reading properties synchronously, and mutate state coordinates in-place on high-frequency event listeners.

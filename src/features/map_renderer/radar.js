@@ -7,13 +7,21 @@ let lastRadarEntities = [];
 let sweepAngle = 0;
 let lastFrameTime = performance.now();
 
-// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted helper functions, and squared distance pre-culling
+// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, static cardinal markers, and squared distance pre-culling
 const SWEEP_STEPS = 18;
 const SWEEP_TRAIL_ANGLE = Math.PI / 3.2; // ~56 degrees trail
 const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
     const alpha = Math.pow(i / SWEEP_STEPS, 2.2) * 0.35;
     return `rgba(34, 197, 94, ${alpha})`;
 });
+
+// Pre-computed cardinal direction markers to avoid per-frame array/object allocations in 60 FPS radar loop
+const CARDINALS = [
+    { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
+    { label: 'E', worldAngle: 0, color: '#4ade80' },
+    { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
+    { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
+];
 
 /**
  * Helper: Convert world entity (x, y, z) to radar screen (bx, by) with fast squared-distance culling and vertical elevation filtering.
@@ -208,14 +216,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const cardinals = [
-        { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
-        { label: 'E', worldAngle: 0, color: '#4ade80' },
-        { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
-        { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
-    ];
-
-    for (const card of cardinals) {
+    for (const card of CARDINALS) {
         // Screen angle relative to player heading
         const cardScreenAngle = card.worldAngle - playerHeading + Math.PI / 2;
         const cardX = centerX + Math.cos(cardScreenAngle) * (radarRadius - 9);
