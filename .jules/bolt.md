@@ -11,3 +11,7 @@
 ## 2025-05-19 - Lazy Candidate Position Evaluation Eliminates Per-Label Object Allocations
 **Learning:** Constructing candidate position/bounding box arrays `[ { x, y, box: { x, y, w, h } }, ... ]` upfront in collision-avoiding smart label placement routines allocates 13–14 temporary objects per label on every frame, generating thousands of garbage objects per second during map panning/zooming.
 **Action:** Always evaluate placement candidate positions lazily one-by-one with early exit checks, testing default position first and allocating only the final chosen bounding box.
+
+## 2025-05-20 - Squared-Distance Sorting and Lazy String Formatting in Search Results
+**Learning:** Computing `Math.sqrt()` and distance string formatting (`"123m"`) eagerly across all dataset search matches prior to sorting creates thousands of string allocations and redundant math operations, even though only a small page (e.g. 25 items) is actually rendered.
+**Action:** Sort search matches by squared distance (`dx*dx + dy*dy`) and defer `Math.sqrt()` / string formatting lazily to the batch rendering loop for displayed items.
