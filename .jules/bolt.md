@@ -11,3 +11,7 @@
 ## 2025-05-19 - Lazy Candidate Position Evaluation Eliminates Per-Label Object Allocations
 **Learning:** Constructing candidate position/bounding box arrays `[ { x, y, box: { x, y, w, h } }, ... ]` upfront in collision-avoiding smart label placement routines allocates 13–14 temporary objects per label on every frame, generating thousands of garbage objects per second during map panning/zooming.
 **Action:** Always evaluate placement candidate positions lazily one-by-one with early exit checks, testing default position first and allocating only the final chosen bounding box.
+
+## 2025-05-20 - Deferred Distance Formatting & Squared-Distance Sorting in Search Engines
+**Learning:** In search engines matching thousands of game entities (POIs, harvestables, creations), computing `Math.sqrt()` and formatting localized distance strings (`_distText`) upfront for every matching item wastes significant CPU cycles and creates thousands of intermediate string objects when only a small paginated subset (e.g. 25 items) is rendered.
+**Action:** Sort matching search items directly by squared distance (`dx*dx + dy*dy`) and compute `Math.sqrt()` and string formatting lazily only when rendering the active DOM page batch.
