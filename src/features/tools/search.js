@@ -160,19 +160,19 @@ function performSearch(query) {
         }
     }
 
-    // Calculate distance from reference point & sort ascending (closest first)
+    // OPTIMIZATION (⚡ Bolt): Squared-distance sorting and deferred distance text calculation.
+    // Sorting by squared distance (dx^2 + dy^2) avoids calling Math.sqrt() and constructing string
+    // templates for thousands of unrendered off-screen items. Distance text is generated lazily per batch.
     const refX = ref.x;
     const refY = ref.y;
     for (let i = 0; i < currentMatches.length; i++) {
         const item = currentMatches[i];
         const dx = (item.x || 0) - refX;
         const dy = (item.y || 0) - refY;
-        const d = Math.sqrt(dx * dx + dy * dy);
-        item._dist = d;
-        item._distText = d < 1000 ? `${Math.round(d)}m` : `${(d / 1000).toFixed(1)}km`;
+        item._distSq = dx * dx + dy * dy;
     }
 
-    currentMatches.sort((a, b) => a._dist - b._dist);
+    currentMatches.sort((a, b) => a._distSq - b._distSq);
 
     if (currentMatches.length === 0) {
         searchResultsDiv.innerHTML = `<div class="search-no-results"><i class="fa-solid fa-circle-exclamation" style="margin-right: 6px;"></i>No matching locations found</div>`;
@@ -190,7 +190,12 @@ function renderNextBatch() {
     renderedIndex += nextBatch.length;
 
     const container = document.createElement('div');
-    container.innerHTML = nextBatch.map(item => `
+    container.innerHTML = nextBatch.map(item => {
+        if (!item._distText) {
+            const d = Math.sqrt(item._distSq || 0);
+            item._distText = d < 1000 ? `${Math.round(d)}m` : `${(d / 1000).toFixed(1)}km`;
+        }
+        return `
         <div class="search-result-item" data-x="${item.x}" data-y="${item.y}">
             <div class="search-item-icon-wrap" style="color: ${item.color || '#ff7a00'};">
                 <i class="fa-solid ${item.icon || 'fa-location-dot'}"></i>
@@ -204,7 +209,8 @@ function renderNextBatch() {
             </div>
             <i class="fa-solid fa-chevron-right search-item-arrow"></i>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     Array.from(container.children).forEach((el, relIdx) => {
         const item = currentMatches[startIdx + relIdx];
