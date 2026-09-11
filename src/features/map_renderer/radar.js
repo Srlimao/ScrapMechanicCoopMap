@@ -2,6 +2,7 @@
 import { state, notifyStateChange } from '../../core/state.js';
 import { jumpToLocation } from './camera.js';
 import { openInspector } from '../inspector/sidebar.js';
+import { getPoiFilterGroup, getPoiRadarInfo } from './layer_entities.js';
 
 let lastRadarEntities = [];
 let sweepAngle = 0;
@@ -277,17 +278,21 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             const p = worldToRadarScreen(unit.x, unit.y, unit.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
             if (!p) continue;
 
-            const typeStr = (unit.type || unit.name || '').toLowerCase();
-            const isPassive = unit.isHostile === false || 
-                              typeStr.includes('seed') || 
-                              typeStr.includes('woc') || 
-                              typeStr.includes('glowbug') || 
-                              typeStr.includes('animal') || 
-                              typeStr.includes('cow') || 
-                              typeStr.includes('farmer') || 
-                              typeStr.includes('trader') || 
-                              typeStr.includes('npc') || 
-                              typeStr.includes('passive');
+            // OPTIMIZATION (⚡ Bolt): Cached unit passivity check eliminates per-frame string allocations & search operations
+            if (unit._isPassive === undefined) {
+                const typeStr = (unit.type || unit.name || '').toLowerCase();
+                unit._isPassive = unit.isHostile === false ||
+                                  typeStr.includes('seed') ||
+                                  typeStr.includes('woc') ||
+                                  typeStr.includes('glowbug') ||
+                                  typeStr.includes('animal') ||
+                                  typeStr.includes('cow') ||
+                                  typeStr.includes('farmer') ||
+                                  typeStr.includes('trader') ||
+                                  typeStr.includes('npc') ||
+                                  typeStr.includes('passive');
+            }
+            const isPassive = unit._isPassive;
             const isHostile = !isPassive;
 
             if (isHostile) {
@@ -445,43 +450,16 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             // Fast Squared Distance Culling before sub-filter string lowercasing & trig
             if (distSq > maxDistSq) continue;
 
-            const name = (poi.name || '').toLowerCase();
-            const cat = (poi.category || '').toLowerCase();
-
-            // Respect POI Sub-Filters
+            // OPTIMIZATION (⚡ Bolt): Lazy POI sub-filter group memoization eliminates per-frame string allocations
             if (state.subFilters && state.subFilters.pois) {
-                if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
-                if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
-                if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
-                if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
-                if ((name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') && !state.subFilters.pois.chemOil) continue;
-                if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
+                const group = poi._filterGroup || getPoiFilterGroup(poi);
+                if (!state.subFilters.pois[group]) continue;
             }
 
-            // Determine POI Category Color & Label
-            let poiColor = poi.color || '#f59e0b';
-            let shortLabel = poi.name || 'POI';
-            if (name.includes('mechanic')) {
-                poiColor = '#38bdf8';
-                shortLabel = 'Mechanic';
-            } else if (name.includes('trader') || name.includes('hideout')) {
-                poiColor = '#a855f7';
-                shortLabel = 'Trader';
-            } else if (name.includes('packing')) {
-                poiColor = '#4ade80';
-                shortLabel = name.includes('veg') ? 'Packing (Veg)' : (name.includes('fruit') ? 'Packing (Fruit)' : 'Packing');
-            } else if (name.includes('growlab')) {
-                poiColor = '#f59e0b';
-                shortLabel = 'Growlab';
-            } else if (name.includes('chemical') || cat === 'chemical') {
-                poiColor = '#06b6d4';
-                shortLabel = 'Chemical';
-            } else if (name.includes('oil') || cat === 'oil') {
-                poiColor = '#06b6d4';
-                shortLabel = 'Oil Lake';
-            } else if (name.includes('capsule') || name.includes('landmark')) {
-                poiColor = '#fbbf24';
-            }
+            // OPTIMIZATION (⚡ Bolt): Cached short label and radar color eliminate per-frame string searching
+            const info = poi._shortLabel ? poi : getPoiRadarInfo(poi);
+            const poiColor = info._radarColor;
+            const shortLabel = info._shortLabel;
 
             const dist = Math.sqrt(distSq);
             const worldAngle = Math.atan2(dy, dx);

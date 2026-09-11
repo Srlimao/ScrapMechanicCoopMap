@@ -15,3 +15,7 @@
 ## 2025-05-20 - Deferred Distance Formatting & Squared-Distance Sorting in Search Engines
 **Learning:** In search engines matching thousands of game entities (POIs, harvestables, creations), computing `Math.sqrt()` and formatting localized distance strings (`_distText`) upfront for every matching item wastes significant CPU cycles and creates thousands of intermediate string objects when only a small paginated subset (e.g. 25 items) is rendered.
 **Action:** Sort matching search items directly by squared distance (`dx*dx + dy*dy`) and compute `Math.sqrt()` and string formatting lazily only when rendering the active DOM page batch.
+
+## 2025-05-21 - Lazy Memoization of Entity Sub-Filter & Metadata Properties Eliminates Per-Frame String Allocations
+**Learning:** Performing string lowercasing (`toLowerCase()`) and category matching (`includes()`) on static entity objects inside 60 FPS rendering and mousemove hover loops creates thousands of transient string objects per second and duplicates classification logic across render layers.
+**Action:** Lazily memoize sub-filter group keys (`_filterGroup`), category strings (`_catLower`), radar labels/colors (`_shortLabel`, `_radarColor`), and boolean flags (`_isPassive`) on entity objects on first access to make sub-filter matching a single property lookup.
