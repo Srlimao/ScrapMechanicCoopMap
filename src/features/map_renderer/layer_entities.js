@@ -7,6 +7,64 @@ import { worldToScreen } from '../../core/coords.js';
 
 let occupiedLabelBoxes = [];
 
+/**
+ * Lazy memoization of POI sub-filter group key.
+ * Avoids per-frame string lowercasing and repeated .includes() string searches in 60 FPS loops.
+ */
+export function getPoiFilterGroup(poi) {
+    if (poi._filterGroup) return poi._filterGroup;
+    const name = (poi.name || '').toLowerCase();
+    const cat = (poi.category || '').toLowerCase();
+
+    if (name.includes('mechanic station') || cat === 'mechanic') poi._filterGroup = 'mechanicStations';
+    else if (name.includes('trader') || name.includes('hideout') || name.includes('farmer') || cat === 'trader') poi._filterGroup = 'traders';
+    else if (name.includes('packing station') || cat === 'packing') poi._filterGroup = 'packingStations';
+    else if (name.includes('growlab') || cat === 'growlab') poi._filterGroup = 'growlabs';
+    else if (name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') poi._filterGroup = 'chemOil';
+    else poi._filterGroup = 'other';
+
+    return poi._filterGroup;
+}
+
+/**
+ * Lazy memoization of POI radar color and short label.
+ * Avoids per-frame string lowercasing and repeated .includes() string searches in radar loop.
+ */
+export function getPoiRadarInfo(poi) {
+    if (poi._shortLabel !== undefined) return poi;
+    const name = (poi.name || '').toLowerCase();
+    const cat = (poi.category || '').toLowerCase();
+
+    let color = poi.color || '#f59e0b';
+    let label = poi.name || 'POI';
+
+    if (name.includes('mechanic')) {
+        color = '#38bdf8';
+        label = 'Mechanic';
+    } else if (name.includes('trader') || name.includes('hideout')) {
+        color = '#a855f7';
+        label = 'Trader';
+    } else if (name.includes('packing')) {
+        color = '#4ade80';
+        label = name.includes('veg') ? 'Packing (Veg)' : (name.includes('fruit') ? 'Packing (Fruit)' : 'Packing');
+    } else if (name.includes('growlab')) {
+        color = '#f59e0b';
+        label = 'Growlab';
+    } else if (name.includes('chemical') || cat === 'chemical') {
+        color = '#06b6d4';
+        label = 'Chemical';
+    } else if (name.includes('oil') || cat === 'oil') {
+        color = '#06b6d4';
+        label = 'Oil Lake';
+    } else if (name.includes('capsule') || name.includes('landmark')) {
+        color = '#fbbf24';
+    }
+
+    poi._shortLabel = label;
+    poi._radarColor = color;
+    return poi;
+}
+
 export function clearLabelCollisionGrid() {
     occupiedLabelBoxes.length = 0;
 }
@@ -93,15 +151,10 @@ function renderPOIs(ctx, pois, width, height, bounds) {
         const isHovered = state.hoveredEntity === poi;
         const isSelected = state.selectedEntity === poi;
 
-        const name = (poi.name || '').toLowerCase();
-        const cat = (poi.category || '').toLowerCase();
+        // OPTIMIZATION (⚡ Bolt): Lazy POI sub-filter group memoization eliminates per-frame string allocations
         if (state.subFilters && state.subFilters.pois && !isSelected && !isHovered) {
-            if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
-            if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
-            if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
-            if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
-            if ((name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') && !state.subFilters.pois.chemOil) continue;
-            if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
+            const group = poi._filterGroup || getPoiFilterGroup(poi);
+            if (!state.subFilters.pois[group]) continue;
         }
 
         const px = (poi.x - state.cameraX) * state.zoom + bounds.halfW;
@@ -287,7 +340,8 @@ function renderHarvestables(ctx, harvestables, width, height, bounds) {
 
         if (state.zoom < 0.24 && !isSelected && !isHovered) continue;
 
-        const cat = (h.category || '').toLowerCase();
+        // OPTIMIZATION (⚡ Bolt): Cached lowercased category eliminates per-frame string allocations
+        const cat = h._catLower || (h._catLower = (h.category || '').toLowerCase());
         if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
         if (cat === 'cotton' && !state.subFilters.harvestables.cotton) continue;
         if (cat === 'mineral' && !state.subFilters.harvestables.minerals) continue;

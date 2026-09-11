@@ -2,6 +2,7 @@
 import { state } from '../../core/state.js';
 import { calculateDistance, formatCoords } from '../../core/coords.js';
 import { openInspector } from './sidebar.js';
+import { getPoiFilterGroup } from '../map_renderer/layer_entities.js';
 
 let tooltipEl = null;
 let tooltipTitle = null;
@@ -62,18 +63,13 @@ function findHoveredEntity(worldX, worldY) {
             const dy = worldY - poi.y;
             const distSq = dx * dx + dy * dy;
 
-            // Fast squared distance pre-cull before string parsing & subfilter evaluation
+            // Fast squared distance pre-cull before subfilter evaluation
             if (distSq >= hitDistSq) continue;
 
-            const name = (poi.name || '').toLowerCase();
-            const cat = (poi.category || '').toLowerCase();
+            // OPTIMIZATION (⚡ Bolt): Lazy POI sub-filter group memoization eliminates per-frame string allocations
             if (state.subFilters && state.subFilters.pois && state.selectedEntity !== poi) {
-                if (name.includes('mechanic station') && !state.subFilters.pois.mechanicStations) continue;
-                if ((name.includes('trader') || name.includes('hideout') || name.includes('farmer')) && !state.subFilters.pois.traders) continue;
-                if (name.includes('packing station') && !state.subFilters.pois.packingStations) continue;
-                if (name.includes('growlab') && !state.subFilters.pois.growlabs) continue;
-                if ((name.includes('chemical') || name.includes('oil lake') || cat === 'chemical' || cat === 'oil') && !state.subFilters.pois.chemOil) continue;
-                if (!name.includes('mechanic') && !name.includes('trader') && !name.includes('hideout') && !name.includes('farmer') && !name.includes('packing') && !name.includes('growlab') && !name.includes('chemical') && !name.includes('oil lake') && cat !== 'chemical' && cat !== 'oil' && !state.subFilters.pois.other) continue;
+                const group = poi._filterGroup || getPoiFilterGroup(poi);
+                if (!state.subFilters.pois[group]) continue;
             }
 
             state.hoveredEntity = poi;
@@ -150,7 +146,8 @@ function findHoveredEntity(worldX, worldY) {
 
             if (distSq >= hitDistSq) continue;
 
-            const cat = (h.category || '').toLowerCase();
+            // OPTIMIZATION (⚡ Bolt): Cached lowercased category eliminates per-frame string allocations
+            const cat = h._catLower || (h._catLower = (h.category || '').toLowerCase());
             if (cat === 'oil' && !state.subFilters.harvestables.oil) continue;
             if (cat === 'cotton' && !state.subFilters.harvestables.cotton) continue;
             if (cat === 'mineral' && !state.subFilters.harvestables.minerals) continue;
