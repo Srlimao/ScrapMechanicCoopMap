@@ -49,7 +49,10 @@ export function renderPlayerTrail(ctx, width, height) {
                 started = true;
             } else {
                 const prev = trail[i - 1];
-                if (Math.hypot(t.x - prev.x, t.y - prev.y) > 80) {
+                // OPTIMIZATION (⚡ Bolt): Squared-distance discontinuity check eliminates Math.hypot (Math.sqrt) calls in 60 FPS trail loop
+                const dx = t.x - prev.x;
+                const dy = t.y - prev.y;
+                if (dx * dx + dy * dy > 6400) { // 80^2 = 6400
                     ctx.moveTo(px, py);
                 } else {
                     ctx.lineTo(px, py);
