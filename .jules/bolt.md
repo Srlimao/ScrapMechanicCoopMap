@@ -19,3 +19,7 @@
 ## 2025-05-21 - Lazy Memoization of Entity Sub-Filter & Metadata Properties Eliminates Per-Frame String Allocations
 **Learning:** Performing string lowercasing (`toLowerCase()`) and category matching (`includes()`) on static entity objects inside 60 FPS rendering and mousemove hover loops creates thousands of transient string objects per second and duplicates classification logic across render layers.
 **Action:** Lazily memoize sub-filter group keys (`_filterGroup`), category strings (`_catLower`), radar labels/colors (`_shortLabel`, `_radarColor`), and boolean flags (`_isPassive`) on entity objects on first access to make sub-filter matching a single property lookup.
+
+## 2025-05-22 - Squared-Distance Thresholds Eliminate Math.hypot Overhead in 60 FPS Trail Loops
+**Learning:** In 60 FPS breadcrumb trail rendering loops for live player tracking and multiplayer squad peers, evaluating telemetry discontinuity thresholds with `Math.hypot(dx, dy) > threshold` invokes `Math.sqrt` and floating-point normalization up to 250 times per frame per player, generating up to 15,000 unnecessary function calls per second.
+**Action:** Compare squared distance (`dx * dx + dy * dy > thresholdSq`) directly for threshold/discontinuity checks in 60 FPS animation loops to eliminate `Math.hypot` / `Math.sqrt` execution overhead completely.

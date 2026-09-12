@@ -67,7 +67,10 @@ function renderSquadPeers(ctx, width, height, bounds) {
                     started = true;
                 } else {
                     const prev = peer.trail[i - 1];
-                    if (Math.hypot(pt.x - prev.x, pt.y - prev.y) > 80) {
+                    // OPTIMIZATION (⚡ Bolt): Squared-distance discontinuity check eliminates Math.hypot (Math.sqrt) calls in 60 FPS trail loop
+                    const dx = pt.x - prev.x;
+                    const dy = pt.y - prev.y;
+                    if (dx * dx + dy * dy > 6400) { // 80^2 = 6400
                         ctx.moveTo(px, py);
                     } else {
                         ctx.lineTo(px, py);
