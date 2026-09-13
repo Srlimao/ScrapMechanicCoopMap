@@ -289,8 +289,10 @@ function renderUnits(ctx, units, width, height, bounds) {
 
         const isHovered = state.hoveredEntity === u;
         const isSelected = state.selectedEntity === u;
-        const sub = u.subType || u.category;
-        const isBoss = sub === 'boss';
+
+        // OPTIMIZATION (⚡ Bolt): Lazy memoization of unit subType and boss flag eliminates property lookups & string checks
+        const sub = u._sub || (u._sub = u.subType || u.category);
+        const isBoss = u._isBoss !== undefined ? u._isBoss : (u._isBoss = (sub === 'boss'));
 
         // Bosses are Tier 1 (always visible at all zoom levels like POIs). Other units appear at zoom >= 0.55
         if (!isBoss && state.zoom < 0.55 && !isSelected && !isHovered) continue;
