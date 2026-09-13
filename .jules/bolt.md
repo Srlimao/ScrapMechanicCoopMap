@@ -23,3 +23,7 @@
 ## 2025-05-22 - Squared-Distance Thresholds Eliminate Math.hypot Overhead in 60 FPS Trail Loops
 **Learning:** In 60 FPS breadcrumb trail rendering loops for live player tracking and multiplayer squad peers, evaluating telemetry discontinuity thresholds with `Math.hypot(dx, dy) > threshold` invokes `Math.sqrt` and floating-point normalization up to 250 times per frame per player, generating up to 15,000 unnecessary function calls per second.
 **Action:** Compare squared distance (`dx * dx + dy * dy > thresholdSq`) directly for threshold/discontinuity checks in 60 FPS animation loops to eliminate `Math.hypot` / `Math.sqrt` execution overhead completely.
+
+## 2025-05-23 - Squared-Distance Pre-Culling Before Unit Sub-type & Zoom Checks in Mousemove Loops
+**Learning:** Evaluating unit entity classifications (`subType || category`) and zoom/selection conditions before hit-testing in high-frequency mousemove loops performs thousands of property accesses and string comparisons for distant off-screen units every time the cursor moves.
+**Action:** Place squared distance pre-culling (`distSq >= hitDistSq`) at the very top of entity hover loops and lazily memoize sub-type classification properties (`_sub`, `_isBoss`) on entity objects to bypass evaluation for ~99% of entities on mouse movement.

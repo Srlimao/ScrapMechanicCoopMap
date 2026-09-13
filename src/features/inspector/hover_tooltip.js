@@ -114,16 +114,18 @@ function findHoveredEntity(worldX, worldY) {
     // 4. Check Units / Bots (Bosses Tier 1: always checkable. Other units zoom >= 0.55)
     if (state.layers.units && state.mapData.units) {
         for (const u of state.mapData.units) {
-            const sub = u.subType || u.category;
-            const isBoss = sub === 'boss';
-
-            if (!isBoss && state.zoom < 0.55 && state.selectedEntity !== u) continue;
-
             const dx = worldX - u.x;
             const dy = worldY - u.y;
             const distSq = dx * dx + dy * dy;
 
+            // OPTIMIZATION (⚡ Bolt): Fast squared-distance pre-cull before classification & sub-filter matching
             if (distSq >= hitDistSq) continue;
+
+            // Memoized subType and isBoss flag eliminate per-mousemove object property lookups
+            const sub = u._sub || (u._sub = u.subType || u.category);
+            const isBoss = u._isBoss !== undefined ? u._isBoss : (u._isBoss = (sub === 'boss'));
+
+            if (!isBoss && state.zoom < 0.55 && state.selectedEntity !== u) continue;
 
             if (isBoss && !state.subFilters.units.farmbots) continue;
             if (sub === 'haybot' && !state.subFilters.units.haybots) continue;
