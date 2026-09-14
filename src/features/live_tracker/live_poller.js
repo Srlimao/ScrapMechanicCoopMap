@@ -1,6 +1,5 @@
 // Real-Time Live Player Tracking Polling Engine
 import { state, notifyStateChange } from '../../core/state.js';
-import { calculateDistance } from '../../core/coords.js';
 
 let pollTimer = null;
 let isPolling = false;
@@ -91,10 +90,15 @@ export async function fetchLivePlayerState() {
             return;
         }
 
-        const dist = calculateDistance(prevX, prevY, data.x, data.y);
+        // OPTIMIZATION (⚡ Bolt): Squared-distance thresholds in 33 Hz live telemetry polling loop.
+        // Replaces duplicate calculateDistance (Math.sqrt) calls per tick with squared distance checks.
+        // Reduces Math.sqrt execution from 2 calls to 1 (or 0 during teleport) every 30ms tick.
+        const dx = data.x - prevX;
+        const dy = data.y - prevY;
+        const distSq = dx * dx + dy * dy;
 
-        // Teleport / Respawn detection (large distance jump in 1 frame)
-        if (dist > 100.0) {
+        // Teleport / Respawn detection (large distance jump > 100m -> 10,000m^2 in 1 frame)
+        if (distSq > 10000.0) {
             state.livePlayer.x = data.x;
             state.livePlayer.y = data.y;
             state.livePlayer.z = data.z;
@@ -105,13 +109,18 @@ export async function fetchLivePlayerState() {
                 state.cameraY = data.y;
             }
         } else {
+            const dist = Math.sqrt(distSq);
             state.livePlayer.x = data.x;
             state.livePlayer.y = data.y;
             state.livePlayer.z = data.z;
             state.livePlayer.speed = Math.min(60, dist / dt);
 
             const trail = state.livePlayer.trail;
-            if (trail.length === 0 || calculateDistance(trail[trail.length - 1].x, trail[trail.length - 1].y, data.x, data.y) > 2.0) {
+            const lastTrail = trail[trail.length - 1];
+            const trailDx = lastTrail ? data.x - lastTrail.x : 0;
+            const trailDy = lastTrail ? data.y - lastTrail.y : 0;
+            // Spacing check: Only append trail node if moved > 2m (squared distance > 4.0m^2)
+            if (trail.length === 0 || (trailDx * trailDx + trailDy * trailDy) > 4.0) {
                 trail.push({ x: data.x, y: data.y, t: now });
                 if (trail.length > 250) trail.shift();
             }
