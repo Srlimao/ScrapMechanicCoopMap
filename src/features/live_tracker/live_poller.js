@@ -91,10 +91,15 @@ export async function fetchLivePlayerState() {
             return;
         }
 
-        const dist = calculateDistance(prevX, prevY, data.x, data.y);
+        // OPTIMIZATION (⚡ Bolt): Squared-distance pre-culling & deferred Math.sqrt in 33 Hz telemetry loop.
+        // Using squared distance (dx^2 + dy^2) eliminates redundant Math.sqrt execution for teleport checks
+        // and breadcrumb trail insertion thresholds.
+        const dx = data.x - prevX;
+        const dy = data.y - prevY;
+        const distSq = dx * dx + dy * dy;
 
-        // Teleport / Respawn detection (large distance jump in 1 frame)
-        if (dist > 100.0) {
+        // Teleport / Respawn detection (large distance jump in 1 frame > 100m, i.e., > 10,000m²)
+        if (distSq > 10000.0) {
             state.livePlayer.x = data.x;
             state.livePlayer.y = data.y;
             state.livePlayer.z = data.z;
@@ -108,12 +113,19 @@ export async function fetchLivePlayerState() {
             state.livePlayer.x = data.x;
             state.livePlayer.y = data.y;
             state.livePlayer.z = data.z;
-            state.livePlayer.speed = Math.min(60, dist / dt);
+            state.livePlayer.speed = Math.min(60, Math.sqrt(distSq) / dt);
 
             const trail = state.livePlayer.trail;
-            if (trail.length === 0 || calculateDistance(trail[trail.length - 1].x, trail[trail.length - 1].y, data.x, data.y) > 2.0) {
+            const lastNode = trail.length > 0 ? trail[trail.length - 1] : null;
+            if (!lastNode) {
                 trail.push({ x: data.x, y: data.y, t: now });
-                if (trail.length > 250) trail.shift();
+            } else {
+                const tdx = data.x - lastNode.x;
+                const tdy = data.y - lastNode.y;
+                if (tdx * tdx + tdy * tdy > 4.0) { // 2.0m threshold -> 4.0m²
+                    trail.push({ x: data.x, y: data.y, t: now });
+                    if (trail.length > 250) trail.shift();
+                }
             }
 
             if (state.followPlayer) {
