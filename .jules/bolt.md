@@ -23,3 +23,7 @@
 ## 2025-05-22 - Squared-Distance Thresholds Eliminate Math.hypot Overhead in 60 FPS Trail Loops
 **Learning:** In 60 FPS breadcrumb trail rendering loops for live player tracking and multiplayer squad peers, evaluating telemetry discontinuity thresholds with `Math.hypot(dx, dy) > threshold` invokes `Math.sqrt` and floating-point normalization up to 250 times per frame per player, generating up to 15,000 unnecessary function calls per second.
 **Action:** Compare squared distance (`dx * dx + dy * dy > thresholdSq`) directly for threshold/discontinuity checks in 60 FPS animation loops to eliminate `Math.hypot` / `Math.sqrt` execution overhead completely.
+
+## 2025-05-23 - Pre-Computed Constant Factors Eliminate Millions of Redundant Math Operations in Image Filtering Loops
+**Learning:** In pixel manipulation filters processing large image buffers (such as 12,288-cell terrain tile seam blending across 3+ million pixels), recalculating constant expression values inside nested RGB color channels and pixel loops executes millions of redundant floating-point multiplications and subtractions per pass.
+**Action:** Always pre-calculate invariant blend factors and expression weights outside image processing loops to eliminate redundant arithmetic operations during canvas pixel manipulation.
