@@ -111,7 +111,11 @@ export async function fetchLivePlayerState() {
             state.livePlayer.speed = Math.min(60, dist / dt);
 
             const trail = state.livePlayer.trail;
-            if (trail.length === 0 || calculateDistance(trail[trail.length - 1].x, trail[trail.length - 1].y, data.x, data.y) > 2.0) {
+            const lastNode = trail[trail.length - 1];
+            const dx = lastNode ? data.x - lastNode.x : 0;
+            const dy = lastNode ? data.y - lastNode.y : 0;
+            // OPTIMIZATION (⚡ Bolt): Squared-distance threshold eliminates Math.sqrt in 33 Hz telemetry loop
+            if (trail.length === 0 || dx * dx + dy * dy > 4.0) { // 2.0^2 = 4.0
                 trail.push({ x: data.x, y: data.y, t: now });
                 if (trail.length > 250) trail.shift();
             }

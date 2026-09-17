@@ -23,3 +23,7 @@
 ## 2025-05-22 - Squared-Distance Thresholds Eliminate Math.hypot Overhead in 60 FPS Trail Loops
 **Learning:** In 60 FPS breadcrumb trail rendering loops for live player tracking and multiplayer squad peers, evaluating telemetry discontinuity thresholds with `Math.hypot(dx, dy) > threshold` invokes `Math.sqrt` and floating-point normalization up to 250 times per frame per player, generating up to 15,000 unnecessary function calls per second.
 **Action:** Compare squared distance (`dx * dx + dy * dy > thresholdSq`) directly for threshold/discontinuity checks in 60 FPS animation loops to eliminate `Math.hypot` / `Math.sqrt` execution overhead completely.
+
+## 2025-05-23 - Reusable Target Object Parameter in Coordinate Transformation Functions
+**Learning:** In 60 FPS canvas rendering loops, coordinate projection helper functions (like `worldToScreen`) returning new `{ x, y }` objects on every call create steady GC pressure even for visible items on screen.
+**Action:** Provide an optional `out` parameter defaulting to `null` in coordinate utility functions so callers in hot render loops can pass module-scoped target objects `{ x: 0, y: 0 }`, preserving clean API abstraction while eliminating intermediate object allocations.
