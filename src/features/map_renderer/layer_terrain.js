@@ -1,4 +1,6 @@
 // Terrain background image loading & rendering
+// OPTIMIZATION (⚡ Bolt): Zero-allocation screen coordinate calculation in 60 FPS terrain loop.
+// Inlining screen coordinates eliminates per-frame { x, y } object allocation from worldToScreen.
 import { state } from '../../core/state.js';
 import { MAP_MIN_X, MAP_MAX_X, MAP_MIN_Y, MAP_MAX_Y } from '../../core/constants.js';
 import { worldToScreen } from '../../core/coords.js';
@@ -6,6 +8,7 @@ import { worldToScreen } from '../../core/coords.js';
 let terrainImage = new Image();
 let isImageLoaded = false;
 let currentLoadedSeed = null;
+const tempTopLeft = { x: 0, y: 0 };
 
 terrainImage.src = 'survival-world-surface.webp';
 terrainImage.onload = () => {
@@ -26,7 +29,8 @@ export function renderTerrainLayer(ctx, width, height) {
     if (!state.layers.mapImage || !isImageLoaded) return;
 
     // The terrain surface spans MAP_MIN_X to MAP_MAX_X, MAP_MIN_Y to MAP_MAX_Y
-    const topLeft = worldToScreen(MAP_MIN_X, MAP_MAX_Y, width, height);
+    // Passing tempTopLeft eliminates per-frame { x, y } object allocations
+    const topLeft = worldToScreen(MAP_MIN_X, MAP_MAX_Y, width, height, tempTopLeft);
     const renderWidth = (MAP_MAX_X - MAP_MIN_X) * state.zoom;
     const renderHeight = (MAP_MAX_Y - MAP_MIN_Y) * state.zoom;
 

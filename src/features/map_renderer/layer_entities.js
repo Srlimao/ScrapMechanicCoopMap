@@ -6,6 +6,7 @@ import { state } from '../../core/state.js';
 import { worldToScreen } from '../../core/coords.js';
 
 let occupiedLabelBoxes = [];
+const tempSelectedPos = { x: 0, y: 0 };
 
 /**
  * Lazy memoization of POI sub-filter group key.
@@ -536,7 +537,8 @@ function renderSelectedEntityRing(ctx, width, height) {
     const ent = state.selectedEntity;
     if (!ent || ent.x === undefined || ent.y === undefined || ent.x === null || ent.y === null) return;
 
-    const p = worldToScreen(ent.x, ent.y, width, height);
+    // OPTIMIZATION (⚡ Bolt): Reusable target object eliminates per-frame { x, y } allocation when an entity is selected
+    const p = worldToScreen(ent.x, ent.y, width, height, tempSelectedPos);
     if (p.x < -100 || p.x > width + 100 || p.y < -100 || p.y > height + 100) return;
 
     const now = Date.now();

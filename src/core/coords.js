@@ -2,9 +2,16 @@
 import { state } from './state.js';
 import { CELL_SIZE } from './constants.js';
 
-export function worldToScreen(worldX, worldY, canvasWidth, canvasHeight) {
+// OPTIMIZATION (⚡ Bolt): Optional 'out' parameter allows passing a reusable target object
+// to eliminate object allocations in 60 FPS animation render loops.
+export function worldToScreen(worldX, worldY, canvasWidth, canvasHeight, out = null) {
     const screenX = (worldX - state.cameraX) * state.zoom + canvasWidth / 2;
     const screenY = (state.cameraY - worldY) * state.zoom + canvasHeight / 2; // Inverted Y for 2D Canvas
+    if (out) {
+        out.x = screenX;
+        out.y = screenY;
+        return out;
+    }
     return { x: screenX, y: screenY };
 }
 
