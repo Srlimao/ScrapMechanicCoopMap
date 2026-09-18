@@ -94,13 +94,14 @@ export function setupSquadControls() {
 
     // Double-Click map canvas to drop tactical ping
     const canvas = document.getElementById('mapCanvas');
+    const tempDblClickWorldPos = { x: 0, y: 0 };
     if (canvas) {
         canvas.addEventListener('dblclick', (e) => {
             if (!state.squad.roomCode) return;
             const rect = canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-            const worldPos = screenToWorld(mouseX, mouseY, canvas.width, canvas.height);
+            const worldPos = screenToWorld(mouseX, mouseY, canvas.width, canvas.height, tempDblClickWorldPos);
             sendSquadPing(Math.round(worldPos.x), Math.round(worldPos.y), "Squad Ping!", "alert");
         });
     }

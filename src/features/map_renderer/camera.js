@@ -10,6 +10,9 @@ let cameraStartX = 0;
 let cameraStartY = 0;
 let mainCanvas = null;
 
+// OPTIMIZATION (⚡ Bolt): Reusable target object eliminates per-event { x, y } allocation on mouse wheel zoom
+const tempWheelWorldPos = { x: 0, y: 0 };
+
 export function setupCameraControls(canvas, viewport, requestRender) {
     mainCanvas = canvas;
     viewport.addEventListener('wheel', (e) => {
@@ -18,7 +21,7 @@ export function setupCameraControls(canvas, viewport, requestRender) {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        const worldBefore = screenToWorld(mouseX, mouseY, canvas.width, canvas.height);
+        const worldBefore = screenToWorld(mouseX, mouseY, canvas.width, canvas.height, tempWheelWorldPos);
 
         const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
         // Keep minimum zoom at 0.040 to prevent shrinking into empty void
@@ -45,13 +48,21 @@ export function setupCameraControls(canvas, viewport, requestRender) {
         }
     });
 
+    // OPTIMIZATION (⚡ Bolt): Zero-allocation mouse position tracking.
+    // Mutating state.mouseScreenPos directly and passing state.mouseWorldPos as target to screenToWorld
+    // completely eliminates object allocations on high-frequency (120-1000 Hz) mouse movements.
     window.addEventListener('mousemove', (e) => {
         const rect = canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        state.mouseScreenPos = { x: mouseX, y: mouseY };
-        state.mouseWorldPos = screenToWorld(mouseX, mouseY, canvas.width, canvas.height);
+        if (!state.mouseScreenPos) {
+            state.mouseScreenPos = { x: mouseX, y: mouseY };
+        } else {
+            state.mouseScreenPos.x = mouseX;
+            state.mouseScreenPos.y = mouseY;
+        }
+        state.mouseWorldPos = screenToWorld(mouseX, mouseY, canvas.width, canvas.height, state.mouseWorldPos);
 
         if (isDragging) {
             const dx = (e.clientX - dragStartX) / state.zoom;
