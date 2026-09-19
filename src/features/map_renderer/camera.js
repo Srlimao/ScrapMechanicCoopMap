@@ -50,8 +50,11 @@ export function setupCameraControls(canvas, viewport, requestRender) {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        state.mouseScreenPos = { x: mouseX, y: mouseY };
-        state.mouseWorldPos = screenToWorld(mouseX, mouseY, canvas.width, canvas.height);
+        // OPTIMIZATION (⚡ Bolt): Mutating existing state.mouseScreenPos and passing state.mouseWorldPos
+        // as target object to screenToWorld eliminates per-mousemove object allocations.
+        state.mouseScreenPos.x = mouseX;
+        state.mouseScreenPos.y = mouseY;
+        screenToWorld(mouseX, mouseY, canvas.width, canvas.height, state.mouseWorldPos);
 
         if (isDragging) {
             const dx = (e.clientX - dragStartX) / state.zoom;

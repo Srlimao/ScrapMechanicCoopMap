@@ -15,9 +15,14 @@ export function worldToScreen(worldX, worldY, canvasWidth, canvasHeight, out = n
     return { x: screenX, y: screenY };
 }
 
-export function screenToWorld(screenX, screenY, canvasWidth, canvasHeight) {
+export function screenToWorld(screenX, screenY, canvasWidth, canvasHeight, out = null) {
     const worldX = (screenX - canvasWidth / 2) / state.zoom + state.cameraX;
     const worldY = state.cameraY - (screenY - canvasHeight / 2) / state.zoom;
+    if (out) {
+        out.x = worldX;
+        out.y = worldY;
+        return out;
+    }
     return { x: worldX, y: worldY };
 }
 
