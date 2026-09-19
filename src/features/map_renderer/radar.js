@@ -8,13 +8,21 @@ let lastRadarEntities = [];
 let sweepAngle = 0;
 let lastFrameTime = performance.now();
 
-// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted helper functions, and squared distance pre-culling
+// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, static cardinal direction array, extracted helper functions, and squared distance pre-culling.
+// Extracting CARDINAL_DIRECTIONS as a static module-scoped constant eliminates 300 array/object allocations per second in 60 FPS radar render loop.
 const SWEEP_STEPS = 18;
 const SWEEP_TRAIL_ANGLE = Math.PI / 3.2; // ~56 degrees trail
 const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
     const alpha = Math.pow(i / SWEEP_STEPS, 2.2) * 0.35;
     return `rgba(34, 197, 94, ${alpha})`;
 });
+
+const CARDINAL_DIRECTIONS = [
+    { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
+    { label: 'E', worldAngle: 0, color: '#4ade80' },
+    { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
+    { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
+];
 
 /**
  * Helper: Convert world entity (x, y, z) to radar screen (bx, by) with fast squared-distance culling and vertical elevation filtering.
@@ -205,18 +213,13 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.stroke();
 
     // 4. Rotating Cardinal Direction Markers (N in red, E/S/W in sharp green)
+    // OPTIMIZATION (⚡ Bolt): Reusing static CARDINAL_DIRECTIONS constant avoids per-frame array and object allocations
     ctx.font = 'bold 9px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const cardinals = [
-        { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
-        { label: 'E', worldAngle: 0, color: '#4ade80' },
-        { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
-        { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
-    ];
-
-    for (const card of cardinals) {
+    for (let i = 0; i < CARDINAL_DIRECTIONS.length; i++) {
+        const card = CARDINAL_DIRECTIONS[i];
         // Screen angle relative to player heading
         const cardScreenAngle = card.worldAngle - playerHeading + Math.PI / 2;
         const cardX = centerX + Math.cos(cardScreenAngle) * (radarRadius - 9);

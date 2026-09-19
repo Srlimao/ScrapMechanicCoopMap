@@ -27,3 +27,7 @@
 ## 2025-05-23 - Reusable Target Object Parameter in Coordinate Transformation Functions
 **Learning:** In 60 FPS canvas rendering loops, coordinate projection helper functions (like `worldToScreen`) returning new `{ x, y }` objects on every call create steady GC pressure even for visible items on screen.
 **Action:** Provide an optional `out` parameter defaulting to `null` in coordinate utility functions so callers in hot render loops can pass module-scoped target objects `{ x: 0, y: 0 }`, preserving clean API abstraction while eliminating intermediate object allocations.
+
+## 2025-05-24 - Static Constants & In-Place State Mutation in High-Frequency Loops
+**Learning:** Defining inline static arrays (e.g. `cardinals = [...]`) inside 60 FPS radar render loops or re-instantiating mouse position objects (`{ x, y }`) inside `mousemove` event handlers generates hundreds of transient allocations per second, triggering frequent Garbage Collection micro-stutters during panning/zooming.
+**Action:** Lift static array definitions to module-scoped constants outside render loops and mutate existing reactive state target objects in high-frequency event listeners using `out` parameters.
