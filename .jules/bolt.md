@@ -27,3 +27,7 @@
 ## 2025-05-23 - Reusable Target Object Parameter in Coordinate Transformation Functions
 **Learning:** In 60 FPS canvas rendering loops, coordinate projection helper functions (like `worldToScreen`) returning new `{ x, y }` objects on every call create steady GC pressure even for visible items on screen.
 **Action:** Provide an optional `out` parameter defaulting to `null` in coordinate utility functions so callers in hot render loops can pass module-scoped target objects `{ x: 0, y: 0 }`, preserving clean API abstraction while eliminating intermediate object allocations.
+
+## 2025-05-24 - Zero-Allocation Target Object & Property Memoization in 60 FPS Proximity Radar Loop
+**Learning:** In 60 FPS radar loops processing dozens of game units, creations, and squad peers, returning new object literals `{ bx, by, dist, dz, ... }` per entity creates thousands of short-lived GC allocations per second. Furthermore, block-scoped variable declarations inside conditional memoization blocks can cause `ReferenceError` on subsequent frames if non-memoized properties depend on them.
+**Action:** Use module-scoped reusable target objects for synchronous radar screen projection helpers, and memoize all derived entity classification flags (`_isPassive`, `_isFarmbot`) in a single initialization block.
