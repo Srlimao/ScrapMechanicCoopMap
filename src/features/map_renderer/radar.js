@@ -8,13 +8,32 @@ let lastRadarEntities = [];
 let sweepAngle = 0;
 let lastFrameTime = performance.now();
 
-// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted helper functions, and squared distance pre-culling
+// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, module-scoped direction markers,
+// zero-allocation target object, and squared distance pre-culling in 60 FPS radar loop.
 const SWEEP_STEPS = 18;
 const SWEEP_TRAIL_ANGLE = Math.PI / 3.2; // ~56 degrees trail
 const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
     const alpha = Math.pow(i / SWEEP_STEPS, 2.2) * 0.35;
     return `rgba(34, 197, 94, ${alpha})`;
 });
+
+const CARDINALS = [
+    { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
+    { label: 'E', worldAngle: 0, color: '#4ade80' },
+    { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
+    { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
+];
+
+const tempRadarPos = {
+    bx: 0,
+    by: 0,
+    dist: 0,
+    dz: 0,
+    elevation: 'level',
+    screenAngle: 0,
+    isJustSwept: false,
+    decay: 0
+};
 
 /**
  * Helper: Convert world entity (x, y, z) to radar screen (bx, by) with fast squared-distance culling and vertical elevation filtering.
@@ -51,7 +70,16 @@ function worldToRadarScreen(ex, ey, ez, cx, cy, cz, range, rangeSq, radarRadius,
     const isJustSwept = sweepDelta < 0.22;
     const decay = Math.max(0.35, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.65);
 
-    return { bx, by, dist, dz, elevation, screenAngle, isJustSwept, decay };
+    tempRadarPos.bx = bx;
+    tempRadarPos.by = by;
+    tempRadarPos.dist = dist;
+    tempRadarPos.dz = dz;
+    tempRadarPos.elevation = elevation;
+    tempRadarPos.screenAngle = screenAngle;
+    tempRadarPos.isJustSwept = isJustSwept;
+    tempRadarPos.decay = decay;
+
+    return tempRadarPos;
 }
 
 export function setupRadar(radarCanvas) {
@@ -209,14 +237,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const cardinals = [
-        { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
-        { label: 'E', worldAngle: 0, color: '#4ade80' },
-        { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
-        { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
-    ];
-
-    for (const card of cardinals) {
+    for (const card of CARDINALS) {
         // Screen angle relative to player heading
         const cardScreenAngle = card.worldAngle - playerHeading + Math.PI / 2;
         const cardX = centerX + Math.cos(cardScreenAngle) * (radarRadius - 9);
@@ -278,7 +299,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             const p = worldToRadarScreen(unit.x, unit.y, unit.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
             if (!p) continue;
 
-            // OPTIMIZATION (⚡ Bolt): Cached unit passivity check eliminates per-frame string allocations & search operations
+            // OPTIMIZATION (⚡ Bolt): Cached unit passivity and boss type check eliminates per-frame string allocations
             if (unit._isPassive === undefined) {
                 const typeStr = (unit.type || unit.name || '').toLowerCase();
                 unit._isPassive = unit.isHostile === false ||
@@ -291,6 +312,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
                                   typeStr.includes('trader') ||
                                   typeStr.includes('npc') ||
                                   typeStr.includes('passive');
+                unit._isFarmbot = typeStr.includes('farm');
             }
             const isPassive = unit._isPassive;
             const isHostile = !isPassive;
@@ -301,7 +323,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             }
 
             const color = isHostile ? '#ef4444' : '#4ade80'; // Hostile threats are red, passives/animals/seedbots are soft green
-            const blipSize = (isHostile ? (typeStr.includes('farm') ? 5.6 : 4.2) : 2.8) * blipScale;
+            const blipSize = (isHostile ? (unit._isFarmbot ? 5.6 : 4.2) : 2.8) * blipScale;
 
             // Draw Ping Pulse if just swept
             if (p.isJustSwept) {
