@@ -27,3 +27,7 @@
 ## 2025-05-23 - Reusable Target Object Parameter in Coordinate Transformation Functions
 **Learning:** In 60 FPS canvas rendering loops, coordinate projection helper functions (like `worldToScreen`) returning new `{ x, y }` objects on every call create steady GC pressure even for visible items on screen.
 **Action:** Provide an optional `out` parameter defaulting to `null` in coordinate utility functions so callers in hot render loops can pass module-scoped target objects `{ x: 0, y: 0 }`, preserving clean API abstraction while eliminating intermediate object allocations.
+
+## 2025-05-24 - Pooled Bounding Boxes and Direct Context Property Styling in Canvas Loops
+**Learning:** In 60 FPS canvas rendering with dozens of dynamic collision labels, instantiating `{ x, y, w, h }` objects per label per frame generates thousands of transient objects per second. Additionally, wrapping simple badge/glyph drawing functions in `ctx.save()`/`ctx.restore()` causes hundreds of unnecessary canvas state stack push/pop operations per frame.
+**Action:** Use pre-allocated object pools (`labelBoxPool` + count tracking) for collision detection boxes and set canvas properties directly instead of calling `ctx.save()`/`ctx.restore()` in leaf draw functions.
