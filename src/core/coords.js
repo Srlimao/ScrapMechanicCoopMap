@@ -15,9 +15,16 @@ export function worldToScreen(worldX, worldY, canvasWidth, canvasHeight, out = n
     return { x: screenX, y: screenY };
 }
 
-export function screenToWorld(screenX, screenY, canvasWidth, canvasHeight) {
+// OPTIMIZATION (⚡ Bolt): Optional 'out' parameter allows passing a reusable target object
+// to eliminate object allocations in high-frequency mousemove events and HUD projection loops.
+export function screenToWorld(screenX, screenY, canvasWidth, canvasHeight, out = null) {
     const worldX = (screenX - canvasWidth / 2) / state.zoom + state.cameraX;
     const worldY = state.cameraY - (screenY - canvasHeight / 2) / state.zoom;
+    if (out) {
+        out.x = worldX;
+        out.y = worldY;
+        return out;
+    }
     return { x: worldX, y: worldY };
 }
 
