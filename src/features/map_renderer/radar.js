@@ -8,7 +8,7 @@ let lastRadarEntities = [];
 let sweepAngle = 0;
 let lastFrameTime = performance.now();
 
-// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted helper functions, and squared distance pre-culling
+// OPTIMIZATION (⚡ Bolt): Pre-computed sweep beam colors, extracted cardinal direction markers, and zero-allocation target object.
 const SWEEP_STEPS = 18;
 const SWEEP_TRAIL_ANGLE = Math.PI / 3.2; // ~56 degrees trail
 const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
@@ -16,10 +16,22 @@ const SWEEP_STEP_COLORS = Array.from({ length: SWEEP_STEPS }, (_, i) => {
     return `rgba(34, 197, 94, ${alpha})`;
 });
 
+// Static cardinal direction markers extracted to module scope to eliminate per-frame array allocations
+const CARDINALS = [
+    { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
+    { label: 'E', worldAngle: 0, color: '#4ade80' },
+    { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
+    { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
+];
+
+// Module-scoped target object for zero-allocation worldToRadarScreen calculations
+const tempRadarPos = { bx: 0, by: 0, dist: 0, dz: 0, elevation: 'level', screenAngle: 0, isJustSwept: false, decay: 0 };
+
 /**
  * Helper: Convert world entity (x, y, z) to radar screen (bx, by) with fast squared-distance culling and vertical elevation filtering.
+ * Optional `out` parameter eliminates temporary blip object allocations in 60 FPS radar loops.
  */
-function worldToRadarScreen(ex, ey, ez, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle) {
+function worldToRadarScreen(ex, ey, ez, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle, out = null) {
     const dx = ex - cx;
     const dy = ey - cy;
     const distSq = dx * dx + dy * dy;
@@ -50,6 +62,18 @@ function worldToRadarScreen(ex, ey, ez, cx, cy, cz, range, rangeSq, radarRadius,
     const sweepDelta = ((sweepAngle - screenAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
     const isJustSwept = sweepDelta < 0.22;
     const decay = Math.max(0.35, 1.0 - (sweepDelta / (Math.PI * 2)) * 0.65);
+
+    if (out) {
+        out.bx = bx;
+        out.by = by;
+        out.dist = dist;
+        out.dz = dz;
+        out.elevation = elevation;
+        out.screenAngle = screenAngle;
+        out.isJustSwept = isJustSwept;
+        out.decay = decay;
+        return out;
+    }
 
     return { bx, by, dist, dz, elevation, screenAngle, isJustSwept, decay };
 }
@@ -209,14 +233,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const cardinals = [
-        { label: 'N', worldAngle: Math.PI / 2, color: '#ef4444' },
-        { label: 'E', worldAngle: 0, color: '#4ade80' },
-        { label: 'S', worldAngle: -Math.PI / 2, color: '#4ade80' },
-        { label: 'W', worldAngle: Math.PI, color: '#4ade80' }
-    ];
-
-    for (const card of cardinals) {
+    for (const card of CARDINALS) {
         // Screen angle relative to player heading
         const cardScreenAngle = card.worldAngle - playerHeading + Math.PI / 2;
         const cardX = centerX + Math.cos(cardScreenAngle) * (radarRadius - 9);
@@ -275,7 +292,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
 
     if (botSource.length > 0 && (state.radarFilters ? state.radarFilters.enemies !== false : true)) {
         for (const unit of botSource) {
-            const p = worldToRadarScreen(unit.x, unit.y, unit.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
+            const p = worldToRadarScreen(unit.x, unit.y, unit.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle, tempRadarPos);
             if (!p) continue;
 
             // OPTIMIZATION (⚡ Bolt): Cached unit passivity check eliminates per-frame string allocations & search operations
@@ -386,7 +403,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
             const blockCount = creation.blocks || creation.shapes || (creation.mass ? Math.floor(creation.mass / 2) : 0);
             if (blockCount < 50) continue;
 
-            const p = worldToRadarScreen(creation.x, creation.y, creation.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
+            const p = worldToRadarScreen(creation.x, creation.y, creation.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle, tempRadarPos);
             if (!p || p.dist < 1.5) continue; // Don't self-detect current seat
 
             vehicleCount++;
@@ -573,7 +590,7 @@ export function renderRadar(ctx, canvas, logicalWidth, logicalHeight) {
     if (state.squad && state.squad.peers) {
         state.squad.peers.forEach(peer => {
             if (peer.x !== undefined && peer.y !== undefined) {
-                const p = worldToRadarScreen(peer.x, peer.y, peer.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle);
+                const p = worldToRadarScreen(peer.x, peer.y, peer.z, cx, cy, cz, range, rangeSq, radarRadius, centerX, centerY, playerHeading, sweepAngle, tempRadarPos);
                 if (!p) return;
 
                 const color = peer.color || '#00e5ff';
