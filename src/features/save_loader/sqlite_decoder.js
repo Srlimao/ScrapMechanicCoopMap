@@ -46,10 +46,21 @@ export async function loadAssetUuidMap() {
     return assetUuidMap || {};
 }
 
-function parseReversedUUID(bytes) {
-    if (!bytes || bytes.length < 16) return "unknown";
-    const rev = Array.from(bytes).reverse().map(b => b.toString(16).padStart(2, '0')).join('');
-    return `${rev.slice(0, 8)}-${rev.slice(8, 12)}-${rev.slice(12, 16)}-${rev.slice(16, 20)}-${rev.slice(20)}`;
+// OPTIMIZATION (⚡ Bolt): Pre-computed byte-to-hex lookup table and zero-allocation UUID parsing from binary SQLite blob data.
+// Replaces Array.from, .reverse(), .map(), .join(), and .slice() calls per entity with direct offset byte lookups.
+const HEX_BYTE = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, '0'));
+
+function parseReversedUUID(bytes, offset = 0) {
+    if (!bytes || bytes.length < offset + 16) return "unknown";
+    const b = bytes;
+    const o = offset;
+    return (
+        HEX_BYTE[b[o + 15]] + HEX_BYTE[b[o + 14]] + HEX_BYTE[b[o + 13]] + HEX_BYTE[b[o + 12]] + '-' +
+        HEX_BYTE[b[o + 11]] + HEX_BYTE[b[o + 10]] + '-' +
+        HEX_BYTE[b[o + 9]]  + HEX_BYTE[b[o + 8]]  + '-' +
+        HEX_BYTE[b[o + 7]]  + HEX_BYTE[b[o + 6]]  + '-' +
+        HEX_BYTE[b[o + 5]]  + HEX_BYTE[b[o + 4]]  + HEX_BYTE[b[o + 3]]  + HEX_BYTE[b[o + 2]]  + HEX_BYTE[b[o + 1]]  + HEX_BYTE[b[o + 0]]
+    );
 }
 
 const textDecoder = new TextDecoder('latin1');
@@ -137,7 +148,7 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
                     const z = view.getFloat32(44, true);
 
                     if (x >= MAP_MIN_X && x <= MAP_MAX_X && y >= MAP_MIN_Y && y <= MAP_MAX_Y) {
-                        let uUuid = blob.length >= 36 ? parseReversedUUID(blob.slice(20, 36)) : "unknown";
+                        let uUuid = blob.length >= 36 ? parseReversedUUID(blob, 20) : "unknown";
                         const info = uuidMap[uUuid] || { name: 'Unit', category: 'enemy', icon: 'fa-robot', color: '#f97316' };
                         let name = info.name || 'Unit';
                         let subType = 'haybot';
@@ -197,7 +208,7 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
 
             resHarv[0].values.forEach(r => {
                 const hid = r[0], wid = r[1], cx = r[2], cy = r[3], size = r[4], blob = r[5];
-                let hUuid = blob && blob.length >= 36 ? parseReversedUUID(blob.slice(20, 36)) : "unknown";
+                let hUuid = blob && blob.length >= 36 ? parseReversedUUID(blob, 20) : "unknown";
                 const info = uuidMap[hUuid] || { name: 'Resource Node', category: 'other', icon: 'fa-seedling', color: '#10b981' };
                 const cat = info.category || 'other';
 
@@ -280,10 +291,11 @@ export async function decodeSaveBuffer(arrayBuffer, filename = 'save.db', isAuto
                 const dataStr = safeDecode(r[2]);
                 const combined = keyStr + " " + dataStr;
                 const matches = combined.matchAll(/ts_(\d+):\((-?\d+),(-?\d+)\)/g);
+                // OPTIMIZATION (⚡ Bolt): Hoist string lowercasing outside inner matches loop
+                const combLower = combined.toLowerCase();
 
                 for (const m of matches) {
                     const wid = parseInt(m[1]), cx = parseInt(m[2]), cy = parseInt(m[3]);
-                    const combLower = combined.toLowerCase();
                     const wx = cx * CELL_SIZE + 32, wy = cy * CELL_SIZE + 32;
 
                     // Comprehensive POIs Extraction
