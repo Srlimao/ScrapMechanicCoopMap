@@ -5,7 +5,9 @@
 import { state } from '../../core/state.js';
 import { worldToScreen } from '../../core/coords.js';
 
-let occupiedLabelBoxes = [];
+// OPTIMIZATION (⚡ Bolt): Pooled label collision bounding boxes to eliminate object allocations in 60 FPS label rendering
+const labelBoxPool = [];
+let occupiedLabelCount = 0;
 const tempSelectedPos = { x: 0, y: 0 };
 
 /**
@@ -67,7 +69,7 @@ export function getPoiRadarInfo(poi) {
 }
 
 export function clearLabelCollisionGrid() {
-    occupiedLabelBoxes.length = 0;
+    occupiedLabelCount = 0;
 }
 
 /**
@@ -439,8 +441,8 @@ function renderSchematics(ctx, schematics, width, height, bounds) {
 
 // OPTIMIZATION (⚡ Bolt): Fast AABB label collision check without creating candidate objects
 function checkLabelCollision(boxX, boxY, textW, textH) {
-    for (let i = 0; i < occupiedLabelBoxes.length; i++) {
-        const occ = occupiedLabelBoxes[i];
+    for (let i = 0; i < occupiedLabelCount; i++) {
+        const occ = labelBoxPool[i];
         if (boxX < occ.x + occ.w + 4 &&
             boxX + textW + 4 > occ.x &&
             boxY < occ.y + occ.h + 2 &&
@@ -472,7 +474,7 @@ function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
     let chosenBoxY = anchorY - 9;
 
     // Lazy check: Only evaluate alternative candidate positions if default collides
-    if (occupiedLabelBoxes.length > 0 && checkLabelCollision(chosenBoxX, chosenBoxY, textW, textH)) {
+    if (occupiedLabelCount > 0 && checkLabelCollision(chosenBoxX, chosenBoxY, textW, textH)) {
         // Candidate 1: Below-Right
         let candBoxX = anchorX + radius + 5;
         let candBoxY = anchorY + 5;
@@ -524,7 +526,16 @@ function drawSmartLabel(ctx, text, anchorX, anchorY, radius, options = {}) {
         }
     }
 
-    occupiedLabelBoxes.push({ x: chosenBoxX, y: chosenBoxY, w: textW, h: textH });
+    if (occupiedLabelCount < labelBoxPool.length) {
+        const box = labelBoxPool[occupiedLabelCount];
+        box.x = chosenBoxX;
+        box.y = chosenBoxY;
+        box.w = textW;
+        box.h = textH;
+    } else {
+        labelBoxPool.push({ x: chosenBoxX, y: chosenBoxY, w: textW, h: textH });
+    }
+    occupiedLabelCount++;
 
     ctx.shadowColor = '#000000';
     ctx.shadowBlur = 4;
