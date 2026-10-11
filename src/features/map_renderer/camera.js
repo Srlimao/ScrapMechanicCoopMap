@@ -50,8 +50,17 @@ export function setupCameraControls(canvas, viewport, requestRender) {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
-        state.mouseScreenPos = { x: mouseX, y: mouseY };
-        state.mouseWorldPos = screenToWorld(mouseX, mouseY, canvas.width, canvas.height);
+        // OPTIMIZATION (⚡ Bolt): Reuse existing state objects in-place instead of creating
+        // new { x, y } objects on every mousemove event (~120-240 events/sec during mouse dragging).
+        // Prevents transient garbage collection pauses during high-frequency map navigation.
+        if (!state.mouseScreenPos) state.mouseScreenPos = { x: mouseX, y: mouseY };
+        else {
+            state.mouseScreenPos.x = mouseX;
+            state.mouseScreenPos.y = mouseY;
+        }
+
+        if (!state.mouseWorldPos) state.mouseWorldPos = { x: 0, y: 0 };
+        screenToWorld(mouseX, mouseY, canvas.width, canvas.height, state.mouseWorldPos);
 
         if (isDragging) {
             const dx = (e.clientX - dragStartX) / state.zoom;
