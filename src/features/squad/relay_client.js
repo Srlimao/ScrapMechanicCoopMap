@@ -211,8 +211,14 @@ function handleRelayMessage(msg) {
             peer.angle = Math.atan2(msg.dirY || 1, msg.dirX || 0);
 
             if (!peer.trail) peer.trail = [];
-            peer.trail.push({ x: msg.x, y: msg.y, t: msg.t });
-            if (peer.trail.length > 150) peer.trail.shift();
+            const lastNode = peer.trail[peer.trail.length - 1];
+            const dx = lastNode ? msg.x - lastNode.x : 0;
+            const dy = lastNode ? msg.y - lastNode.y : 0;
+            // OPTIMIZATION (⚡ Bolt): Squared-distance movement threshold eliminates redundant trail allocations in 20 Hz squad telemetry stream
+            if (peer.trail.length === 0 || dx * dx + dy * dy > 4.0) { // 2.0m movement threshold (4.0 = 2.0^2)
+                peer.trail.push({ x: msg.x, y: msg.y, t: msg.t });
+                if (peer.trail.length > 150) peer.trail.shift();
+            }
         }
         return;
     }
